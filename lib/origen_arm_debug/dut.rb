@@ -23,7 +23,6 @@ module OrigenARMDebug
       arm_debug.add_mem_ap('mem_ap', 0x00000000)
       arm_debug.add_mem_ap('mdm_ap', 0x01000000)
       arm_debug.add_mem_ap('alt_ahbapi', 0x02000000)
-
     end
 
     # Add any custom startup business here.
@@ -33,7 +32,7 @@ module OrigenARMDebug
       $tester.set_timeset('arm_debug', 40)
     end
 
-    # Read data from a register 
+    # Read data from a register
     #
     # @param [Register] reg Register name or address value
     # @param [Hash] options Options to customize the operation

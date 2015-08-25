@@ -9,13 +9,13 @@ module OrigenARMDebug
     attr_reader :owner
     attr_accessor :write_ap_dly
     attr_accessor :acc_access_dly
-    
+
     def initialize(owner, options = {})
       @owner = owner
 
       @write_ap_dly = 8
       @acc_access_dly = 7
-      
+
       @current_apaddr = 0x00000000
     end
 

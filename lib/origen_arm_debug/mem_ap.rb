@@ -25,7 +25,7 @@ module OrigenARMDebug
     #
     def initialize(owner, options = {})
       @owner = owner
-      @name = options[:name].nil? ? 'default' : options[:name]      
+      @name = options[:name].nil? ? 'default' : options[:name]
       @base_address = options[:base_address].nil? ? 0x00000000 : options[:base_address]
 
       # reset values for MEM-AP registers
@@ -55,15 +55,15 @@ module OrigenARMDebug
     #
     #   # expect read data to be = 0x5a5a5a5a
     #   mem_ap.read(0x2000000, size: 32, edata: 0x5a5a5a5a)
-    #   
+    #
     #   # expect read data to be = 0xXXXXXX5a (mask out all bits except [7:0])
     #   mem_ap.read(0x2000000, size: 32, edata: 0x5a5a5a5a, r_mask: 0x000000ff)
-    #   
+    #
     # Returns nothing.
     def read(addr, options = {})
       options = { size: 32 }.merge(options)
       options = { r_mask: 'mask', r_attempts: 1 }.merge(options)
-      msg = "Arm Debug: Shift out data for reading"
+      msg = 'Arm Debug: Shift out data for reading'
       options = { arm_debug_comment: msg }.merge(options)
       size = options[:size]
 
@@ -85,7 +85,7 @@ module OrigenARMDebug
     #
     # @example
     #   mem_ap.write(0x2000000, 0xc3c3a5a5, size: 32)
-    #   
+    #
     # Returns nothing.
     def write(addr, wdata, options = {});
       options = { size: 32 }.merge(options)
@@ -114,13 +114,13 @@ module OrigenARMDebug
     # @example
     #   # don't care what read-back data actually is
     #   mem_ap.write_read(0x2000000, 0xc3c3a5a5, size: 32)
-    #   
+    #
     #   # expect read-back data to be same as write data = 0xc3c3a5a5
     #   mem_ap.read(0x2000000, 0xc3c3a5a5, size: 32, edata: 0xc3c3a5a5)
-    #   
+    #
     #   # expect read-back data to be = 0xXXXXXXa5 (mask out all bits except [7:0])
     #   mem_ap.read(0x2000000, 0xc3c3a5a5, size: 32, edata: 0xc3c3a5a5, r_mask: 0x000000ff)
-    #   
+    #
     # Returns nothing.
     def write_read(addr, wdata, options = {})
       options = { size: 32 }.merge(options)
@@ -144,11 +144,11 @@ module OrigenARMDebug
     # -----------------------------------------------------------------------------
     # Legacy Support (to be phased out)
     # -----------------------------------------------------------------------------
-    
+
     # Method to read from a mem_ap register (legacy)
     #
     # @param [Integer] addr Address of register to be read from
-    # @param [Integer] rdata This really does nothing since only care about value 
+    # @param [Integer] rdata This really does nothing since only care about value
     #   of options[:edata]
     # @param [Hash] options Options to customize the operation
     # Returns nothing.
@@ -156,7 +156,7 @@ module OrigenARMDebug
       # Warn caller that this method is being deprecated
       msg = 'Use mem_ap.read(addr, options) instead of R(addr, rdata, options)'
       Origen.deprecate msg
-      
+
       # Patch arguments and send to new method
       options = { rdata: rdata }.merge(options)
       read(addr, options)
@@ -172,7 +172,7 @@ module OrigenARMDebug
       # Warn caller that this method is being deprecated
       msg = 'Use mem_ap.write(addr, wdata, options) instead of W(addr, wdata, options)'
       Origen.deprecate msg
-      
+
       # Patch arguments and send to new method
       write(addr, wdata, options)
     end
@@ -187,7 +187,7 @@ module OrigenARMDebug
       # Warn caller that this method is being deprecated
       msg = 'Use mem_ap.write_read(addr, wdata, options) instead of WR(addr, wdata, options)'
       Origen.deprecate msg
-      
+
       # Patch arguments and send to new method
       write_read(addr, wdata, options)
     end
@@ -195,6 +195,7 @@ module OrigenARMDebug
     # -----------------------------------------------------------------------------
     # Support Code
     # -----------------------------------------------------------------------------
+
     private
 
     # Sets the size of the data (by writing to the CSW size bits).  It will only

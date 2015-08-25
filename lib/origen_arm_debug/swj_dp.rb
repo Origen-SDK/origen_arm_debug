@@ -1,7 +1,7 @@
 module OrigenARMDebug
   class SWJ_DP
     include Origen::Registers
-  
+
     # Returns the parent object that instantiated the driver, could be
     # either a DUT object or a protocol abstraction
     attr_reader :owner
@@ -20,43 +20,41 @@ module OrigenARMDebug
     #
     def initialize(owner, implementation, options = {})
       @owner = owner
-      
+
       if implementation == :jtag || implementation == :swd
         @imp = implementation
       else
         msg = "SWJ-DP: '#{implementation}' implementation not supported.  JTAG and SWD only"
         Origen.log.error msg
-        
+
         # Just default to jtag for now
         @imp = :jtag
       end
 
       @write_ap_dly = 8
       @acc_access_dly = 7
-      
+
       @current_apaddr = 0
       @orundetect = 0
 
-      add_reg :dpacc,     0x00, 35,  rnw: { pos: 0 },
-                                       a: { pos: 1, bits: 2 },
-                                    data: { pos: 3, bits: 32 }
+      add_reg :dpacc,     0x00, 35,  rnw:  { pos: 0 },
+                                     a:    { pos: 1, bits: 2 },
+                                     data: { pos: 3, bits: 32 }
 
-      add_reg :apacc,     0x00, 35,  rnw: { pos: 0 },
-                                       a: { pos: 1, bits: 2 },
-                                    data: { pos: 0, bits: 35 }
+      add_reg :apacc,     0x00, 35,  rnw:  { pos: 0 },
+                                     a:    { pos: 1, bits: 2 },
+                                     data: { pos: 0, bits: 35 }
 
       add_reg :reserved,  0x00, 32, data: { pos: 0, bits: 32 }
       add_reg :ctrl_stat, 0x04, 32, data: { pos: 0, bits: 32 }
       add_reg :select,    0x08, 32, data: { pos: 0, bits: 32 }
       add_reg :rebuff,    0x0C, 32, data: { pos: 0, bits: 32 }
 
-
       # jtag-dp only
       add_reg :idcode,    0x00, 32, data: { pos: 0, bits: 32 }
-      add_reg :abort,     0x00, 35,  rnw: { pos: 0 },
-                                       a: { pos: 1, bits: 2 },
-                                    data: { pos: 0, bits: 32 }
-
+      add_reg :abort,     0x00, 35,  rnw:  { pos: 0 },
+                                     a:    { pos: 1, bits: 2 },
+                                     data: { pos: 0, bits: 32 }
     end
 
     # Method to add additional Memory Access Ports (MEM-AP) with specified base address
@@ -71,7 +69,6 @@ module OrigenARMDebug
       instance_variable_set("@#{name}", MemAP.new(self, base_address: base_address))
       self.class.send(:attr_accessor, name)
     end
-
 
     #-------------------------------------
     #  DPACC Access API
@@ -90,7 +87,7 @@ module OrigenARMDebug
       else
         read_dp_jtag(name, options)
       end
-    end        
+    end
 
     # Method to read from a Debug Port register and compare for an expected value
     #
@@ -102,7 +99,7 @@ module OrigenARMDebug
       options[:edata] = edata
       read_dp(name, options)
     end
-    
+
     # Method to write to a Debug Port register
     #
     # @param [String] name Name of register to be written to
@@ -149,7 +146,7 @@ module OrigenARMDebug
       rwb = 1
       options = { r_attempts: 1 }.merge(options)
 
-      # Create another copy of options with select keys removed. 
+      # Create another copy of options with select keys removed.
       # This first read is junk so we do not want to store it or compare it.
       junk_options = options.clone.delete_if do |key, val|
         (key.eql?(:r_mask) && val.eql?('store')) || key.eql?(:compare_data)
@@ -157,7 +154,7 @@ module OrigenARMDebug
 
       apacc_access(addr, rwb, random, 0, junk_options)
       read_dp('RDBUFF', options)                     # This is the real data
-      
+
       if @imp == :swd
         cc "SW-AP: R-32: addr=0x#{addr.to_s(16).rjust(8, '0')}"
       else
@@ -175,7 +172,7 @@ module OrigenARMDebug
       read_ap(name, options)
     end
     alias_method :wait_read_expect_ap, :read_expect_ap
-    
+
     # Method to write to a Access Port register
     #
     # @param [Integer] addr Address of register to be read from
@@ -187,11 +184,11 @@ module OrigenARMDebug
       apacc_access(addr, rwb, wdata, 0, options)
       $tester.cycle(repeat: @write_ap_dly) if @imp == :jtag
       if @imp == :swd
-        cc "SW-AP: W-32: "\
+        cc 'SW-AP: W-32: '\
           "addr=0x#{addr.to_s(16).rjust(8, '0')}, "\
           "data=0x#{wdata.to_s(16).rjust(8, '0')}"
       else
-        cc "JTAG-AP: W-32: "\
+        cc 'JTAG-AP: W-32: '\
           "addr=0x#{addr.to_s(16).rjust(8, '0')}, "\
           "data=0x#{wdata.to_s(16).rjust(8, '0')}"
       end
@@ -206,18 +203,18 @@ module OrigenARMDebug
       write_ap(addr, wdata, options)
       read_ap(addr, options)
       if @imp == :swd
-        cc "SW-AP: WR-32: "\
+        cc 'SW-AP: WR-32: '\
           "addr=0x#{addr.to_s(16).rjust(8, '0')}, "\
           "data=0x#{wdata.to_s(16).rjust(8, '0')}"
       else
-        cc "JTAG-AP: WR-32: "\
+        cc 'JTAG-AP: WR-32: '\
           "addr=0x#{addr.to_s(16).rjust(8, '0')}, "\
           "data=0x#{wdata.to_s(16).rjust(8, '0')}"
       end
     end
 
     private
-    
+
     #-----------------------------------------------
     #  DPACC Access Implementation-Specific methods
     #-----------------------------------------------
@@ -241,7 +238,7 @@ module OrigenARMDebug
       end
       cc "SW-DP: R-32: name='#{name}'"
     end
-    
+
     # Method to read from a Debug Port register with JTAG protocol
     #
     # @param [String] name Name of register to be read from
@@ -261,7 +258,7 @@ module OrigenARMDebug
       read_dp_jtag('RDBUFF', options) if name != 'IDCODE' && name != 'RDBUFF'
       cc "JTAG-DP: R-32: name='#{name}'"
     end
-    
+
     # Method to write to a Debug Port register with SWD protocol
     #
     # @param [String] name Name of register to be read from
@@ -283,7 +280,7 @@ module OrigenARMDebug
       cc "SW-DP: W-32: name='#{name}', "\
         "data=0x#{wdata.to_s(16).rjust(8, '0')}"
     end
-        
+
     # Method to write to a Debug Port register with JTAG protocol
     #
     # @param [String] name Name of register to be read from
@@ -306,7 +303,7 @@ module OrigenARMDebug
 
     def dpacc_access(name, rwb, wdata, options = {})
       addr = get_dp_addr(name)
-    
+
       if name == 'CTRL/STAT' && @imp == :swd
         set_apselect(@current_apaddr & 0xFFFFFFFE, options)
       end
@@ -322,7 +319,7 @@ module OrigenARMDebug
         set_ir('APACC')
       end
       acc_access((addr & 0xC), rwb, 1, wdata, options)
-    end      
+    end
 
     def acc_access(addr, rwb, ap_dp, wdata, options = {})
       if @imp == :swd
@@ -334,7 +331,7 @@ module OrigenARMDebug
 
     def acc_access_swd(addr, rwb, ap_dp, wdata, options = {})
       if (rwb == 1)
-        swd.read(ap_dp, addr, options) 
+        swd.read(ap_dp, addr, options)
       else
         swd.write(ap_dp, addr, wdata, options)
       end
@@ -347,10 +344,10 @@ module OrigenARMDebug
         attempts = options[:r_attempts]
       elsif !options[:r_attempts].nil?
         attempts = options[:w_attempts]
-      else 
+      else
         attempts = 1
       end
-      
+
       attempts.times do
         if name == 'RDBUFF'
           r = $dut.reg(:dap)
@@ -411,7 +408,7 @@ module OrigenARMDebug
       else
         addr &= 0xff0000f0
       end
-      
+
       if (addr != @current_apaddr)
         write_dp('SELECT', addr & 0xff0000ff, options)
       end
@@ -431,11 +428,10 @@ module OrigenARMDebug
     def jtag
       owner.owner.jtag
     end
-    
+
     # Provides shortname access to top-level swd driver
     def swd
       owner.owner.swd
     end
-    
   end
 end

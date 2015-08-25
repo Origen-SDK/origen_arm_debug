@@ -31,7 +31,7 @@ module OrigenARMDebug
 
     # Method to add additional Memory Access Ports (MEM-AP) with specified base address
     # name - short name for mem_ap that is being created
-    # base_address - base address 
+    # base_address - base address
     def add_mem_ap(name, base_address)
       instance_variable_set("@#{name}", MemAP.new(self, name: name, base_address: base_address))
       self.class.send(:attr_accessor, name)
@@ -44,7 +44,6 @@ module OrigenARMDebug
     def write_register(reg_or_val, options = {})
       mem_ap.write(reg_or_val.address, reg_or_val.data, size: reg_or_val.size)
     end
-
 
     private
 
