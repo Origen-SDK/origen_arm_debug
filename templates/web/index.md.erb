@@ -1,0 +1,89 @@
+% render "layouts/basic.html" do
+
+%# HTML tags can be embedded in mark down files if you want to do specific custom
+%# formatting like this, but in most cases that is not required.
+<h1><%= Origen.app.namespace %> <span style="font-size: 14px">(<%= Origen.app.version %>)</span></h1>
+
+### Purpose
+
+This library provides register and memory read/write and debug control capability via the ARM debug protocol. 
+
+### How To Import
+
+In your Gemfile add:
+
+~~~ruby
+gem "origen_arm_debug", ">= <%= Origen.app.version %>"
+~~~
+
+or if your application is a plugin add this to your <code>.gemspec</code>
+
+~~~ruby
+spec.add_development_dependency "origen_arm_debug", ">= <%= Origen.app.version %>"
+~~~
+
+__NOTE:__ You will also need to include <code>require 'origen_arm_debug'</code> somewhere in your environment.  This can be done in <code>config/environment.rb</code> for example.
+
+
+### How To Use
+
+Include the <code>OrigenARMDebug</code> module in your DUT class, this provides
+<code>read_register</code> and <code>write_register</code> methods that will
+be used automatically by any register read/write operations.
+It also provides meathods using the ARM Debug protocol including:
+accessing device memory, accessing core and floating point regesters (coretx M cores only),
+entering/exiting debug mode (coretx M cores only), setting the PC (coretx M cores only)
+and stepping through code (coretx M cores only).
+
+You must also include a compatible physical driver depending on what debug
+interface your DUT has, one of the following can be used:
+
+* [JTAG](http://origen-sdk.org/jtag)
+* [Single Wire Debug](http://origen-sdk.org/swd)
+
+~~~ruby
+class DUT
+
+  include OrigenARMDebug
+  include Origen::Registers
+  # Also include the required physical driver (not shown here)
+
+  def initialize
+    add_reg :test, 0x0012, 16, :upper_byte => {pos: 8, bits: 8},
+                               :lower_byte => {pos: 0, bits: 8}
+  end
+
+end
+
+DUT.new.reg(:test).write!(0x55AA)  # => Will generate the required vectors using the ARM debug protocol
+~~~
+
+
+### How To Setup a Development Environment
+
+[Clone the repository from Github](https://github.com/Origen-SDK/origen_arm_debug).
+
+An instance of the OrigenARMDebug driver is hooked up to a dummy DUT
+object for use in the console:
+
+~~~
+origen i
+
+> $dut.arm_debug
+=> #<OrigenARMDebug::Driver:0x0000001ee48e78>
+~~~
+
+Follow the instructions here if you want to make a 3rd party app
+workspace use your development copy of the OrigenARMDebug plugin:
+[Setting up a Plugin Development Environment](http://origen-sdk.org/origen/latest/guides/plugins)
+
+This plugin also contains a test suite, makes sure this passes before committing
+any changes!
+
+~~~
+origen examples
+~~~
+
+<%= disqus_comments %>
+
+% end
