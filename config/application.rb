@@ -7,7 +7,7 @@ class OrigenARMDebugApplication < Origen::Application
 
   self.name = "origen_arm_debug"
   self.namespace = "OrigenARMDebug"
-  config.rc_url = "https://github.com/Origen-SDK/origen_arm_debug.git"
+  config.rc_url = "git@github.com:Origen-SDK/origen_arm_debug.git"
   config.release_externally = true
 
   # To enable deployment of your documentation to a web server (via the 'origen web'
