@@ -1,6 +1,6 @@
 module OrigenARMDebug
   MAJOR = 0
-  MINOR = 3
+  MINOR = 4
   BUGFIX = 0
   DEV = nil
 
