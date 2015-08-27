@@ -57,19 +57,6 @@ module OrigenARMDebug
                                      data: { pos: 0, bits: 32 }
     end
 
-    # Method to add additional Memory Access Ports (MEM-AP) with specified base address
-    #
-    # @param [Integer] name Short name for mem_ap that is being created
-    # @param [Integer] base_address Base address
-    #
-    # @examples
-    #   arm_debug.add_mem_ap('alt_ahbapi', 0x02000000)
-    #
-    def add_mem_ap(name, base_address)
-      instance_variable_set("@#{name}", MemAP.new(self, base_address: base_address))
-      self.class.send(:attr_accessor, name)
-    end
-
     #-------------------------------------
     #  DPACC Access API
     #-------------------------------------

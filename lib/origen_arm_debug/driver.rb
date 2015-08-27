@@ -16,6 +16,7 @@ module OrigenARMDebug
       @owner = owner
     end
 
+    # Create and/or return the SWJ_DP object with specified protocol 
     def swj_dp
       if owner.respond_to?(:swd)
         @swj_dp ||= SWJ_DP.new(self, :swd)
@@ -30,23 +31,43 @@ module OrigenARMDebug
     end
 
     # Method to add additional Memory Access Ports (MEM-AP) with specified base address
-    # name - short name for mem_ap that is being created
-    # base_address - base address
+    #
+    # @param [Integer] name Short name for mem_ap that is being created
+    # @param [Integer] base_address Base address
+    #
+    # @examples
+    #   arm_debug.add_mem_ap('alt_ahbapi', 0x02000000)
+    #
     def add_mem_ap(name, base_address)
       instance_variable_set("@#{name}", MemAP.new(self, name: name, base_address: base_address))
       self.class.send(:attr_accessor, name)
     end
 
+    # Read from a MEM-AP register
+    #
+    # @param [Integer, Origen::Register::Reg, Origen::Register::BitCollection, Origen::Register::Bit] reg_or_val
+    #   Value to be read. If a reg/bit collection is supplied this can be pre-marked for
+    #   read, store or overlay and which will result in the requested action being applied to
+    #   the cycles corresponding to those bits only (don't care cycles will be generated for the others).
+    # @param [Hash] options Options to customize the operation
     def read_register(reg_or_val, options = {})
       mem_ap.read(reg_or_val.address, size: reg_or_val.size, compare_data: reg_or_val.data)
     end
 
+    # Write data to a MEM-AP register
+    #
+    # @param [Integer, Origen::Register::Reg, Origen::Register::BitCollection, Origen::Register::Bit] reg_or_val
+    #   Value to be written to. If a reg/bit collection is supplied this can be pre-marked for
+    #   read, store or overlay and which will result in the requested action being applied to
+    #   the cycles corresponding to those bits only (don't care cycles will be generated for the others).
+    # @param [Hash] options Options to customize the operation
     def write_register(reg_or_val, options = {})
       mem_ap.write(reg_or_val.address, reg_or_val.data, size: reg_or_val.size)
     end
 
     private
 
+    # Short-cut to protocol driver
     def arm_debug_driver
       return @arm_debug_driver if @arm_debug_driver
       if owner.respond_to?(:jtag)
