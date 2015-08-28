@@ -15,4 +15,7 @@ Pattern.create do
   $dut.arm_debug.mem_ap.W(0x10000004, 0x55555555)
   $dut.arm_debug.mem_ap.WR(0x10000004, 0x55555555)
 
+  $dut.arm_debug.mem_ap.inspect
+  $dut.arm_debug.mdm_ap.inspect
+  $dut.arm_debug.alt_ahbapi.inspect
 end

@@ -1,4 +1,9 @@
 module OrigenARMDebug
+  # To use this driver the owner model must include the SWD or JTAG protocol drivers:
+  #   include JTAG
+  #     or
+  #   include SWD
+  #
   class Driver
     # Returns the parent object that instantiated the driver, could be
     # either a DUT object or a protocol abstraction
@@ -16,7 +21,7 @@ module OrigenARMDebug
       @owner = owner
     end
 
-    # Create and/or return the SWJ_DP object with specified protocol 
+    # Create and/or return the SWJ_DP object with specified protocol
     def swj_dp
       if owner.respond_to?(:swd)
         @swj_dp ||= SWJ_DP.new(self, :swd)

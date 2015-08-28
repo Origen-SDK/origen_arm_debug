@@ -1,4 +1,5 @@
 module OrigenARMDebug
+  # Simple JTAG-specific dut model that inherits from protocol-agnostic DUT model
   class JTAG_DUT < DUT
     include OrigenJTAG
     include Origen::Pins

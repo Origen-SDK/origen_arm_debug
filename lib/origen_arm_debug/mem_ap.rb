@@ -1,4 +1,8 @@
+'include rgen'
 module OrigenARMDebug
+  # Object that defines the API necessary to perform MEM-AP transactions.  Requires
+  #  a top-level protocol be defined as well as a top-level instantiation of an
+  #  SWJ-DP object.
   class MemAP
     # ARM Debug Interface v5.1
     MEM_ADDR_CSW  = 0x00000000
@@ -39,6 +43,25 @@ module OrigenARMDebug
       owner.swj_dp
     end
     alias_method :dp, :debug_port
+
+    # Output some instance-specific information
+    def inspect
+      Origen.log.info '=' * 30
+      Origen.log.info ' MEM-AP INFO'
+      Origen.log.info "  name: #{@name}"
+      Origen.log.info "  base address: 0x#{@base_address.to_hex}"
+      Origen.log.info ''
+      Origen.log.debug "  csw_reg_addr  = 0x#{csw_reg_addr.to_hex}"
+      Origen.log.debug "  tar_reg_addr  = 0x#{tar_reg_addr.to_hex}"
+      Origen.log.debug "  drw_reg_addr  = 0x#{drw_reg_addr.to_hex}"
+      Origen.log.debug "  bd0_reg_addr  = 0x#{bd0_reg_addr.to_hex}"
+      Origen.log.debug "  bd1_reg_addr  = 0x#{bd1_reg_addr.to_hex}"
+      Origen.log.debug "  bd2_reg_addr  = 0x#{bd2_reg_addr.to_hex}"
+      Origen.log.debug "  bd3_reg_addr  = 0x#{bd3_reg_addr.to_hex}"
+      Origen.log.debug "  cfg_reg_addr  = 0x#{cfg_reg_addr.to_hex}"
+      Origen.log.debug "  base_reg_addr = 0x#{base_reg_addr.to_hex}"
+      Origen.log.debug "  idr_reg_addr  = 0x#{idr_reg_addr.to_hex}"
+    end
 
     # -----------------------------------------------------------------------------
     # User API
@@ -350,7 +373,7 @@ module OrigenARMDebug
     end
 
     # Returns address of BD0 register for this mem-ap instance
-    def bdo_reg_addr
+    def bd0_reg_addr
       MEM_ADDR_BD0 + @base_address
     end
 

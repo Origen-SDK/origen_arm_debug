@@ -1,4 +1,5 @@
 module OrigenARMDebug
+  # Simple SWD-specific dut model that inherits from protocol-agnostic DUT model
   class SWD_DUT < DUT
     include OrigenSWD
     include Origen::Pins

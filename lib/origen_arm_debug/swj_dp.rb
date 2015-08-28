@@ -1,12 +1,21 @@
 module OrigenARMDebug
+  # Object that defines API for performing Debug AP transations using SWD or JTAG
   class SWJ_DP
     include Origen::Registers
 
     # Returns the parent object that instantiated the driver, could be
     # either a DUT object or a protocol abstraction
     attr_reader :owner
+
+    # Protocol implemented at the top-level (i.e. SWD or JTAG)
     attr_reader :imp
+
+    # Customizable delay for DUT-specific required cycles for write_ap transaction
+    #   to complete
     attr_accessor :write_ap_dly
+
+    # Customizable delay for DUT-specific required cycles for acc_access transaction
+    #   to complete
     attr_accessor :acc_access_dly
 
     # Initialize class variables
@@ -356,6 +365,9 @@ module OrigenARMDebug
       $tester.cycle(repeat: @acc_access_dly)
     end
 
+    # Returns the address of the register based on the name (string) of the register
+    #
+    # @param [String] name Name of the register
     def get_dp_addr(name)
       case name
         when 'IDCODE'    then return 0x0
@@ -369,11 +381,18 @@ module OrigenARMDebug
       end
     end
 
+    # Writes to the JTAG instruction regsiter in order to perform a transaction on the given Register
+    #
+    # @param [String] name Name of the register to be interacted with
     def set_ir(name)
       new_ir = get_ir_code(name)
       jtag.write_ir(new_ir, size: 4)
     end
 
+    # Returns the value to be written to the JTAG instruction regsiter in order to perform
+    #   a transaction on the given Register
+    #
+    # @param [String] name Name of the register to be interacted with
     def get_ir_code(name)
       case name
         when 'IDCODE'    then return 0b1110   # JTAGC_ARM_IDCODE
@@ -389,6 +408,11 @@ module OrigenARMDebug
       0
     end
 
+    # Method to select an Access Port (AP) by writing to the SELECT register in the Debug Port
+    #
+    # @param [Integer] addr Address to be written to the SELECT register.  It's value
+    #    will determine which Access Port is selected.
+    # @param [Hash] options Options to customize the operation
     def set_apselect(addr, options = {})
       if @imp == :swd
         addr &= 0xff0000f1

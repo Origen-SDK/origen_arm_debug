@@ -8,12 +8,10 @@
 //   Application
 //     Source:    git@github.com:Origen-SDK/origen_arm_debug.git
 //     Version:   0.4.1
-//     Workspace: /proj/tec_ulp1_verif/users/b01784/tv1/rgen_sandbox/origen/origen_arm_debug
 //     Branch:    master(bc834495346) (+local edits)
 //   Origen
 //     Source:    https://github.com/Origen-SDK/origen
 //     Version:   0.2.3
-//     Workspace: /home/b01784/.origen/gems/ruby/2.1.0/gems/origen-0.2.3
 //   Plugins
 //     origen_doc_helpers:       0.2.0
 //     origen_jtag:              0.12.0
