@@ -297,6 +297,12 @@ module OrigenARMDebug
         "data=0x#{wdata.to_s(16).rjust(8, '0')}"
     end
 
+    # Method
+    #
+    # @param [Integer] name Name of register to be transacted
+    # @param [Integer] rwb Indicates read or write
+    # @param [Integer] wdata Value of data to be written
+    # @param [Hash] options Options to customize the operation
     def dpacc_access(name, rwb, wdata, options = {})
       addr = get_dp_addr(name)
 
@@ -307,6 +313,13 @@ module OrigenARMDebug
       acc_access(addr, rwb, 0, wdata, options)
     end
 
+    # Method
+    #
+    # @param [Integer] addr Address of register to be transacted
+    # @param [Integer] rwb Indicates read or write
+    # @param [Integer] wdata Value of data to be written
+    # @param [Integer] rdata Value of data to be read back
+    # @param [Hash] options Options to customize the operation
     def apacc_access(addr, rwb, wdata, rdata, options = {})
       set_apselect((addr & 0xFFFFFFFE) | (@current_apaddr & 1), options)
       if @imp == :swd
@@ -317,6 +330,13 @@ module OrigenARMDebug
       acc_access((addr & 0xC), rwb, 1, wdata, options)
     end
 
+    # Method
+    #
+    # @param [Integer] addr Address of register to be transacted
+    # @param [Integer] rwb Indicates read or write
+    # @param [Integer] ap_dp Indicates Access Port or Debug Port
+    # @param [Integer] wdata Value of data to be written
+    # @param [Hash] options Options to customize the operation
     def acc_access(addr, rwb, ap_dp, wdata, options = {})
       if @imp == :swd
         acc_access_swd(addr, rwb, ap_dp, wdata, options = {})
@@ -325,6 +345,13 @@ module OrigenARMDebug
       end
     end
 
+    # Method SWD-specific
+    #
+    # @param [Integer] addr Address of register to be transacted
+    # @param [Integer] rwb Indicates read or write
+    # @param [Integer] ap_dp Indicates Access Port or Debug Port
+    # @param [Integer] wdata Value of data to be written
+    # @param [Hash] options Options to customize the operation
     def acc_access_swd(addr, rwb, ap_dp, wdata, options = {})
       if (rwb == 1)
         swd.read(ap_dp, addr, options)
@@ -335,6 +362,13 @@ module OrigenARMDebug
       swd.swd_dio_to_0(options[:w_delay])
     end
 
+    # Method JTAG-specific
+    #
+    # @param [Integer] addr Address of register to be transacted
+    # @param [Integer] rwb Indicates read or write
+    # @param [Integer] ap_dp Indicates Access Port or Debug Port
+    # @param [Integer] wdata Value of data to be written
+    # @param [Hash] options Options to customize the operation
     def acc_access_jtag(addr, rwb, ap_dp, wdata, options = {})
       if !options[:r_attempts].nil?
         attempts = options[:r_attempts]
