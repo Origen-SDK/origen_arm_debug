@@ -1,4 +1,3 @@
-'include rgen'
 module OrigenARMDebug
   # Object that defines the API necessary to perform MEM-AP transactions.  Requires
   #  a top-level protocol be defined as well as a top-level instantiation of an
@@ -175,7 +174,7 @@ module OrigenARMDebug
     #   of options[:edata]
     # @param [Hash] options Options to customize the operation
     # Returns nothing.
-    def R(addr, rdata, options = {})
+    def r(addr, rdata, options = {})
       # Warn caller that this method is being deprecated
       msg = 'Use mem_ap.read(addr, options) instead of R(addr, rdata, options)'
       Origen.deprecate msg
@@ -184,6 +183,7 @@ module OrigenARMDebug
       options = { rdata: rdata }.merge(options)
       read(addr, options)
     end
+    alias_method :R, :r
 
     # Method to write to a mem_ap register (legacy)
     #
@@ -191,7 +191,7 @@ module OrigenARMDebug
     # @param [Integer] wdata Data to be written
     # @param [Hash] options Options to customize the operation
     # Returns nothing.
-    def W(addr, wdata, options = {})
+    def w(addr, wdata, options = {})
       # Warn caller that this method is being deprecated
       msg = 'Use mem_ap.write(addr, wdata, options) instead of W(addr, wdata, options)'
       Origen.deprecate msg
@@ -199,6 +199,7 @@ module OrigenARMDebug
       # Patch arguments and send to new method
       write(addr, wdata, options)
     end
+    alias_method :W, :w
 
     # Method to write and then read from a mem_ap register (legacy)
     #
@@ -206,7 +207,7 @@ module OrigenARMDebug
     # @param [Integer] wdata Data to be written
     # @param [Hash] options Options to customize the operation
     # Returns nothing.
-    def WR(addr, wdata, options = {})
+    def wr(addr, wdata, options = {})
       # Warn caller that this method is being deprecated
       msg = 'Use mem_ap.write_read(addr, wdata, options) instead of WR(addr, wdata, options)'
       Origen.deprecate msg
@@ -214,6 +215,7 @@ module OrigenARMDebug
       # Patch arguments and send to new method
       write_read(addr, wdata, options)
     end
+    alias_method :WR, :wr
 
     # -----------------------------------------------------------------------------
     # Support Code
