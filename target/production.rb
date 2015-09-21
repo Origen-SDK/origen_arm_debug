@@ -11,4 +11,4 @@
 $dut_jtag = OrigenARMDebug::JTAG_DUT.new
 $dut = $dut_jtag   # Alias default dut to jtag version
 $dut_swd = OrigenARMDebug::SWD_DUT.new 
-$tester = Origen::Tester::J750.new 
+$tester = OrigenTesters::J750.new 
