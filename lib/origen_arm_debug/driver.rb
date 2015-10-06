@@ -57,7 +57,7 @@ module OrigenARMDebug
     # @param [Hash] options Options to customize the operation
     def read_register(reg_or_val, options = {})
       if options[:ap].nil?
-        ap = mem_ap           #default to 'mem_ap' if no AP is specified as an option
+        ap = mem_ap           # default to 'mem_ap' if no AP is specified as an option
       else
         ap = options[:ap]
       end
@@ -73,7 +73,7 @@ module OrigenARMDebug
     # @param [Hash] options Options to customize the operation
     def write_register(reg_or_val, options = {})
       if options[:ap].nil?
-        ap = mem_ap           #default to 'mem_ap' if no AP is specified as an option
+        ap = mem_ap           # default to 'mem_ap' if no AP is specified as an option
       else
         ap = options[:ap]
       end
@@ -83,7 +83,7 @@ module OrigenARMDebug
     def inspect_driver
       Origen.log.info "ARM Debug Driver = #{arm_debug_driver}"
     end
-    
+
     private
 
     # Short-cut to protocol driver
@@ -100,7 +100,7 @@ module OrigenARMDebug
         puts '  Single Wire Debug - http://origen-sdk.org/origen_swd'
         puts '  Background Debug - http://origen-sdk.org/origen_bdm'
         puts "Add one to your #{owner.class} to resolve this error."
-        raise 'ARM Debug error!'
+        fail 'ARM Debug error!'
       end
     end
   end

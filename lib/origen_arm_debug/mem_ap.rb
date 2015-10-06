@@ -72,7 +72,7 @@ module OrigenARMDebug
       else
         addr = reg_or_val                 # if not a register, use the 'val' as target addr
       end
-    
+
       options = { size: 32 }.merge(options)
       options = { r_mask: 'mask', r_attempts: 1 }.merge(options)
       msg = 'Arm Debug: Shift out data for reading'

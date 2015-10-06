@@ -34,7 +34,7 @@ module OrigenARMDebug
         @imp = implementation
       else
         msg = "SWJ-DP: '#{implementation}' implementation not supported.  JTAG and SWD only"
-        raise msg
+        fail msg
       end
 
       @write_ap_dly = 8
@@ -355,7 +355,7 @@ module OrigenARMDebug
           swd.read(ap_dp, addr, options)
         else
           # make sure reg.addr = addr
-          Origen.log.error "SWJ_DP ERROR: In acc_access_swd, addr does not match options[:reg].addr"
+          Origen.log.error 'SWJ_DP ERROR: In acc_access_swd, addr does not match options[:reg].addr'
           swd.read(ap_dp, options[:reg], options)
         end
       else
@@ -398,10 +398,10 @@ module OrigenARMDebug
             r.reset
             r.bits(3..34).data = options[:reg].data
             (3..34).each do |i|
-              r.bits(i).read if options[:reg].bits(i-3).is_to_be_read?
+              r.bits(i).read if options[:reg].bits(i - 3).is_to_be_read?
             end
             (3..34).each do |i|
-              r.bits(i).store if options[:reg].bits(i-3).is_to_be_stored?
+              r.bits(i).store if options[:reg].bits(i - 3).is_to_be_stored?
             end
           end
 
