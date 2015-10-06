@@ -5,6 +5,6 @@ Pattern.create do
   $dut_jtag.arm_debug.swj_dp.write_read_dp("CTRL/STAT", 0x50000000, edata: 0xf0000000)
   $dut_jtag.arm_debug.swj_dp.read_ap(0x010000FC)
   $dut_jtag.arm_debug.swj_dp.write_read_ap(0x01000004, 0x10101010)
-  #$dut_jtag.arm_debug.swj_dp.read_expect_ap(0x01000004, 0x10101010)
+  $dut_jtag.arm_debug.swj_dp.read_expect_ap(0x01000004, 0x10101010)
 
 end

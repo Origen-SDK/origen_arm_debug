@@ -17,6 +17,10 @@ aliases ={
 # Now branch to the specific task code
 case @command
 
+when "specs"
+  require "rspec"
+  exit RSpec::Core::Runner.run(['spec'])
+
 when "examples"  
   Origen.load_application
   status = 0
@@ -49,6 +53,7 @@ when "examples"
 # before handing control back to Origen. Un-comment the example below to get started.
 else
   @application_commands = <<-EOT
+ specs        Run the specs (unit tests), -c will enable coverage
  examples     Run the examples (tests), -c will enable coverage
   EOT
 

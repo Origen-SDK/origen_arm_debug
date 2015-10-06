@@ -56,7 +56,12 @@ module OrigenARMDebug
     #   the cycles corresponding to those bits only (don't care cycles will be generated for the others).
     # @param [Hash] options Options to customize the operation
     def read_register(reg_or_val, options = {})
-      mem_ap.read(reg_or_val.address, size: reg_or_val.size, compare_data: reg_or_val.data)
+      if options[:ap].nil?
+        ap = mem_ap           #default to 'mem_ap' if no AP is specified as an option
+      else
+        ap = options[:ap]
+      end
+      ap.read_register(reg_or_val, options)
     end
 
     # Write data to a MEM-AP register
@@ -67,9 +72,18 @@ module OrigenARMDebug
     #   the cycles corresponding to those bits only (don't care cycles will be generated for the others).
     # @param [Hash] options Options to customize the operation
     def write_register(reg_or_val, options = {})
-      mem_ap.write(reg_or_val.address, reg_or_val.data, size: reg_or_val.size)
+      if options[:ap].nil?
+        ap = mem_ap           #default to 'mem_ap' if no AP is specified as an option
+      else
+        ap = options[:ap]
+      end
+      ap.write_register(reg_or_val, options)
     end
 
+    def inspect_driver
+      Origen.log.info "ARM Debug Driver = #{arm_debug_driver}"
+    end
+    
     private
 
     # Short-cut to protocol driver
@@ -86,7 +100,7 @@ module OrigenARMDebug
         puts '  Single Wire Debug - http://origen-sdk.org/origen_swd'
         puts '  Background Debug - http://origen-sdk.org/origen_bdm'
         puts "Add one to your #{owner.class} to resolve this error."
-        fail 'ARM Debug error!'
+        raise 'ARM Debug error!'
       end
     end
   end

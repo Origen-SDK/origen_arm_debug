@@ -34,10 +34,7 @@ module OrigenARMDebug
         @imp = implementation
       else
         msg = "SWJ-DP: '#{implementation}' implementation not supported.  JTAG and SWD only"
-        Origen.log.error msg
-
-        # Just default to jtag for now
-        @imp = :jtag
+        raise msg
       end
 
       @write_ap_dly = 8
@@ -145,7 +142,7 @@ module OrigenARMDebug
       # Create another copy of options with select keys removed.
       # This first read is junk so we do not want to store it or compare it.
       junk_options = options.clone.delete_if do |key, val|
-        (key.eql?(:r_mask) && val.eql?('store')) || key.eql?(:compare_data)
+        (key.eql?(:r_mask) && val.eql?('store')) || key.eql?(:compare_data) || key.eql?(:reg)
       end
 
       apacc_access(addr, rwb, random, 0, junk_options)
@@ -165,7 +162,7 @@ module OrigenARMDebug
     # @param [Hash] options Options to customize the operation
     def read_expect_ap(addr, edata, options = {})
       options[:edata] = edata
-      read_ap(name, options)
+      read_ap(addr, options)
     end
     alias_method :wait_read_expect_ap, :read_expect_ap
 
@@ -339,9 +336,9 @@ module OrigenARMDebug
     # @param [Hash] options Options to customize the operation
     def acc_access(addr, rwb, ap_dp, wdata, options = {})
       if @imp == :swd
-        acc_access_swd(addr, rwb, ap_dp, wdata, options = {})
+        acc_access_swd(addr, rwb, ap_dp, wdata, options)
       else
-        acc_access_jtag(addr, rwb, ap_dp, wdata, options = {})
+        acc_access_jtag(addr, rwb, ap_dp, wdata, options)
       end
     end
 
@@ -354,7 +351,13 @@ module OrigenARMDebug
     # @param [Hash] options Options to customize the operation
     def acc_access_swd(addr, rwb, ap_dp, wdata, options = {})
       if (rwb == 1)
-        swd.read(ap_dp, addr, options)
+        if options[:reg].nil?
+          swd.read(ap_dp, addr, options)
+        else
+          # make sure reg.addr = addr
+          Origen.log.error "SWJ_DP ERROR: In acc_access_swd, addr does not match options[:reg].addr"
+          swd.read(ap_dp, options[:reg], options)
+        end
       else
         swd.write(ap_dp, addr, wdata, options)
       end
@@ -379,12 +382,27 @@ module OrigenARMDebug
       end
 
       attempts.times do
-        if name == 'RDBUFF'
-          r = $dut.reg(:dap)
-          if options[:r_mask] == 'store'
-            r.bits(3..34).store
-          elsif options.key?(:compare_data)
-            r.bits(3..34).data = options[:compare_data]
+        if rwb == 1
+          if options[:reg].nil?
+            r = $dut.reg(:dap)
+            if options[:r_mask] == 'store'
+              r.bits(3..34).store
+            elsif options.key?(:compare_data)
+              r.bits(3..34).data = options[:compare_data]
+            elsif options.key?(:edata)
+              options[:compare_data] = options[:edata]
+              r.bits(3..34).data = options[:edata]
+            end
+          else
+            r = $dut.reg(:dap)
+            r.reset
+            r.bits(3..34).data = options[:reg].data
+            (3..34).each do |i|
+              r.bits(i).read if options[:reg].bits(i-3).is_to_be_read?
+            end
+            (3..34).each do |i|
+              r.bits(i).store if options[:reg].bits(i-3).is_to_be_stored?
+            end
           end
 
           options = options.merge(size: r.size)

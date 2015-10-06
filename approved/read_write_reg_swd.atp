@@ -1,21 +1,22 @@
 // ***************************************************************************
 // GENERATED:
-//   Time:    27-Aug-2015 07:54AM
+//   Time:    05-Oct-2015 21:01PM
 //   By:      Ronnie Lajaunie
 //   Command: origen g read_write_reg_swd -t debug.rb
 // ***************************************************************************
 // ENVIRONMENT:
 //   Application
 //     Source:    git@github.com:Origen-SDK/origen_arm_debug.git
-//     Version:   0.4.1
-//     Branch:    master(bc834495346) (+local edits)
+//     Version:   0.6.0
+//     Branch:    master(2f3ca2470ec) (+local edits)
 //   Origen
 //     Source:    https://github.com/Origen-SDK/origen
-//     Version:   0.2.3
+//     Version:   0.5.0
 //   Plugins
 //     origen_doc_helpers:       0.2.0
 //     origen_jtag:              0.12.0
 //     origen_swd:               0.5.0
+//     origen_testers:           0.5.2
 // ***************************************************************************
 import tset arm_debug;                                                                          
 svm_only_file = no;                                                                             
@@ -25,6 +26,13 @@ compressed = yes;
 vector ($tset, tclk, tdi, tdo, tms, trst, swd_clk, swd_dio)                                     
 {                                                                                               
 start_label pattern_st:                                                                         
+//                                                                                              t t t t t s s
+//                                                                                              c d d m r w w
+//                                                                                              l i o s s d d
+//                                                                                              k       t - -
+//                                                                                                        c d
+//                                                                                                        l i
+//                                                                                                        k o
 // Header phase
 // Send Start Bit
                                                                  > arm_debug                    X X X X X 1 1 ;
@@ -353,5 +361,62 @@ repeat 10                                                        > arm_debug    
 // SW-DP: R-32: name='RDBUFF'
 // SW-AP: R-32: addr=0x01000004
 // SW-AP: WR-32: addr=0x01000004, data=0x10101010
+// Header phase
+// Send Start Bit
+                                                                 > arm_debug                    X X X X X 1 1 ;
+// Send APnDP Bit (DP or AP Access Register Bit)
+                                                                 > arm_debug                    X X X X X 1 1 ;
+// Send RnW Bit (read or write bit)
+                                                                 > arm_debug                    X X X X X 1 1 ;
+// Send Address Bits (2 bits)
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+// Send Parity Bit
+                                                                 > arm_debug                    X X X X X 1 1 ;
+// Send Stop Bit
+                                                                 > arm_debug                    X X X X X 1 0 ;
+// Send Park Bit
+                                                                 > arm_debug                    X X X X X 1 1 ;
+// Acknowledge Response phase
+                                                                 > arm_debug                    X X X X X 1 1 ;
+repeat 3                                                         > arm_debug                    X X X X X 1 X ;
+// Read Data Payload phase
+// SWD 32-Bit Read Data Start
+repeat 32                                                        > arm_debug                    X X X X X 1 X ;
+// SWD 32-Bit Read Data End
+// Get Read Parity Bit
+                                                                 > arm_debug                    X X X X X 1 X ;
+// Send Read ACK bits
+                                                                 > arm_debug                    X X X X X 1 1 ;
+repeat 10                                                        > arm_debug                    X X X X X 1 0 ;
+// Header phase
+// Send Start Bit
+                                                                 > arm_debug                    X X X X X 1 1 ;
+// Send APnDP Bit (DP or AP Access Register Bit)
+                                                                 > arm_debug                    X X X X X 1 0 ;
+// Send RnW Bit (read or write bit)
+                                                                 > arm_debug                    X X X X X 1 1 ;
+// Send Address Bits (2 bits)
+repeat 2                                                         > arm_debug                    X X X X X 1 1 ;
+// Send Parity Bit
+                                                                 > arm_debug                    X X X X X 1 1 ;
+// Send Stop Bit
+                                                                 > arm_debug                    X X X X X 1 0 ;
+// Send Park Bit
+                                                                 > arm_debug                    X X X X X 1 1 ;
+// Acknowledge Response phase
+                                                                 > arm_debug                    X X X X X 1 1 ;
+repeat 3                                                         > arm_debug                    X X X X X 1 X ;
+// Read Data Payload phase
+// SWD 32-Bit Read Data Start
+repeat 32                                                        > arm_debug                    X X X X X 1 X ;
+// SWD 32-Bit Read Data End
+// Get Read Parity Bit
+                                                                 > arm_debug                    X X X X X 1 X ;
+// Send Read ACK bits
+                                                                 > arm_debug                    X X X X X 1 1 ;
+repeat 10                                                        > arm_debug                    X X X X X 1 0 ;
+// SW-DP: R-32: name='RDBUFF'
+// SW-AP: R-32: addr=0x01000004
 end_module                                                       > arm_debug                    X X X X X 1 0 ;
 }                                                                                               

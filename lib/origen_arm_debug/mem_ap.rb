@@ -65,6 +65,55 @@ module OrigenARMDebug
     # -----------------------------------------------------------------------------
     # User API
     # -----------------------------------------------------------------------------
+    def read_register(reg_or_val, options = {})
+      if reg_or_val.respond_to?(:data)
+        addr = reg_or_val.addr
+        options = { reg: reg_or_val }.merge(options)
+      else
+        addr = reg_or_val                 # if not a register, use the 'val' as target addr
+      end
+    
+      options = { size: 32 }.merge(options)
+      options = { r_mask: 'mask', r_attempts: 1 }.merge(options)
+      msg = 'Arm Debug: Shift out data for reading'
+      options = { arm_debug_comment: msg }.merge(options)
+      size = options[:size]
+
+      set_size(size)
+      set_addr(addr)
+      debug_port.read_ap(drw_reg_addr, options)
+      rdata = get_rdata(size, addr, rdata)
+      increment_addr
+
+      cc "MEM-AP(#{@name}): R-#{size.to_s(10)}: "\
+        "addr=0x#{addr.to_s(16).rjust(size / 4, '0')}"
+    end
+
+    def write_register(reg_or_val, options = {});
+      if reg_or_val.respond_to?(:data)
+        addr = reg_or_val.addr
+        wdata = reg_or_val.data
+        options = { reg: reg_or_val }.merge(options)
+      else
+        addr = reg_or_val                 # if not a register, use the 'val' as target addr
+        wdata = options[:wdata]
+      end
+      options = { size: 32 }.merge(options)
+      options = { w_attempts: 1 }.merge(options)
+      msg = "Arm Debug: Shift in data to write: #{wdata.to_hex}"
+      options = { arm_debug_comment: msg }.merge(options)
+      size = options[:size]
+
+      set_size(size)
+      set_addr(addr)
+      wdata = get_wdata(size, addr, wdata)
+      debug_port.write_ap(drw_reg_addr, wdata, options)
+      increment_addr
+
+      cc "MEM-AP(#{@name}): WR-#{size.to_s(10)}: "\
+        "addr=0x#{addr.to_s(16).rjust(size / 4, '0')}, "\
+        "data=0x#{wdata.to_s(16).rjust(size / 4, '0')}"
+    end
 
     # Method to read from a mem_ap register
     #
