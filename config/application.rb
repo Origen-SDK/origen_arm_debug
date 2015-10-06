@@ -30,7 +30,7 @@ class OrigenARMDebugApplication < Origen::Application
   
   # Ensure that all tests pass before allowing a release to continue 
   def validate_release 
-    if !system("origen examples") #|| !system("origen specs") 
+    if !system("origen examples") || !system("origen specs") 
       puts "Sorry but you can't release with failing tests, please fix them and try again." 
       exit 1 
     else 
