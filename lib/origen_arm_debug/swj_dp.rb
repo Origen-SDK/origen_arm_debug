@@ -386,7 +386,7 @@ module OrigenARMDebug
       end
 
       attempts.times do
-        if _name == 'RBUFF'
+        if _name == 'RDBUFF'
           if options[:reg].nil?
             r = $dut.reg(:dap)
             if options[:r_mask] == 'store'
@@ -396,6 +396,7 @@ module OrigenARMDebug
             elsif options.key?(:edata)
               options[:compare_data] = options[:edata]
               r.bits(3..34).data = options[:edata]
+            r.inspect
             end
           else
             r = $dut.reg(:dap)
