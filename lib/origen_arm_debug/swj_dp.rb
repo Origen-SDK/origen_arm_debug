@@ -307,8 +307,8 @@ module OrigenARMDebug
         set_apselect(@current_apaddr & 0xFFFFFFFE, options)
       end
       set_ir(name) if @imp == :jtag
-
-      acc_access(name, addr, rwb, 0, wdata, options)
+      options = { name: name }.merge(options)
+      acc_access(addr, rwb, 0, wdata, options)
     end
 
     # Method
@@ -325,7 +325,8 @@ module OrigenARMDebug
       else
         set_ir('APACC')
       end
-      acc_access('APACC', (addr & 0xC), rwb, 1, wdata, options)
+      options = { name: 'APACC' }.merge(options)
+      acc_access((addr & 0xC), rwb, 1, wdata, options)
     end
 
     # Method
@@ -335,11 +336,11 @@ module OrigenARMDebug
     # @param [Integer] ap_dp Indicates Access Port or Debug Port
     # @param [Integer] wdata Value of data to be written
     # @param [Hash] options Options to customize the operation
-    def acc_access(name, addr, rwb, ap_dp, wdata, options = {})
+    def acc_access(addr, rwb, ap_dp, wdata, options = {})
       if @imp == :swd
-        acc_access_swd(name, addr, rwb, ap_dp, wdata, options)
+        acc_access_swd(addr, rwb, ap_dp, wdata, options)
       else
-        acc_access_jtag(name, addr, rwb, ap_dp, wdata, options)
+        acc_access_jtag(addr, rwb, ap_dp, wdata, options)
       end
     end
 
@@ -350,7 +351,8 @@ module OrigenARMDebug
     # @param [Integer] ap_dp Indicates Access Port or Debug Port
     # @param [Integer] wdata Value of data to be written
     # @param [Hash] options Options to customize the operation
-    def acc_access_swd(name, addr, rwb, ap_dp, wdata, options = {})
+    def acc_access_swd(addr, rwb, ap_dp, wdata, options = {})
+      _name = options.delete(:name)
       if (rwb == 1)
         if options[:reg].nil?
           swd.read(ap_dp, addr, options)
@@ -373,7 +375,8 @@ module OrigenARMDebug
     # @param [Integer] ap_dp Indicates Access Port or Debug Port
     # @param [Integer] wdata Value of data to be written
     # @param [Hash] options Options to customize the operation
-    def acc_access_jtag(name, addr, rwb, ap_dp, wdata, options = {})
+    def acc_access_jtag(addr, rwb, ap_dp, wdata, options = {})
+      _name = options.delete(:name)
       if !options[:r_attempts].nil?
         attempts = options[:r_attempts]
       elsif !options[:r_attempts].nil?
@@ -383,7 +386,7 @@ module OrigenARMDebug
       end
 
       attempts.times do
-        if name == 'RBUFF'
+        if _name == 'RBUFF'
           if options[:reg].nil?
             r = $dut.reg(:dap)
             if options[:r_mask] == 'store'
