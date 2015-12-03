@@ -1,14 +1,14 @@
 // ***************************************************************************
 // GENERATED:
-//   Time:    05-Oct-2015 21:00PM
+//   Time:    03-Dec-2015 08:18AM
 //   By:      Ronnie Lajaunie
 //   Command: origen g read_write_reg_jtag -t debug.rb
 // ***************************************************************************
 // ENVIRONMENT:
 //   Application
 //     Source:    git@github.com:Origen-SDK/origen_arm_debug.git
-//     Version:   0.6.0
-//     Branch:    master(2f3ca2470ec) (+local edits)
+//     Version:   0.7.0
+//     Branch:    master(e8473109e1c) (+local edits)
 //   Origen
 //     Source:    https://github.com/Origen-SDK/origen
 //     Version:   0.5.0
@@ -89,20 +89,18 @@ repeat 8                                                         > arm_debug    
                                                                  > arm_debug                    0 0 X 1 X X X ;
 repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
 // JTAG::TAPController - **** Data start ****
-repeat 3                                                         > arm_debug                    0 0 X 0 X X X ;
-repeat 28                                                        > arm_debug                    0 0 L 0 X X X ;
-repeat 3                                                         > arm_debug                    0 0 H 0 X X X ;
-                                                                 > arm_debug                    0 0 H 1 X X X ;
+repeat 2                                                         > arm_debug                    0 1 X 0 X X X ;
+repeat 32                                                        > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 0 X 1 X X X ;
 // JTAG::TAPController - **** Data stop ****
                                                                  > arm_debug                    0 0 X 1 X X X ;
 repeat 8                                                         > arm_debug                    0 0 X 0 X X X ;
                                                                  > arm_debug                    0 0 X 1 X X X ;
 repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
 // JTAG::TAPController - **** Data start ****
-repeat 3                                                         > arm_debug                    0 0 X 0 X X X ;
-repeat 28                                                        > arm_debug                    0 0 L 0 X X X ;
-repeat 3                                                         > arm_debug                    0 0 H 0 X X X ;
-                                                                 > arm_debug                    0 0 H 1 X X X ;
+repeat 3                                                         > arm_debug                    0 1 X 0 X X X ;
+repeat 31                                                        > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 0 X 1 X X X ;
 // JTAG::TAPController - **** Data stop ****
                                                                  > arm_debug                    0 0 X 1 X X X ;
 repeat 8                                                         > arm_debug                    0 0 X 0 X X X ;
@@ -136,7 +134,8 @@ repeat 2                                                         > arm_debug    
                                                                  > arm_debug                    0 1 X 1 X X X ;
 repeat 2                                                         > arm_debug                    0 1 X 0 X X X ;
 // JTAG::TAPController - **** Data start ****
-repeat 34                                                        > arm_debug                    0 0 X 0 X X X ;
+repeat 3                                                         > arm_debug                    0 1 X 0 X X X ;
+repeat 31                                                        > arm_debug                    0 0 X 0 X X X ;
                                                                  > arm_debug                    0 0 X 1 X X X ;
 // JTAG::TAPController - **** Data stop ****
                                                                  > arm_debug                    0 0 X 1 X X X ;
@@ -154,7 +153,8 @@ repeat 2                                                         > arm_debug    
                                                                  > arm_debug                    0 1 X 1 X X X ;
 repeat 2                                                         > arm_debug                    0 1 X 0 X X X ;
 // JTAG::TAPController - **** Data start ****
-repeat 34                                                        > arm_debug                    0 0 X 0 X X X ;
+repeat 3                                                         > arm_debug                    0 1 X 0 X X X ;
+repeat 31                                                        > arm_debug                    0 0 X 0 X X X ;
                                                                  > arm_debug                    0 0 X 1 X X X ;
 // JTAG::TAPController - **** Data stop ****
                                                                  > arm_debug                    0 0 X 1 X X X ;
@@ -205,7 +205,8 @@ repeat 16                                                        > arm_debug    
                                                                  > arm_debug                    0 0 X 1 X X X ;
 repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
 // JTAG::TAPController - **** Data start ****
-repeat 34                                                        > arm_debug                    0 0 X 0 X X X ;
+repeat 2                                                         > arm_debug                    0 1 X 0 X X X ;
+repeat 32                                                        > arm_debug                    0 0 X 0 X X X ;
                                                                  > arm_debug                    0 0 X 1 X X X ;
 // JTAG::TAPController - **** Data stop ****
                                                                  > arm_debug                    0 0 X 1 X X X ;
@@ -223,7 +224,8 @@ repeat 2                                                         > arm_debug    
                                                                  > arm_debug                    0 1 X 1 X X X ;
 repeat 2                                                         > arm_debug                    0 1 X 0 X X X ;
 // JTAG::TAPController - **** Data start ****
-repeat 34                                                        > arm_debug                    0 0 X 0 X X X ;
+repeat 3                                                         > arm_debug                    0 1 X 0 X X X ;
+repeat 31                                                        > arm_debug                    0 0 X 0 X X X ;
                                                                  > arm_debug                    0 0 X 1 X X X ;
 // JTAG::TAPController - **** Data stop ****
                                                                  > arm_debug                    0 0 X 1 X X X ;
@@ -243,17 +245,9 @@ repeat 2                                                         > arm_debug    
                                                                  > arm_debug                    0 1 X 1 X X X ;
 repeat 2                                                         > arm_debug                    0 1 X 0 X X X ;
 // JTAG::TAPController - **** Data start ****
-repeat 3                                                         > arm_debug                    0 0 X 0 X X X ;
-repeat 4                                                         > arm_debug                    0 0 L 0 X X X ;
-                                                                 > arm_debug                    0 0 H 0 X X X ;
-repeat 7                                                         > arm_debug                    0 0 L 0 X X X ;
-                                                                 > arm_debug                    0 0 H 0 X X X ;
-repeat 7                                                         > arm_debug                    0 0 L 0 X X X ;
-                                                                 > arm_debug                    0 0 H 0 X X X ;
-repeat 7                                                         > arm_debug                    0 0 L 0 X X X ;
-                                                                 > arm_debug                    0 0 H 0 X X X ;
-repeat 2                                                         > arm_debug                    0 0 L 0 X X X ;
-                                                                 > arm_debug                    0 0 L 1 X X X ;
+repeat 2                                                         > arm_debug                    0 1 X 0 X X X ;
+repeat 32                                                        > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 0 X 1 X X X ;
 // JTAG::TAPController - **** Data stop ****
                                                                  > arm_debug                    0 0 X 1 X X X ;
 repeat 8                                                         > arm_debug                    0 0 X 0 X X X ;
@@ -270,17 +264,9 @@ repeat 2                                                         > arm_debug    
                                                                  > arm_debug                    0 1 X 1 X X X ;
 repeat 2                                                         > arm_debug                    0 1 X 0 X X X ;
 // JTAG::TAPController - **** Data start ****
-repeat 3                                                         > arm_debug                    0 0 X 0 X X X ;
-repeat 4                                                         > arm_debug                    0 0 L 0 X X X ;
-                                                                 > arm_debug                    0 0 H 0 X X X ;
-repeat 7                                                         > arm_debug                    0 0 L 0 X X X ;
-                                                                 > arm_debug                    0 0 H 0 X X X ;
-repeat 7                                                         > arm_debug                    0 0 L 0 X X X ;
-                                                                 > arm_debug                    0 0 H 0 X X X ;
-repeat 7                                                         > arm_debug                    0 0 L 0 X X X ;
-                                                                 > arm_debug                    0 0 H 0 X X X ;
-repeat 2                                                         > arm_debug                    0 0 L 0 X X X ;
-                                                                 > arm_debug                    0 0 L 1 X X X ;
+repeat 3                                                         > arm_debug                    0 1 X 0 X X X ;
+repeat 31                                                        > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 0 X 1 X X X ;
 // JTAG::TAPController - **** Data stop ****
                                                                  > arm_debug                    0 0 X 1 X X X ;
 repeat 8                                                         > arm_debug                    0 0 X 0 X X X ;
