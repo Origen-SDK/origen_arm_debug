@@ -396,7 +396,7 @@ module OrigenARMDebug
             elsif options.key?(:edata)
               options[:compare_data] = options[:edata]
               r.bits(3..34).data = options[:edata]
-            r.inspect
+              r.inspect
             end
           else
             r = $dut.reg(:dap)
