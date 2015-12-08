@@ -1,14 +1,14 @@
 // ***************************************************************************
 // GENERATED:
-//   Time:    03-Dec-2015 09:25AM
+//   Time:    08-Dec-2015 12:47PM
 //   By:      Ronnie Lajaunie
 //   Command: origen g read_write_reg -t debug.rb
 // ***************************************************************************
 // ENVIRONMENT:
 //   Application
 //     Source:    git@github.com:Origen-SDK/origen_arm_debug.git
-//     Version:   0.8.0
-//     Branch:    master(63641a23e80)
+//     Version:   0.8.1
+//     Branch:    master(c84a5aac189)
 //   Origen
 //     Source:    https://github.com/Origen-SDK/origen
 //     Version:   0.5.0
@@ -548,59 +548,9 @@ repeat 3                                                         > arm_debug    
                                                                  > arm_debug                    0 0 X 1 X X X ;
 // JTAG::TAPController - **** Data stop ****
                                                                  > arm_debug                    0 0 X 1 X X X ;
-                                                                 > arm_debug                    0 0 X 0 X X X ;
-                                                                 > arm_debug                    0 0 X 1 X X X ;
-repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
-// JTAG::TAPController - **** Data start ****
-// Arm Debug: Shift in data to write: 0x55555555
-                                                                 > arm_debug                    0 0 X 0 X X X ;
-repeat 3                                                         > arm_debug                    0 1 X 0 X X X ;
-                                                                 > arm_debug                    0 0 X 0 X X X ;
-                                                                 > arm_debug                    0 1 X 0 X X X ;
-                                                                 > arm_debug                    0 0 X 0 X X X ;
-                                                                 > arm_debug                    0 1 X 0 X X X ;
-                                                                 > arm_debug                    0 0 X 0 X X X ;
-                                                                 > arm_debug                    0 1 X 0 X X X ;
-                                                                 > arm_debug                    0 0 X 0 X X X ;
-                                                                 > arm_debug                    0 1 X 0 X X X ;
-                                                                 > arm_debug                    0 0 X 0 X X X ;
-                                                                 > arm_debug                    0 1 X 0 X X X ;
-                                                                 > arm_debug                    0 0 X 0 X X X ;
-                                                                 > arm_debug                    0 1 X 0 X X X ;
-                                                                 > arm_debug                    0 0 X 0 X X X ;
-                                                                 > arm_debug                    0 1 X 0 X X X ;
-                                                                 > arm_debug                    0 0 X 0 X X X ;
-                                                                 > arm_debug                    0 1 X 0 X X X ;
-                                                                 > arm_debug                    0 0 X 0 X X X ;
-                                                                 > arm_debug                    0 1 X 0 X X X ;
-                                                                 > arm_debug                    0 0 X 0 X X X ;
-                                                                 > arm_debug                    0 1 X 0 X X X ;
-                                                                 > arm_debug                    0 0 X 0 X X X ;
-                                                                 > arm_debug                    0 1 X 0 X X X ;
-                                                                 > arm_debug                    0 0 X 0 X X X ;
-                                                                 > arm_debug                    0 1 X 0 X X X ;
-                                                                 > arm_debug                    0 0 X 0 X X X ;
-                                                                 > arm_debug                    0 1 X 0 X X X ;
-                                                                 > arm_debug                    0 0 X 0 X X X ;
-                                                                 > arm_debug                    0 1 X 0 X X X ;
-                                                                 > arm_debug                    0 0 X 0 X X X ;
-                                                                 > arm_debug                    0 1 X 0 X X X ;
-                                                                 > arm_debug                    0 0 X 1 X X X ;
-// JTAG::TAPController - **** Data stop ****
-                                                                 > arm_debug                    0 0 X 1 X X X ;
 repeat 16                                                        > arm_debug                    0 0 X 0 X X X ;
 // JTAG-AP: W-32: addr=0x0000000c, data=0x55555555
 // MEM-AP(mem_ap): WR-32: addr=0x10000004, data=0x55555555
-                                                                 > arm_debug                    0 0 X 1 X X X ;
-repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
-// JTAG::TAPController - **** Data start ****
-// Arm Debug: Shift out data for reading
-repeat 3                                                         > arm_debug                    0 1 X 0 X X X ;
-repeat 31                                                        > arm_debug                    0 0 X 0 X X X ;
-                                                                 > arm_debug                    0 0 X 1 X X X ;
-// JTAG::TAPController - **** Data stop ****
-                                                                 > arm_debug                    0 0 X 1 X X X ;
-                                                                 > arm_debug                    0 0 X 0 X X X ;
                                                                  > arm_debug                    0 0 X 1 X X X ;
 repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
 // JTAG::TAPController - **** Data start ****
@@ -623,46 +573,6 @@ repeat 2                                                         > arm_debug    
                                                                  > arm_debug                    0 1 X 0 X X X ;
                                                                  > arm_debug                    0 1 X 1 X X X ;
 repeat 2                                                         > arm_debug                    0 1 X 0 X X X ;
-// JTAG::TAPController - **** Data start ****
-// Arm Debug: Shift out data for reading
-repeat 3                                                         > arm_debug                    0 0 X 0 X X X ;
-                                                                 > arm_debug                    0 0 H 0 X X X ;
-                                                                 > arm_debug                    0 0 L 0 X X X ;
-                                                                 > arm_debug                    0 0 H 0 X X X ;
-                                                                 > arm_debug                    0 0 L 0 X X X ;
-                                                                 > arm_debug                    0 0 H 0 X X X ;
-                                                                 > arm_debug                    0 0 L 0 X X X ;
-                                                                 > arm_debug                    0 0 H 0 X X X ;
-                                                                 > arm_debug                    0 0 L 0 X X X ;
-                                                                 > arm_debug                    0 0 H 0 X X X ;
-                                                                 > arm_debug                    0 0 L 0 X X X ;
-                                                                 > arm_debug                    0 0 H 0 X X X ;
-                                                                 > arm_debug                    0 0 L 0 X X X ;
-                                                                 > arm_debug                    0 0 H 0 X X X ;
-                                                                 > arm_debug                    0 0 L 0 X X X ;
-                                                                 > arm_debug                    0 0 H 0 X X X ;
-                                                                 > arm_debug                    0 0 L 0 X X X ;
-                                                                 > arm_debug                    0 0 H 0 X X X ;
-                                                                 > arm_debug                    0 0 L 0 X X X ;
-                                                                 > arm_debug                    0 0 H 0 X X X ;
-                                                                 > arm_debug                    0 0 L 0 X X X ;
-                                                                 > arm_debug                    0 0 H 0 X X X ;
-                                                                 > arm_debug                    0 0 L 0 X X X ;
-                                                                 > arm_debug                    0 0 H 0 X X X ;
-                                                                 > arm_debug                    0 0 L 0 X X X ;
-                                                                 > arm_debug                    0 0 H 0 X X X ;
-                                                                 > arm_debug                    0 0 L 0 X X X ;
-                                                                 > arm_debug                    0 0 H 0 X X X ;
-                                                                 > arm_debug                    0 0 L 0 X X X ;
-                                                                 > arm_debug                    0 0 H 0 X X X ;
-                                                                 > arm_debug                    0 0 L 0 X X X ;
-                                                                 > arm_debug                    0 0 H 0 X X X ;
-                                                                 > arm_debug                    0 0 L 1 X X X ;
-// JTAG::TAPController - **** Data stop ****
-                                                                 > arm_debug                    0 0 X 1 X X X ;
-                                                                 > arm_debug                    0 0 X 0 X X X ;
-                                                                 > arm_debug                    0 0 X 1 X X X ;
-repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
 // JTAG::TAPController - **** Data start ****
 // Arm Debug: Shift out data for reading
 repeat 3                                                         > arm_debug                    0 0 X 0 X X X ;
