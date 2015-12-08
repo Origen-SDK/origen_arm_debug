@@ -196,7 +196,7 @@ module OrigenARMDebug
     def write_read(addr, wdata, options = {})
       options = { size: 32 }.merge(options)
       options = { edata: 0x00000000, r_mask: 0xffffffff, actual: 0x00000000 }.merge(options)
-      options = { w_attempts: 1, r_attempts: 2 }.merge(options)
+      options = { w_attempts: 1, r_attempts: 1 }.merge(options)
       size = options[:size]
 
       write(addr, wdata, options)
