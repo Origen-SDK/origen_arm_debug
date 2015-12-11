@@ -23,9 +23,9 @@ Pattern.create do
   ss "Test write register"
   $dut.write_register($dut.reg(:test))
 
-  $dut.arm_debug.mem_ap.R(0x10000004, 0x00000000, compare_data: 0x00000000)
-  $dut.arm_debug.mem_ap.W(0x10000004, 0x55555555)
-  $dut.arm_debug.mem_ap.WR(0x10000004, 0x55555555)
+  $dut.arm_debug.mem_ap.read(0x10000004, edata: 0x00000000)
+  $dut.arm_debug.mem_ap.write(0x10000004, 0x55555555)
+  $dut.arm_debug.mem_ap.write_read(0x10000004, 0x55555555)
 
   $dut.arm_debug.mem_ap.inspect
   $dut.arm_debug.mdm_ap.inspect

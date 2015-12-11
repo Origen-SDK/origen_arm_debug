@@ -18,6 +18,12 @@ module OrigenARMDebug
     #   to complete
     attr_accessor :acc_access_dly
 
+    # Customizable random number generator mode.
+    #   compress: any uncompared data will be set to 0 when shifted out for better vector compression
+    #   unrolled: any uncompared data will be set to 5 when shifted out for complete unrolling of JTAG data
+    #   random: true random number generation, not ideal for pattern comparison
+    attr_accessor :random_mode
+
     # Initialize class variables
     #
     # @param [Object] owner Parent object
@@ -37,30 +43,35 @@ module OrigenARMDebug
         fail msg
       end
 
+      @random_mode = :compress
+
       @write_ap_dly = 8
       @acc_access_dly = 7
 
       @current_apaddr = 0
       @orundetect = 0
 
-      add_reg :dpacc,     0x00, 35,  rnw:  { pos: 0 },
-                                     a:    { pos: 1, bits: 2 },
-                                     data: { pos: 3, bits: 32 }
+      add_reg :ir,        0x00,  4, data: { pos: 0, bits: 4 }      # ARM-JTAG Instruction Register
 
-      add_reg :apacc,     0x00, 35,  rnw:  { pos: 0 },
-                                     a:    { pos: 1, bits: 2 },
-                                     data: { pos: 0, bits: 35 }
+      add_reg :dpacc,     0x00, 35, rnw:  { pos: 0 },            # DP-Access Register (DPACC)
+                                    a:    { pos: 1, bits: 2 },
+                                    data: { pos: 3, bits: 32 }
 
-      add_reg :reserved,  0x00, 32, data: { pos: 0, bits: 32 }
-      add_reg :ctrl_stat, 0x04, 32, data: { pos: 0, bits: 32 }
-      add_reg :select,    0x08, 32, data: { pos: 0, bits: 32 }
-      add_reg :rebuff,    0x0C, 32, data: { pos: 0, bits: 32 }
+      add_reg :apacc,     0x00, 35, rnw:  { pos: 0 },            # AP-Access Register (APACC)
+                                    a:    { pos: 1, bits: 2 },
+                                    data: { pos: 0, bits: 32 }
 
       # jtag-dp only
-      add_reg :idcode,    0x00, 32, data: { pos: 0, bits: 32 }
-      add_reg :abort,     0x00, 35,  rnw:  { pos: 0 },
-                                     a:    { pos: 1, bits: 2 },
-                                     data: { pos: 0, bits: 32 }
+      add_reg :idcode,    0x00, 32, data: { pos: 0, bits: 32 }   # Device ID Code Register (IDCODE)
+      add_reg :abort,     0x00, 35, rnw:  { pos: 0 },            # Abort Register (ABORT)
+                                    a:    { pos: 1, bits: 2 },
+                                    data: { pos: 0, bits: 32 }
+
+      # DP Registers
+      add_reg :dpidr,     0x00, 32, data: { pos: 0, bits: 32 }
+      add_reg :ctrl_stat, 0x04, 32, data: { pos: 0, bits: 32 }
+      add_reg :select,    0x08, 32, data: { pos: 0, bits: 32 }
+      add_reg :rdbuff,    0x0C, 32, data: { pos: 0, bits: 32 }
     end
 
     #-------------------------------------
@@ -80,6 +91,9 @@ module OrigenARMDebug
       else
         read_dp_jtag(name, options)
       end
+      msg = "#{@imp.to_s.upcase}-DP: R-32: name='#{name}'"
+      msg += ", expected=#{options[:edata].to_s(16).rjust(8, '0')}" unless options[:edata].nil?
+      cc msg
     end
 
     # Method to read from a Debug Port register and compare for an expected value
@@ -106,6 +120,7 @@ module OrigenARMDebug
       else
         write_dp_jtag(name, wdata, options)
       end
+      cc "#{@imp.to_s.upcase}-DP: W-32: name='#{name}', data=0x#{wdata.to_s(16).rjust(8, '0')}"
     end
 
     # Method to write to and then read from a Debug Port register
@@ -117,13 +132,8 @@ module OrigenARMDebug
     def write_read_dp(name, wdata, options = {})
       write_dp(name, wdata, options)
       read_dp(name, options)
-      if @imp == :swd
-        cc "SW-DP: WR-32: name='#{name}', "\
-          "data=0x#{wdata.to_s(16).rjust(8, '0')}"
-      else
-        cc "JTAG-DP: WR-32: name='#{name}', "\
-          "data=0x#{wdata.to_s(16).rjust(8, '0')}"
-      end
+
+      cc "#{@imp.to_s.upcase}-DP: WR-32: name='#{name}', data=0x#{wdata.to_s(16).rjust(8, '0')}"
     end
 
     #-------------------------------------
@@ -229,7 +239,6 @@ module OrigenARMDebug
         when 'RESEND'    then dpacc_access(name, rwb, random, options)
         else Origen.log.error "Unknown #{@imp.to_s.upcase}-DP register name #{name}"
       end
-      cc "SW-DP: R-32: name='#{name}'"
     end
 
     # Method to read from a Debug Port register with JTAG protocol
@@ -248,8 +257,7 @@ module OrigenARMDebug
         when 'RDBUFF'    then dpacc_access(name, rwb, random, options)
         else Origen.log.error "Unknown #{@imp.to_s.upcase}-DP register name #{name}"
       end
-      read_dp_jtag('RDBUFF', options) if name != 'IDCODE' && name != 'RDBUFF'
-      cc "JTAG-DP: R-32: name='#{name}'"
+      read_dp('RDBUFF', options) if name != 'IDCODE' && name != 'RDBUFF'
     end
 
     # Method to write to a Debug Port register with SWD protocol
@@ -270,8 +278,6 @@ module OrigenARMDebug
         when 'RESEND'    then Origen.log.error "#{name} #{@imp.to_s.upcase}-DP register is read-only!"
         else Origen.log.error "Unknown #{@imp.to_s.upcase}-DP register name #{name}"
       end
-      cc "SW-DP: W-32: name='#{name}', "\
-        "data=0x#{wdata.to_s(16).rjust(8, '0')}"
     end
 
     # Method to write to a Debug Port register with JTAG protocol
@@ -290,8 +296,6 @@ module OrigenARMDebug
         when 'RDBUFF'    then Origen.log.error "#{name} #{@imp.to_s.upcase}-DP register is read-only!"
         else Origen.log.error "Unknown #{@imp.to_s.upcase}-DP register name #{name}"
       end
-      cc "JTAG-DP: W-32: name='#{name}', "\
-        "data=0x#{wdata.to_s(16).rjust(8, '0')}"
     end
 
     # Method
@@ -388,35 +392,32 @@ module OrigenARMDebug
       attempts.times do
         if _name == 'RDBUFF'
           if options[:reg].nil?
-            r = $dut.reg(:dap)
             if options[:r_mask] == 'store'
-              r.bits(3..34).store
+              reg(:dpacc).bits(:data).store
             elsif options.key?(:compare_data)
-              r.bits(3..34).data = options[:compare_data]
+              reg(:dpacc).bits(:data).data = options[:compare_data]
             elsif options.key?(:edata)
               options[:compare_data] = options[:edata]
-              r.bits(3..34).data = options[:edata]
-              r.inspect
+              reg(:dpacc).bits(:data).data = options[:edata]
             end
           else
-            r = $dut.reg(:dap)
-            r.reset
-            r.bits(3..34).data = options[:reg].data
+            reg(:dpacc).bits(:data).data = options[:reg].data
             (3..34).each do |i|
-              r.bits(i).read if options[:reg].bits(i - 3).is_to_be_read?
+              reg(:dpacc).bits(i).read if options[:reg].bits(i - 3).is_to_be_read?
             end
             (3..34).each do |i|
-              r.bits(i).store if options[:reg].bits(i - 3).is_to_be_stored?
+              reg(:dpacc).bits(i).store if options[:reg].bits(i - 3).is_to_be_stored?
             end
           end
 
-          options = options.merge(size: r.size)
-          jtag.read_dr(r, options)
+          options = options.merge(size: reg(:dpacc).size)
+          jtag.read_dr(reg(:dpacc), options)
         else
-          options = options.merge(size: 35)
-          addr_3_2 = (addr & 0x0000000C) >> 2
-          wr_data = (wdata << 3) | (addr_3_2 << 1) | rwb
-          jtag.write_dr(wr_data, options)
+          reg(:dpacc).bits(:data).write(wdata)
+          reg(:dpacc).bits(:a).write((addr & 0x0000000C) >> 2)
+          reg(:dpacc).bits(:rnw).write(rwb)
+          options = options.merge(size: reg(:dpacc).size)
+          jtag.write_dr(reg(:dpacc), options)
         end
       end
       $tester.cycle(repeat: @acc_access_dly)
@@ -438,31 +439,25 @@ module OrigenARMDebug
       end
     end
 
-    # Writes to the JTAG instruction regsiter in order to perform a transaction on the given Register
+    # Shifts IR code into the JTAG/ARM Instruction Regsiter based on requested Register Name
     #
     # @param [String] name Name of the register to be interacted with
     def set_ir(name)
-      new_ir = get_ir_code(name)
-      jtag.write_ir(new_ir, size: 4)
-    end
-
-    # Returns the value to be written to the JTAG instruction regsiter in order to perform
-    #   a transaction on the given Register
-    #
-    # @param [String] name Name of the register to be interacted with
-    def get_ir_code(name)
       case name
-        when 'IDCODE'    then return 0b1110   # JTAGC_ARM_IDCODE
-        when 'ABORT'     then return 0b1000   # JTAGC_ARM_ABORT
-        when 'CTRL/STAT' then return 0b1010   # JTAGC_ARM_DPACC
-        when 'SELECT'    then return 0b1010   # JTAGC_ARM_DPACC
-        when 'RDBUFF'    then return 0b1010   # JTAGC_ARM_DPACC
-        when 'RESEND'    then Origen.log.error "#{name} is a SW-DP only register"
-        when 'WCR'       then Origen.log.error "#{name} is a SW-DP only register"
-        when 'APACC'     then return 0b1011   # JTAGC_ARM_APACC
-        else Origen.log.error "Unknown JTAG-DP register name: #{name}"
+        when 'IDCODE'
+          reg(:ir).write(0b1110)                          # JTAGC_ARM_IDCODE
+        when 'ABORT'
+          reg(:ir).write(0b1000)                          # JTAGC_ARM_ABORT
+        when 'CTRL/STAT', 'SELECT', 'RDBUFF'
+          reg(:ir).write(0b1010)                          # JTAGC_ARM_DPACC
+        when 'APACC'
+          reg(:ir).write(0b1011)                          # JTAGC_ARM_APACC
+        when 'RESEND', 'WCR'
+          Origen.log.error "#{name} is a SW-DP only register"
+        else
+          Origen.log.error "Unknown JTAG-DP register name: #{name}"
       end
-      0
+      jtag.write_ir(reg(:ir), size: reg(:ir).size)
     end
 
     # Method to select an Access Port (AP) by writing to the SELECT register in the Debug Port
@@ -483,13 +478,15 @@ module OrigenARMDebug
       @current_apaddr = addr
     end
 
-    # Generates 32-bit random number.  Although, for pattern comparison
-    #   it is better to used the same value so that is what is used here.
-    #   To turn on random-ness, un-comment rand() line.
+    # Generates 32-bit number for 'dont care' jtag shift outs.  Value generated
+    #   depends on class variable 'random_mode'.
     def random
-      # rand(4294967295)  # random 32-bit integer
-      # 0x55555555        # completely unroll jtag data shift
-      0x00000000          # compress read out jtag shifts
+      case @random_mode
+        when :compress then return 0x00000000
+        when :unrolled then return 0x55555555
+        when :random then return rand(4_294_967_295)
+        else return 0x00000000
+      end
     end
 
     # Provides shortname access to top-level jtag driver
