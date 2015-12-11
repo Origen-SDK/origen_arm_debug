@@ -1,3 +1,13 @@
+<a class="anchor release_tag" name="v0_8_3"></a>
+<h1><a href="#v0_8_3">Tag: v0.8.3</a></h1>
+
+##### Branch: 'master'
+
+##### by Ronnie Lajaunie on 11-Dec-2015 17:06PM
+
+
+Switch to internal register dpacc instead of relying on top-level dap register
+
 <a class="anchor release_tag" name="v0_8_2"></a>
 <h1><a href="#v0_8_2">Tag: v0.8.2</a></h1>
 
