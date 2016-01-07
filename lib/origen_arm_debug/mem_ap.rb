@@ -68,9 +68,11 @@ module OrigenARMDebug
     def read_register(reg_or_val, options = {})
       if reg_or_val.respond_to?(:data)
         addr = reg_or_val.addr
+        rdata = reg_or_val.data
         options = { reg: reg_or_val }.merge(options)
       else
         addr = reg_or_val                 # if not a register, use the 'val' as target addr
+        rdata = 0
       end
 
       options = { size: 32 }.merge(options)
@@ -141,7 +143,7 @@ module OrigenARMDebug
       set_size(size)
       set_addr(addr)
       debug_port.read_ap(drw_reg_addr, options)
-      rdata = get_rdata(size, addr, rdata)
+      rdata = get_rdata(size, addr, 0)
       increment_addr
 
       cc "MEM-AP(#{@name}): R-#{size.to_s(10)}: "\
@@ -316,11 +318,11 @@ module OrigenARMDebug
       current_csw_2_0 = @current_csw & 0x00000007
       if (current_csw_5_4 == 0b01)
         case current_csw_2_0
-          when 0b000 then @current_tar += 1   # Increment single
-          when 0b001 then @current_tar += 2   # Increment single
-          when 0b010 then @current_tar += 4   # Increment single
+          when 0 then @current_tar += 1   # Increment single
+          when 1 then @current_tar += 2   # Increment single
+          when 2 then @current_tar += 4   # Increment single
         end
-      elsif (current_csw_5_4 == 0b10)
+      elsif (current_csw_5_4 == 2)
         @current_tar += 4                     # Increment packed
       end
 
@@ -330,52 +332,26 @@ module OrigenARMDebug
       end
     end
 
-    # Create a bit-wise mask based on size, address and mask parameters.
-    #
-    # @param [Integer] size Size of data, supports 8-bit, 16-bit, and 32-bit
-    # @param [Integer] addr Address of data to be read from or written to
-    # @param [Integer] mask Mask for full data, used to create nibble mask
-    def get_mask(size, addr, mask)
-      addr_1_0 &= 0x00000003
-      case size
-        when 8
-          case addr_1_0
-            when 0b00 then mask &= 0x000000ff
-            when 0b01 then mask &= 0x0000ff00
-            when 0b10 then mask &= 0x00ff0000
-            when 0b11 then mask &= 0xff000000
-          end
-        when 16
-          case addr_1_0
-            when 0b00 then mask &= 0x0000ffff
-            when 0b10 then mask &= 0xffff0000
-          end
-        when 32
-          mask &= 0xffffffff
-      end
-      mask
-    end
-
     # Create a bit-wise read-data based on size, address and rdata parameters.
     #
     # @param [Integer] size Size of data, supports 8-bit, 16-bit, and 32-bit
     # @param [Integer] addr Address of data to be read from or written to
     # @param [Integer] rdata Full data for read, used to create nibble read data
     def get_rdata(size, addr, rdata)
-      addr_1_0 &= 0x00000003
+      addr_1_0 = addr & 0x00000003
       case size
         when 8
           case addr_1_0
-            when 0b00 then rdata = 0x000000ff & rdata
-            when 0b01 then rdata = 0x000000ff & (rdata >> 8)
-            when 0b10 then rdata = 0x000000ff & (rdata >> 16)
-            when 0b11 then rdata = 0x000000ff & (rdata >> 24)
+            when 0 then rdata = 0x000000ff & rdata
+            when 1 then rdata = 0x000000ff & (rdata >> 8)
+            when 2 then rdata = 0x000000ff & (rdata >> 16)
+            when 3 then rdata = 0x000000ff & (rdata >> 24)
           end
         when 16
           case addr_1_0
-                  when 0b00 then rdata = 0x0000ffff & rdata
-                  when 0b10 then rdata = 0x0000ffff & (rdata >> 16)
-                end
+            when 0 then rdata = 0x0000ffff & rdata
+            when 2 then rdata = 0x0000ffff & (rdata >> 16)
+          end
         when 32
           rdata = rdata
       end
@@ -388,19 +364,19 @@ module OrigenARMDebug
     # @param [Integer] addr Address of data to be read from or written to
     # @param [Integer] wdata Full data for write, used to create nibble write data
     def get_wdata(size, addr, wdata);
-      addr_1_0 &= 0x00000003
+      addr_1_0 = addr & 0x00000003
       case size
         when 8
           case addr_1_0
-                  when 0b00 then wdata = 0x000000ff & wdata
-                  when 0b01 then wdata = 0x0000ff00 & (wdata << 8)
-                  when 0b10 then wdata = 0x00ff0000 & (wdata << 16)
-                  when 0b11 then wdata = 0xff000000 & (wdata << 24)
-                end
+            when 0 then wdata = 0x000000ff & wdata
+            when 1 then wdata = 0x0000ff00 & (wdata << 8)
+            when 2 then wdata = 0x00ff0000 & (wdata << 16)
+            when 3 then wdata = 0xff000000 & (wdata << 24)
+          end
         when 16
           case addr_1_0
-                  when 0b00 then wdata = 0x0000ffff & wdata
-                  when 0b10 then wdata = 0xffff0000 & (wdata << 16)
+            when 0 then wdata = 0x0000ffff & wdata
+            when 2 then wdata = 0xffff0000 & (wdata << 16)
           end
         when 32
           wdata = wdata

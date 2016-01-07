@@ -383,7 +383,7 @@ module OrigenARMDebug
       _name = options.delete(:name)
       if !options[:r_attempts].nil?
         attempts = options[:r_attempts]
-      elsif !options[:r_attempts].nil?
+      elsif !options[:w_attempts].nil?
         attempts = options[:w_attempts]
       else
         attempts = 1
