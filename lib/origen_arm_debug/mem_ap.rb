@@ -100,6 +100,12 @@ module OrigenARMDebug
         addr = reg_or_val                 # if not a register, use the 'val' as target addr
         wdata = options[:wdata]
       end
+
+       if reg_or_val.is_a? Numeric then  # if not a register or value, the calling application generates the addr and register data to use and passes it as options to the method.
+        addr = options[:reg_addr]
+        wdata = options[:reg_data]
+      end
+
       options = { size: 32 }.merge(options)
       options = { w_attempts: 1 }.merge(options)
       msg = "Arm Debug: Shift in data to write: #{wdata.to_hex}"

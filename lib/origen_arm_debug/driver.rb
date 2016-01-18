@@ -9,6 +9,10 @@ module OrigenARMDebug
     # either a DUT object or a protocol abstraction
     attr_reader :owner
 
+    def jtag
+       owner.jtag
+    end
+
     # Initialize class variables
     #
     # @param [Object] owner Parent object
