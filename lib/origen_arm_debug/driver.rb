@@ -10,7 +10,7 @@ module OrigenARMDebug
     attr_reader :owner
 
     def jtag
-       owner.jtag
+      owner.jtag
     end
 
     # Initialize class variables
