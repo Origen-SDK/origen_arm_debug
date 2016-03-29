@@ -6,7 +6,7 @@
 ##### by Ronnie Lajaunie on 29-Mar-2016 12:51PM
 
 
-#1: Update write\_register/read\_register to follow standard of requiring 'data' argument
+Update write\_register/read\_register to follow standard of requiring 'data' argument
 for non-register based transactions.
 
 For example:
@@ -16,13 +16,13 @@ For example:
   arm\_debug.read\_register(0x20000000, edata: 0x55555555)       # OLD STYLE
 
 
-  arm\_debug.write\_register(0x55555555, address: 0x20000000)    # OLD STYLE
-  arm\_debug.read\_register(0x55555555, address: 0x20000000)     # OLD STYLE
+  arm\_debug.write\_register(0x55555555, address: 0x20000000)    # NEW STYLE
+  arm\_debug.read\_register(0x55555555, address: 0x20000000)     # NEW STYLE
 ~~~
 
 
 
-#2 Switch ARMDebug module to be Origen::Model to be used as a sub\_block by the top-level.
+Switch ARMDebug module to be Origen::Model to be used as a sub\_block by the top-level.
 
 ~~~ruby
 class DUT
