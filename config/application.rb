@@ -42,6 +42,7 @@ class OrigenARMDebugApplication < Origen::Application
   def before_deploy_site 
     Dir.chdir Origen.root do 
       system "origen examples -c" 
+      system "origen specs -c" 
       dir = "#{Origen.root}/web/output/coverage"        
       FileUtils.remove_dir(dir, true) if File.exists?(dir)  
       system "mv #{Origen.root}/coverage #{dir}" 
