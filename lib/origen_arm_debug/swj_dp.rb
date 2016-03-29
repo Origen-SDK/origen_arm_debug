@@ -1,14 +1,7 @@
 module OrigenARMDebug
   # Object that defines API for performing Debug AP transations using SWD or JTAG
   class SWJ_DP
-    include Origen::Registers
-
-    # Returns the parent object that instantiated the driver, could be
-    # either a DUT object or a protocol abstraction
-    attr_reader :owner
-
-    # Protocol implemented at the top-level (i.e. SWD or JTAG)
-    attr_reader :imp
+    include Origen::Model
 
     # Customizable delay for DUT-specific required cycles for write_ap transaction
     #   to complete
@@ -26,32 +19,20 @@ module OrigenARMDebug
 
     # Initialize class variables
     #
-    # @param [Object] owner Parent object
     # @param [Hash] options Options to customize the operation
     #
     # @example
     #   # Create new SWD::Driver object
     #   DUT.new.arm_debug.swj_dp
     #
-    def initialize(owner, implementation, options = {})
-      @owner = owner
-
-      if implementation == :jtag || implementation == :swd
-        @imp = implementation
-      else
-        msg = "SWJ-DP: '#{implementation}' implementation not supported.  JTAG and SWD only"
-        fail msg
-      end
-
+    def initialize(options = {})
       @random_mode = :compress
-
       @write_ap_dly = 8
       @acc_access_dly = 7
-
       @current_apaddr = 0
       @orundetect = 0
 
-      add_reg :ir,        0x00,  4, data: { pos: 0, bits: 4 }      # ARM-JTAG Instruction Register
+      add_reg :ir,        0x00,  4, data: { pos: 0, bits: 4 }    # ARM-JTAG Instruction Register
 
       add_reg :dpacc,     0x00, 35, rnw:  { pos: 0 },            # DP-Access Register (DPACC)
                                     a:    { pos: 1, bits: 2 },
@@ -81,59 +62,85 @@ module OrigenARMDebug
     # Method to read from a Debug Port register
     #
     # @param [String] name Name of register to be read from
-    #   Supports: 'IDCODE','ABORT','CTRL/STAT','SELECT','RDBUFF','WCR','RESEND'
+    #   Supports: :idcode,:abort,:ctrl_stat,:select,:rdbuff,:wcr,:resend
+    # @param [Integer] data Value to be read
     # @param [Hash] options Options to customize the operation
-    # @option options [Integer] edata Value to compare read data against
-    def read_dp(name, options = {})
-      options = { r_attempts: 1, mask: 0xffffffff }.merge(options)
-      if @imp == :swd
-        read_dp_swd(name, options)
+    def read_dp(name, data, options = {})
+      if protocol == :swd
+        case name
+          when :idcode, :ctrl_stat, :rdbuff, :wcr, :resend
+            dpacc_access(name, 1, random, options)
+          when :abort, :ctrl_stat
+            log.error "#{name} #{protocol.to_s.upcase}-DP register is write-only!"
+          else
+            log.error "Unknown #{protocol.to_s.upcase}-DP register name #{name}"
+        end
       else
-        read_dp_jtag(name, options)
+        case name
+          when :idcode
+            set_ir(name)
+            jtag.write_dr(random, size: 32)
+          when :abort
+            log.error "#{name} #{protocol.to_s.upcase}-DP register is write-only!"
+          when :ctrl_stat, :select
+            dpacc_access(name, 1, random, options)
+          when :rdbuff
+            dpacc_access(name, 1, data, options)
+          else
+            log.error "Unknown #{protocol.to_s.upcase}-DP register name #{name}"
+        end
+        read_dp(:rdbuff, data, options) if name != :idcode && name != :rdbuff
       end
-      msg = "#{@imp.to_s.upcase}-DP: R-32: name='#{name}'"
-      msg += ", expected=#{options[:edata].to_s(16).rjust(8, '0')}" unless options[:edata].nil?
+      msg = "#{protocol.to_s.upcase}-DP: R-32: name='#{name.to_s.upcase}'"
+      msg += ", expected=#{data.to_s(16).rjust(8, '0')}"     # if name == :rdbuff
       cc msg
-    end
-
-    # Method to read from a Debug Port register and compare for an expected value
-    #
-    # @param [String] name Name of register to be read from
-    #   Supports: 'IDCODE','ABORT','CTRL/STAT','SELECT','RDBUFF','WCR','RESEND'
-    # @param [Integer] edata Value to compare read data against
-    # @param [Hash] options Options to customize the operation
-    def read_expect_dp(name, edata, options = {})
-      options[:edata] = edata
-      read_dp(name, options)
     end
 
     # Method to write to a Debug Port register
     #
     # @param [String] name Name of register to be written to
-    #   Supports: 'IDCODE','ABORT','CTRL/STAT','SELECT','RDBUFF','WCR','RESEND'
-    # @param [Integer] wdata Value to written
+    #   Supports: :idcode,:abort,:ctrl_stat,:select,:rdbuff,:wcr,:resend
+    # @param [Integer] data Value to written
     # @param [Hash] options Options to customize the operation
-    def write_dp(name, wdata, options = {})
-      options = { w_attempts: 1 }.merge(options)
-      if @imp == :swd
-        write_dp_swd(name, wdata, options)
+    def write_dp(name, data, options = {})
+      if protocol == :swd
+        case name
+          when :idcode, :rdbuff, :resend
+            log.error "#{name} #{protocol.to_s.upcase}-DP register is read-only!"
+          when :abort, :ctrl_stat, :select, :wcr
+            dpacc_access(name, 0, data, options)
+          else
+            log.error "Unknown #{protocol.to_s.upcase}-DP register name #{name}"
+        end
       else
-        write_dp_jtag(name, wdata, options)
+        case name
+          when :idcode, :rdbuff
+            log.error "#{name} #{protocol.to_s.upcase}-DP register is read-only!"
+          when :abort, :ctrl_stat, :select
+            dpacc_access(name, 0, data, options)
+          else
+            log.error "Unknown #{protocol.to_s.upcase}-DP register name #{name}"
+        end
       end
-      cc "#{@imp.to_s.upcase}-DP: W-32: name='#{name}', data=0x#{wdata.to_s(16).rjust(8, '0')}"
+      cc "#{protocol.to_s.upcase}-DP: W-32: name='#{name.to_s.upcase}', data=0x#{data.to_s(16).rjust(8, '0')}"
     end
 
     # Method to write to and then read from a Debug Port register
     #
     # @param [String] name Name of register to be written to and read from
-    #   Supports: 'IDCODE','ABORT','CTRL/STAT','SELECT','RDBUFF','WCR','RESEND'
-    # @param [Integer] wdata Value to written
+    #   Supports: :idcode,:abort,:ctrl_stat,:select,:rdbuff,:wcr,:resend
+    # @param [Integer] data Value to written
     # @param [Hash] options Options to customize the operation
-    def write_read_dp(name, wdata, options = {})
-      write_dp(name, wdata, options)
-      read_dp(name, options)
+    def write_read_dp(name, data, options = {})
+      write_dp(name, data, options)
+      if options[:actual].nil?
+        read_dp(name, data, options)
+      else
+        rdata = options.delete(:actual)
+        read_dp(name, rdata, options)
+      end
 
-      cc "#{@imp.to_s.upcase}-DP: WR-32: name='#{name}', data=0x#{wdata.to_s(16).rjust(8, '0')}"
+      cc "#{protocol.to_s.upcase}-DP: WR-32: name='#{name.to_s.upcase}', data=0x#{data.to_s(16).rjust(8, '0')}"
     end
 
     #-------------------------------------
@@ -145,24 +152,17 @@ module OrigenARMDebug
     # @param [Integer] addr Address of register to be read from
     # @param [Hash] options Options to customize the operation
     # @option options [Integer] edata Value to compare read data against
-    def read_ap(addr, options = {})
+    def read_ap(addr, data, options = {})
       rwb = 1
-      options = { r_attempts: 1 }.merge(options)
-
       # Create another copy of options with select keys removed.
       # This first read is junk so we do not want to store it or compare it.
       junk_options = options.clone.delete_if do |key, val|
         (key.eql?(:r_mask) && val.eql?('store')) || key.eql?(:compare_data) || key.eql?(:reg)
       end
-
-      apacc_access(addr, rwb, random, 0, junk_options)
-      read_dp('RDBUFF', options)                     # This is the real data
-
-      if @imp == :swd
-        cc "SW-AP: R-32: addr=0x#{addr.to_s(16).rjust(8, '0')}"
-      else
-        cc "JTAG-AP: R-32: addr=0x#{addr.to_s(16).rjust(8, '0')}"
-      end
+      junk_options[:mask] = 0x00000000
+      apacc_access(addr, rwb, random, junk_options)
+      read_dp(:rdbuff, data, options)                     # This is the real data
+      cc "#{protocol.to_s.upcase}-AP: R-32: addr=0x#{addr.to_s(16).rjust(8, '0')}"
     end
 
     # Method to read from a Access Port register and compare against specific value
@@ -170,50 +170,52 @@ module OrigenARMDebug
     # @param [Integer] addr Address of register to be read from
     # @param [Integer] edata Value to compare read data against
     # @param [Hash] options Options to customize the operation
-    def read_expect_ap(addr, edata, options = {})
-      options[:edata] = edata
-      read_ap(addr, options)
+    def read_expect_ap(addr, options = {})
+      # Warn caller that this method is being deprecated
+      msg = 'Use swj_dp.read_ap(addr, data, options) instead of read_expect_ap(addr, edata: 0xXXXXXXX)'
+      Origen.deprecate msg
+
+      edata = options[:edata] || 0x00000000
+      read_ap(addr, edata, options)
     end
     alias_method :wait_read_expect_ap, :read_expect_ap
 
     # Method to write to a Access Port register
     #
     # @param [Integer] addr Address of register to be read from
-    # @param [Integer] wdata Value to written
+    # @param [Integer] data Value to written
     # @param [Hash] options Options to customize the operation
-    def write_ap(addr, wdata, options = {})
+    def write_ap(addr, data, options = {})
       rwb = 0
-      options = { w_attempts: 1 }.merge(options)
-      apacc_access(addr, rwb, wdata, 0, options)
-      $tester.cycle(repeat: @write_ap_dly) if @imp == :jtag
-      if @imp == :swd
-        cc 'SW-AP: W-32: '\
-          "addr=0x#{addr.to_s(16).rjust(8, '0')}, "\
-          "data=0x#{wdata.to_s(16).rjust(8, '0')}"
-      else
-        cc 'JTAG-AP: W-32: '\
-          "addr=0x#{addr.to_s(16).rjust(8, '0')}, "\
-          "data=0x#{wdata.to_s(16).rjust(8, '0')}"
-      end
+      options[:mask] = 0x00000000
+      # options = { w_attempts: 1 }.merge(options)
+      apacc_access(addr, rwb, data, options)
+      $tester.cycle(repeat: @write_ap_dly) if protocol == :jtag
+      cc "#{protocol.to_s.upcase}-AP: W-32: "\
+         "addr=0x#{addr.to_s(16).rjust(8, '0')}, "\
+         "data=0x#{data.to_s(16).rjust(8, '0')}"
     end
 
     # Method to write to and then read from a Debug Port register
     #
     # @param [Integer] addr Address of register to be read from
-    # @param [Integer] wdata Value to written
+    # @param [Integer] data Value to written
     # @param [Hash] options Options to customize the operation
-    def write_read_ap(addr, wdata, options = {})
-      write_ap(addr, wdata, options)
-      read_ap(addr, options)
-      if @imp == :swd
-        cc 'SW-AP: WR-32: '\
-          "addr=0x#{addr.to_s(16).rjust(8, '0')}, "\
-          "data=0x#{wdata.to_s(16).rjust(8, '0')}"
+    def write_read_ap(addr, data, options = {})
+      # Warn caller that this method is being deprecated
+      msg = 'Use write_ap(addr, data, options); read_ap(addr, data, options) instead of write_read_ap'
+      Origen.deprecate msg
+
+      write_ap(addr, data, options)
+      if options[:edata].nil?
+        read_ap(addr, data, options)
       else
-        cc 'JTAG-AP: WR-32: '\
-          "addr=0x#{addr.to_s(16).rjust(8, '0')}, "\
-          "data=0x#{wdata.to_s(16).rjust(8, '0')}"
+        read_ap(addr, options[:edata], options)
       end
+
+      cc "#{protocol.to_s.upcase}: WR-32: "\
+         "addr=0x#{addr.to_s(16).rjust(8, '0')}, "\
+         "data=0x#{data.to_s(16).rjust(8, '0')}"
     end
 
     private
@@ -222,115 +224,37 @@ module OrigenARMDebug
     #  DPACC Access Implementation-Specific methods
     #-----------------------------------------------
 
-    # Method to read from a Debug Port register with SWD protocol
-    #
-    # @param [String] name Name of register to be read from
-    #   Supports: 'IDCODE','ABORT','CTRL/STAT','SELECT','RDBUFF','WCR','RESEND'
-    # @param [Hash] options Options to customize the operation
-    def read_dp_swd(name, options = {})
-      rwb = 1
-      case name
-        when 'IDCODE'    then dpacc_access(name, rwb, random, options)
-        when 'ABORT'     then Origen.log.error "#{name} #{@imp.to_s.upcase}-DP register is write-only!"
-        when 'CTRL/STAT' then dpacc_access(name, rwb, random, options)
-        when 'SELECT'    then Origen.log.error "#{name} #{@imp.to_s.upcase}-DP register is write-only!"
-        when 'RDBUFF'    then dpacc_access(name, rwb, random, options)
-        when 'WCR'       then dpacc_access(name, rwb, random, options)
-        when 'RESEND'    then dpacc_access(name, rwb, random, options)
-        else Origen.log.error "Unknown #{@imp.to_s.upcase}-DP register name #{name}"
-      end
-    end
-
-    # Method to read from a Debug Port register with JTAG protocol
-    #
-    # @param [String] name Name of register to be read from
-    #   Supports: 'IDCODE','ABORT','CTRL/STAT','SELECT','RDBUFF','WCR','RESEND'
-    # @param [Hash] options Options to customize the operation
-    def read_dp_jtag(name, options = {})
-      rwb = 1
-      set_ir(name) if name == 'IDCODE'
-      case name
-        when 'IDCODE'    then jtag.write_dr(random, size: 32)
-        when 'ABORT'     then Origen.log.error "#{name} #{@imp.to_s.upcase}-DP register is write-only!"
-        when 'CTRL/STAT' then dpacc_access(name, rwb, random, options)
-        when 'SELECT'    then dpacc_access(name, rwb, random, options)
-        when 'RDBUFF'    then dpacc_access(name, rwb, random, options)
-        else Origen.log.error "Unknown #{@imp.to_s.upcase}-DP register name #{name}"
-      end
-      read_dp('RDBUFF', options) if name != 'IDCODE' && name != 'RDBUFF'
-    end
-
-    # Method to write to a Debug Port register with SWD protocol
-    #
-    # @param [String] name Name of register to be read from
-    #   Supports: 'IDCODE','ABORT','CTRL/STAT','SELECT','RDBUFF','WCR','RESEND'
-    # @param [Integer] wdata Data to be written
-    # @param [Hash] options Options to customize the operation
-    def write_dp_swd(name, wdata, options = {})
-      rwb = 0
-      case name
-        when 'IDCODE'    then Origen.log.error "#{name} #{@imp.to_s.upcase}-DP register is read-only!"
-        when 'ABORT'     then dpacc_access(name, rwb, wdata, options)
-        when 'CTRL/STAT' then dpacc_access(name, rwb, wdata, options)
-        when 'SELECT'    then dpacc_access(name, rwb, wdata, options)
-        when 'RDBUFF'    then Origen.log.error "#{name} #{@imp.to_s.upcase}-DP register is read-only!"
-        when 'WCR'       then dpacc_access(name, rwb, wdata, options)
-        when 'RESEND'    then Origen.log.error "#{name} #{@imp.to_s.upcase}-DP register is read-only!"
-        else Origen.log.error "Unknown #{@imp.to_s.upcase}-DP register name #{name}"
-      end
-    end
-
-    # Method to write to a Debug Port register with JTAG protocol
-    #
-    # @param [String] name Name of register to be read from
-    #   Supports: 'IDCODE','ABORT','CTRL/STAT','SELECT','RDBUFF','WCR','RESEND'
-    # @param [Integer] wdata Data to be written
-    # @param [Hash] options Options to customize the operation
-    def write_dp_jtag(name, wdata, options = {})
-      rwb = 0
-      case name
-        when 'IDCODE'    then Origen.log.error "#{name} #{@imp.to_s.upcase}-DP register is read-only!"
-        when 'ABORT'     then dpacc_access(name, rwb, wdata, options)
-        when 'CTRL/STAT' then dpacc_access(name, rwb, wdata, options)
-        when 'SELECT'    then dpacc_access(name, rwb, wdata, options)
-        when 'RDBUFF'    then Origen.log.error "#{name} #{@imp.to_s.upcase}-DP register is read-only!"
-        else Origen.log.error "Unknown #{@imp.to_s.upcase}-DP register name #{name}"
-      end
-    end
-
     # Method
     #
     # @param [Integer] name Name of register to be transacted
     # @param [Integer] rwb Indicates read or write
-    # @param [Integer] wdata Value of data to be written
+    # @param [Integer] data Value of data to be written
     # @param [Hash] options Options to customize the operation
-    def dpacc_access(name, rwb, wdata, options = {})
+    def dpacc_access(name, rwb, data, options = {})
       addr = get_dp_addr(name)
-
-      if name == 'CTRL/STAT' && @imp == :swd
+      if name == :ctrl_stat && protocol == :swd
         set_apselect(@current_apaddr & 0xFFFFFFFE, options)
       end
-      set_ir(name) if @imp == :jtag
+      set_ir(name) if protocol == :jtag
       options = { name: name }.merge(options)
-      acc_access(addr, rwb, 0, wdata, options)
+      acc_access(addr, rwb, 0, data, options)
     end
 
     # Method
     #
     # @param [Integer] addr Address of register to be transacted
     # @param [Integer] rwb Indicates read or write
-    # @param [Integer] wdata Value of data to be written
-    # @param [Integer] rdata Value of data to be read back
+    # @param [Integer] data Value of data to be written
     # @param [Hash] options Options to customize the operation
-    def apacc_access(addr, rwb, wdata, rdata, options = {})
+    def apacc_access(addr, rwb, data, options = {})
       set_apselect((addr & 0xFFFFFFFE) | (@current_apaddr & 1), options)
-      if @imp == :swd
+      if protocol == :swd
         options.delete(:w_delay) if options.key?(:w_delay)
       else
-        set_ir('APACC')
+        set_ir(:apacc)
       end
-      options = { name: 'APACC' }.merge(options)
-      acc_access((addr & 0xC), rwb, 1, wdata, options)
+      options = { name: :apacc }.merge(options)
+      acc_access((addr & 0xC), rwb, 1, data, options)
     end
 
     # Method
@@ -338,13 +262,13 @@ module OrigenARMDebug
     # @param [Integer] addr Address of register to be transacted
     # @param [Integer] rwb Indicates read or write
     # @param [Integer] ap_dp Indicates Access Port or Debug Port
-    # @param [Integer] wdata Value of data to be written
+    # @param [Integer] data Value of data to be written
     # @param [Hash] options Options to customize the operation
-    def acc_access(addr, rwb, ap_dp, wdata, options = {})
-      if @imp == :swd
-        acc_access_swd(addr, rwb, ap_dp, wdata, options)
+    def acc_access(addr, rwb, ap_dp, data, options = {})
+      if protocol == :swd
+        acc_access_swd(addr, rwb, ap_dp, data, options)
       else
-        acc_access_jtag(addr, rwb, ap_dp, wdata, options)
+        acc_access_jtag(addr, rwb, ap_dp, data, options)
       end
     end
 
@@ -353,20 +277,14 @@ module OrigenARMDebug
     # @param [Integer] addr Address of register to be transacted
     # @param [Integer] rwb Indicates read or write
     # @param [Integer] ap_dp Indicates Access Port or Debug Port
-    # @param [Integer] wdata Value of data to be written
+    # @param [Integer] data Value of data to be written
     # @param [Hash] options Options to customize the operation
-    def acc_access_swd(addr, rwb, ap_dp, wdata, options = {})
+    def acc_access_swd(addr, rwb, ap_dp, data, options = {})
       _name = options.delete(:name)
       if (rwb == 1)
-        if options[:reg].nil?
-          swd.read(ap_dp, addr, options)
-        else
-          # make sure reg.addr = addr
-          Origen.log.error 'SWJ_DP ERROR: In acc_access_swd, addr does not match options[:reg].addr'
-          swd.read(ap_dp, options[:reg], options)
-        end
+        swd.read(ap_dp, addr, options)
       else
-        swd.write(ap_dp, addr, wdata, options)
+        swd.write(ap_dp, addr, data, options)
       end
       options = { w_delay: 10 }.merge(options)
       swd.swd_dio_to_0(options[:w_delay])
@@ -377,43 +295,25 @@ module OrigenARMDebug
     # @param [Integer] addr Address of register to be transacted
     # @param [Integer] rwb Indicates read or write
     # @param [Integer] ap_dp Indicates Access Port or Debug Port
-    # @param [Integer] wdata Value of data to be written
+    # @param [Integer] data Value of data to be written
     # @param [Hash] options Options to customize the operation
-    def acc_access_jtag(addr, rwb, ap_dp, wdata, options = {})
+    def acc_access_jtag(addr, rwb, ap_dp, data, options = {})
       _name = options.delete(:name)
-      if !options[:r_attempts].nil?
-        attempts = options[:r_attempts]
-      elsif !options[:w_attempts].nil?
-        attempts = options[:w_attempts]
-      else
-        attempts = 1
-      end
-
+      attempts = options[:attempts] || 1
       attempts.times do
-        if _name == 'RDBUFF'
-          if options[:reg].nil?
-            if options[:r_mask] == 'store'
-              reg(:dpacc).bits(:data).store
-            elsif options.key?(:compare_data)
-              reg(:dpacc).bits(:data).data = options[:compare_data]
-            elsif options.key?(:edata)
-              options[:compare_data] = options[:edata]
-              reg(:dpacc).bits(:data).data = options[:edata]
-            end
-          else
-            reg(:dpacc).bits(:data).data = options[:reg].data
-            (3..34).each do |i|
-              reg(:dpacc).bits(i).read if options[:reg].bits(i - 3).is_to_be_read?
-            end
-            (3..34).each do |i|
-              reg(:dpacc).bits(i).store if options[:reg].bits(i - 3).is_to_be_stored?
-            end
+        if _name == :rdbuff
+          reg(:dpacc).bits(:data).clear_flags
+          reg(:dpacc).bits(:data).write(data)
+          _mask = options[:mask] || 0xFFFFFFFF
+          _store = options[:store] || 0x00000000
+          0.upto(31) do |i|
+            reg(:dpacc).bits(:data)[i].read if _mask[i] == 1
+            reg(:dpacc).bits(:data)[i].store if _store[i] == 1
           end
-
           options = options.merge(size: reg(:dpacc).size)
           jtag.read_dr(reg(:dpacc), options)
         else
-          reg(:dpacc).bits(:data).write(wdata)
+          reg(:dpacc).bits(:data).write(data)
           reg(:dpacc).bits(:a).write((addr & 0x0000000C) >> 2)
           reg(:dpacc).bits(:rnw).write(rwb)
           options = options.merge(size: reg(:dpacc).size)
@@ -428,14 +328,13 @@ module OrigenARMDebug
     # @param [String] name Name of the register
     def get_dp_addr(name)
       case name
-        when 'IDCODE'    then return 0x0
-        when 'ABORT'     then return 0x0
-        when 'CTRL/STAT' then return 0x4
-        when 'SELECT'    then return 0x8
-        when 'RDBUFF'    then return 0xC
-        when 'WCR'       then return 0x4
-        when 'RESEND'    then return 0x8
-        else Origen.log.error "Unknown #{@imp.to_s.upcase}-DP register name #{name}"
+        when :idcode    then return 0x0
+        when :abort     then return 0x0
+        when :ctrl_stat then return 0x4
+        when :select    then return 0x8
+        when :rdbuff    then return 0xC
+        when :wcr       then return 0x4
+        when :resend    then return 0x8
       end
     end
 
@@ -444,18 +343,14 @@ module OrigenARMDebug
     # @param [String] name Name of the register to be interacted with
     def set_ir(name)
       case name
-        when 'IDCODE'
+        when :idcode
           reg(:ir).write(0b1110)                          # JTAGC_ARM_IDCODE
-        when 'ABORT'
+        when :abort
           reg(:ir).write(0b1000)                          # JTAGC_ARM_ABORT
-        when 'CTRL/STAT', 'SELECT', 'RDBUFF'
+        when :ctrl_stat, :select, :rdbuff
           reg(:ir).write(0b1010)                          # JTAGC_ARM_DPACC
-        when 'APACC'
+        when :apacc
           reg(:ir).write(0b1011)                          # JTAGC_ARM_APACC
-        when 'RESEND', 'WCR'
-          Origen.log.error "#{name} is a SW-DP only register"
-        else
-          Origen.log.error "Unknown JTAG-DP register name: #{name}"
       end
       jtag.write_ir(reg(:ir), size: reg(:ir).size)
     end
@@ -466,14 +361,14 @@ module OrigenARMDebug
     #    will determine which Access Port is selected.
     # @param [Hash] options Options to customize the operation
     def set_apselect(addr, options = {})
-      if @imp == :swd
+      if protocol == :swd
         addr &= 0xff0000f1
       else
         addr &= 0xff0000f0
       end
 
       if (addr != @current_apaddr)
-        write_dp('SELECT', addr & 0xff0000ff, options)
+        write_dp(:select, addr & 0xff0000ff, options)
       end
       @current_apaddr = addr
     end
@@ -491,12 +386,26 @@ module OrigenARMDebug
 
     # Provides shortname access to top-level jtag driver
     def jtag
-      owner.owner.jtag
+      parent.parent.jtag
     end
 
     # Provides shortname access to top-level swd driver
     def swd
-      owner.owner.swd
+      parent.parent.swd
+    end
+
+    # Returns protocol implemented at the top-level (i.e. SWD or JTAG)
+    def protocol
+      if parent.parent.respond_to?(:swd)
+        implementation = :swd
+      elsif parent.parent.respond_to?(:jtag)
+        implementation = :jtag
+      end
+      implementation
+    end
+
+    def log
+      Origen.log
     end
   end
 end

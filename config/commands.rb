@@ -28,9 +28,9 @@ when "examples"
   # Pattern generator tests
   ARGV = %w(read_write_reg -t debug -r approved)
   load "#{Origen.top}/lib/origen/commands/generate.rb"
-  ARGV = %w(read_write_reg_jtag -t debug -r approved)
+  ARGV = %w(read_write_reg_jtag -t jtag -r approved)
   load "#{Origen.top}/lib/origen/commands/generate.rb"
-  ARGV = %w(read_write_reg_swd -t debug -r approved)
+  ARGV = %w(read_write_reg_swd -t swd -r approved)
   load "#{Origen.top}/lib/origen/commands/generate.rb"
     
   if Origen.app.stats.changed_files == 0 &&

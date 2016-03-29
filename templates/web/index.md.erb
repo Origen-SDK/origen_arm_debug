@@ -45,9 +45,9 @@ interface your device has, one of the following can be used:
 
 ~~~ruby
 class DUT
-
+  include Origen::TopLevel
   include OrigenARMDebug
-  include Origen::Registers
+
   # Also include the required physical driver, JTAG in this example
   include OrigenJTAG
 
@@ -55,7 +55,9 @@ class DUT
     reg :myreg, 0x0012, size: 16 do |reg|
       reg.bits 15..8, :upper_byte
       reg.bits 7..0,  :lower_byte
-    end                           
+    end
+    
+    sub_block :arm_debug, class_name: "OrigenARMDebug::Driver", aps: { mem_ap: 0x00000000, mdmap: 0x01000000 }                           
   end
 
   # Hook the ARMDebug module into the register API, any register read

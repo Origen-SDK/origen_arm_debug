@@ -8,5 +8,6 @@
 
 # You can also perform global configuration here, e.g.  
 # $dut.do_something_before_every_job 
-$dut = OrigenARMDebug::JTAG_DUT.new
+$dut = OrigenARMDebug::SWD_DUT.new 
 $tester = OrigenTesters::J750.new 
+Origen.mode = :debug 

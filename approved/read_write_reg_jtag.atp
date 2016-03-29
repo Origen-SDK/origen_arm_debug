@@ -1,22 +1,22 @@
 // ***************************************************************************
 // GENERATED:
-//   Time:    03-Dec-2015 09:25AM
+//   Time:    29-Mar-2016 08:46AM
 //   By:      Ronnie Lajaunie
-//   Command: origen g read_write_reg_jtag -t debug.rb
+//   Command: origen g read_write_reg_jtag -t jtag.rb
 // ***************************************************************************
 // ENVIRONMENT:
 //   Application
 //     Source:    git@github.com:Origen-SDK/origen_arm_debug.git
-//     Version:   0.8.0
-//     Branch:    master(63641a23e80)
+//     Version:   0.8.4
+//     Branch:    master(9d63ca8c79f) (+local edits)
 //   Origen
 //     Source:    https://github.com/Origen-SDK/origen
-//     Version:   0.5.0
+//     Version:   0.7.0
 //   Plugins
-//     origen_doc_helpers:       0.2.0
+//     origen_doc_helpers:       0.3.0
 //     origen_jtag:              0.12.0
 //     origen_swd:               0.5.0
-//     origen_testers:           0.5.2
+//     origen_testers:           0.5.7
 // ***************************************************************************
 import tset arm_debug;                                                                          
 svm_only_file = no;                                                                             
@@ -85,7 +85,7 @@ repeat 29                                                        > arm_debug    
 // JTAG::TAPController - **** Data stop ****
                                                                  > arm_debug                    0 0 X 1 X X X ;
 repeat 8                                                         > arm_debug                    0 0 X 0 X X X ;
-// JTAG-DP: W-32: name='CTRL/STAT', data=0x50000000
+// JTAG-DP: W-32: name='CTRL_STAT', data=0x50000000
                                                                  > arm_debug                    0 0 X 1 X X X ;
 repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
 // JTAG::TAPController - **** Data start ****
@@ -106,8 +106,7 @@ repeat 3                                                         > arm_debug    
                                                                  > arm_debug                    0 0 X 1 X X X ;
 repeat 8                                                         > arm_debug                    0 0 X 0 X X X ;
 // JTAG-DP: R-32: name='RDBUFF'
-// JTAG-DP: R-32: name='CTRL/STAT'
-// JTAG-DP: WR-32: name='CTRL/STAT', data=0x50000000
+// JTAG-DP: R-32: name='CTRL_STAT'
                                                                  > arm_debug                    0 0 X 1 X X X ;
 repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
 // JTAG::TAPController - **** Data start ****
@@ -224,14 +223,22 @@ repeat 2                                                         > arm_debug    
                                                                  > arm_debug                    0 1 X 1 X X X ;
 repeat 2                                                         > arm_debug                    0 1 X 0 X X X ;
 // JTAG::TAPController - **** Data start ****
-repeat 34                                                        > arm_debug                    0 0 X 0 X X X ;
-                                                                 > arm_debug                    0 0 X 1 X X X ;
+repeat 3                                                         > arm_debug                    0 0 X 0 X X X ;
+repeat 4                                                         > arm_debug                    0 0 L 0 X X X ;
+                                                                 > arm_debug                    0 0 H 0 X X X ;
+repeat 7                                                         > arm_debug                    0 0 L 0 X X X ;
+                                                                 > arm_debug                    0 0 H 0 X X X ;
+repeat 7                                                         > arm_debug                    0 0 L 0 X X X ;
+                                                                 > arm_debug                    0 0 H 0 X X X ;
+repeat 7                                                         > arm_debug                    0 0 L 0 X X X ;
+                                                                 > arm_debug                    0 0 H 0 X X X ;
+repeat 2                                                         > arm_debug                    0 0 L 0 X X X ;
+                                                                 > arm_debug                    0 0 L 1 X X X ;
 // JTAG::TAPController - **** Data stop ****
                                                                  > arm_debug                    0 0 X 1 X X X ;
 repeat 8                                                         > arm_debug                    0 0 X 0 X X X ;
 // JTAG-DP: R-32: name='RDBUFF'
 // JTAG-AP: R-32: addr=0x01000004
-// JTAG-AP: WR-32: addr=0x01000004, data=0x10101010
 repeat 2                                                         > arm_debug                    0 0 X 1 X X X ;
 repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
 // JTAG::TAPController - **** Data start ****
@@ -279,5 +286,121 @@ repeat 2                                                         > arm_debug    
 repeat 8                                                         > arm_debug                    0 0 X 0 X X X ;
 // JTAG-DP: R-32: name='RDBUFF'
 // JTAG-AP: R-32: addr=0x01000004
+repeat 2                                                         > arm_debug                    0 0 X 1 X X X ;
+repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
+// JTAG::TAPController - **** Data start ****
+repeat 2                                                         > arm_debug                    0 1 X 0 X X X ;
+                                                                 > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 1 X 1 X X X ;
+// JTAG::TAPController - **** Data stop ****
+                                                                 > arm_debug                    0 1 X 1 X X X ;
+                                                                 > arm_debug                    0 1 X 0 X X X ;
+                                                                 > arm_debug                    0 1 X 1 X X X ;
+repeat 2                                                         > arm_debug                    0 1 X 0 X X X ;
+// JTAG::TAPController - **** Data start ****
+                                                                 > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 1 X 0 X X X ;
+                                                                 > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 1 X 0 X X X ;
+repeat 7                                                         > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 1 X 0 X X X ;
+repeat 7                                                         > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 1 X 0 X X X ;
+repeat 7                                                         > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 1 X 0 X X X ;
+repeat 6                                                         > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 0 X 1 X X X ;
+// JTAG::TAPController - **** Data stop ****
+                                                                 > arm_debug                    0 0 X 1 X X X ;
+repeat 16                                                        > arm_debug                    0 0 X 0 X X X ;
+// JTAG-AP: W-32: addr=0x01000004, data=0x01010101
+                                                                 > arm_debug                    0 0 X 1 X X X ;
+repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
+// JTAG::TAPController - **** Data start ****
+repeat 2                                                         > arm_debug                    0 1 X 0 X X X ;
+repeat 32                                                        > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 0 X 1 X X X ;
+// JTAG::TAPController - **** Data stop ****
+                                                                 > arm_debug                    0 0 X 1 X X X ;
+repeat 8                                                         > arm_debug                    0 0 X 0 X X X ;
+repeat 2                                                         > arm_debug                    0 0 X 1 X X X ;
+repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
+// JTAG::TAPController - **** Data start ****
+                                                                 > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 1 X 0 X X X ;
+                                                                 > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 1 X 1 X X X ;
+// JTAG::TAPController - **** Data stop ****
+                                                                 > arm_debug                    0 1 X 1 X X X ;
+                                                                 > arm_debug                    0 1 X 0 X X X ;
+                                                                 > arm_debug                    0 1 X 1 X X X ;
+repeat 2                                                         > arm_debug                    0 1 X 0 X X X ;
+// JTAG::TAPController - **** Data start ****
+repeat 34                                                        > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 0 X 1 X X X ;
+// JTAG::TAPController - **** Data stop ****
+                                                                 > arm_debug                    0 0 X 1 X X X ;
+repeat 8                                                         > arm_debug                    0 0 X 0 X X X ;
+// JTAG-DP: R-32: name='RDBUFF'
+// JTAG-AP: R-32: addr=0x01000004
+// JTAG-AP: WR-32: addr=0x01000004, data=0x01010101
+repeat 2                                                         > arm_debug                    0 0 X 1 X X X ;
+repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
+// JTAG::TAPController - **** Data start ****
+repeat 2                                                         > arm_debug                    0 1 X 0 X X X ;
+                                                                 > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 1 X 1 X X X ;
+// JTAG::TAPController - **** Data stop ****
+                                                                 > arm_debug                    0 1 X 1 X X X ;
+                                                                 > arm_debug                    0 1 X 0 X X X ;
+                                                                 > arm_debug                    0 1 X 1 X X X ;
+repeat 2                                                         > arm_debug                    0 1 X 0 X X X ;
+// JTAG::TAPController - **** Data start ****
+                                                                 > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 1 X 0 X X X ;
+repeat 5                                                         > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 1 X 0 X X X ;
+repeat 7                                                         > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 1 X 0 X X X ;
+repeat 7                                                         > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 1 X 0 X X X ;
+repeat 7                                                         > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 1 X 0 X X X ;
+repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 0 X 1 X X X ;
+// JTAG::TAPController - **** Data stop ****
+                                                                 > arm_debug                    0 0 X 1 X X X ;
+repeat 16                                                        > arm_debug                    0 0 X 0 X X X ;
+// JTAG-AP: W-32: addr=0x01000004, data=0x10101010
+                                                                 > arm_debug                    0 0 X 1 X X X ;
+repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
+// JTAG::TAPController - **** Data start ****
+repeat 2                                                         > arm_debug                    0 1 X 0 X X X ;
+repeat 32                                                        > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 0 X 1 X X X ;
+// JTAG::TAPController - **** Data stop ****
+                                                                 > arm_debug                    0 0 X 1 X X X ;
+repeat 8                                                         > arm_debug                    0 0 X 0 X X X ;
+repeat 2                                                         > arm_debug                    0 0 X 1 X X X ;
+repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
+// JTAG::TAPController - **** Data start ****
+                                                                 > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 1 X 0 X X X ;
+                                                                 > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 1 X 1 X X X ;
+// JTAG::TAPController - **** Data stop ****
+                                                                 > arm_debug                    0 1 X 1 X X X ;
+                                                                 > arm_debug                    0 1 X 0 X X X ;
+                                                                 > arm_debug                    0 1 X 1 X X X ;
+repeat 2                                                         > arm_debug                    0 1 X 0 X X X ;
+// JTAG::TAPController - **** Data start ****
+repeat 34                                                        > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 0 X 1 X X X ;
+// JTAG::TAPController - **** Data stop ****
+                                                                 > arm_debug                    0 0 X 1 X X X ;
+repeat 8                                                         > arm_debug                    0 0 X 0 X X X ;
+// JTAG-DP: R-32: name='RDBUFF'
+// JTAG-AP: R-32: addr=0x01000004
+// JTAG-AP: WR-32: addr=0x01000004, data=0x10101010
 end_module                                                       > arm_debug                    0 0 X 0 X X X ;
 }                                                                                               

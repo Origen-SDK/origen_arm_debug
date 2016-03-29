@@ -24,10 +24,10 @@ Pattern.create do
   $dut.write_register($dut.reg(:test))
 
   $dut.arm_debug.mem_ap.read(0x10000004, edata: 0x00000000)
+  $dut.arm_debug.mem_ap.read(0x10000004, r_mask: 'store')
   $dut.arm_debug.mem_ap.write(0x10000004, 0x55555555)
   $dut.arm_debug.mem_ap.write_read(0x10000004, 0x55555555)
 
-  $dut.arm_debug.mem_ap.inspect
-  $dut.arm_debug.mdm_ap.inspect
-  $dut.arm_debug.alt_ahbapi.inspect
+  $dut.arm_debug.write_register(0x55555555, address: 0x10000004, ap: :mem_ap)
+  $dut.arm_debug.read_register(0x55555555, address: 0x10000004, ap: :mem_ap)
 end

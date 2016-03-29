@@ -5,9 +5,8 @@ module OrigenARMDebug
   #
   # It is not included when this library is imported.
   class DUT
+    include Origen::TopLevel
     include OrigenARMDebug
-    include Origen::Callbacks
-    include Origen::Registers
 
     # Initializes simple dut model with test register and required jtag/swd pins
     #
@@ -20,9 +19,12 @@ module OrigenARMDebug
       add_reg :test, 0x0, 32, data: { pos: 0, bits: 32 },
                               bit:  { pos: 0 }
 
-      arm_debug.add_mem_ap('mem_ap', 0x00000000)
-      arm_debug.add_mem_ap('mdm_ap', 0x01000000)
+      sub_block :arm_debug, class_name: 'OrigenARMDebug::Driver', aps: { mem_ap: 0x00000000, mdm_ap: 0x01000000 }
       arm_debug.add_mem_ap('alt_ahbapi', 0x02000000)
+
+      # arm_debug.add_mem_ap('mem_ap', 0x00000000)
+      # arm_debug.add_mem_ap('mdm_ap', 0x01000000)
+      # arm_debug.add_mem_ap('alt_ahbapi', 0x02000000)
     end
 
     # Add any custom startup business here.

@@ -10,7 +10,7 @@ module OrigenARMDebug
   autoload :MemAP,  'origen_arm_debug/mem_ap'
 
   # Returns an instance of the OrigenARMDebug::Driver
-  def arm_debug
-    @arm_debug ||= Driver.new(self)
-  end
+  # def arm_debug
+  #  @arm_debug ||= Driver.new(self)
+  # end
 end

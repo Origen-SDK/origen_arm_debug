@@ -2,7 +2,6 @@ module OrigenARMDebug
   # Simple JTAG-specific dut model that inherits from protocol-agnostic DUT model
   class JTAG_DUT < DUT
     include OrigenJTAG
-    include Origen::Pins
 
     # Adds jtag-required pins to the simple dut model
     # Returns nothing.
@@ -13,6 +12,8 @@ module OrigenARMDebug
       add_pin :tdo
       add_pin :tms
       add_pin :trst
+      add_pin :swd_clk
+      add_pin :swd_dio
     end
   end
 end

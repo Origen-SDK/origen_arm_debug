@@ -10,3 +10,4 @@
 # $dut.do_something_before_every_job 
 $dut = OrigenARMDebug::JTAG_DUT.new
 $tester = OrigenTesters::J750.new 
+Origen.mode = :debug 

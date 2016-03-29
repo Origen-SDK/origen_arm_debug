@@ -3,127 +3,98 @@ module OrigenARMDebug
   #  a top-level protocol be defined as well as a top-level instantiation of an
   #  SWJ-DP object.
   class MemAP
-    # ARM Debug Interface v5.1
-    MEM_ADDR_CSW  = 0x00000000
-    MEM_ADDR_TAR  = 0x00000004
-    MEM_ADDR_DRW  = 0x0000000C
-    MEM_ADDR_BD0  = 0x00000010
-    MEM_ADDR_BD1  = 0x00000014
-    MEM_ADDR_BD2  = 0x00000018
-    MEM_ADDR_BD3  = 0x0000001C
-    MEM_ADDR_CFG  = 0x000000F4
-    MEM_ADDR_BASE = 0x000000F8
-    MEM_ADDR_IDR  = 0x000000FC
-
-    # Returns the parent object that instantiated the driver
-    attr_reader :owner
+    include Origen::Model
 
     # Initialize class variables
     #
-    # @param [Object] owner Parent object
     # @param [Hash] options Options to customize the operation
     #
     # @example
     #   DUT.new.arm_debug.mem_ap
     #
-    def initialize(owner, options = {})
-      @owner = owner
-      @name = options[:name].nil? ? 'default' : options[:name]
-      @base_address = options[:base_address].nil? ? 0x00000000 : options[:base_address]
+    def initialize(options = {})
+      instantiate_registers
+    end
 
-      # reset values for MEM-AP registers
-      @current_csw = 0x00000000
-      @current_tar = 0xffffffff
-      @current_dsw = 0x00000000
+    def instantiate_registers(options = {})
+      # ARM Debug Interface v5.1
+      reg :csw, 0x00, size: 32, reset: 0x00000000 do |reg|
+        reg.bit 31,     :dbg_sw_enable
+        reg.bit 30..24, :prot
+        reg.bit 23,     :spiden
+        reg.bit 11..8,  :mode
+        reg.bit 7,      :tr_in_prog
+        reg.bit 6,      :device_en
+        reg.bit 5..4,   :addr_inc, reset: 0b00
+        reg.bit 2..0,   :size, reset: 0b000
+      end
+
+      add_reg :tar, 0x04, 32, data: { pos: 0, bits: 32 }, reset: 0xffffffff
+      add_reg :drw, 0x0C, 32, data: { pos: 0, bits: 32 }, reset: 0x00000000
     end
 
     # Shortcut name to SWJ-DP Debug Port
     def debug_port
-      owner.swj_dp
+      parent.swj_dp
     end
     alias_method :dp, :debug_port
-
-    # Output some instance-specific information
-    def inspect
-      Origen.log.info '=' * 30
-      Origen.log.info ' MEM-AP INFO'
-      Origen.log.info "  name: #{@name}"
-      Origen.log.info "  base address: 0x#{@base_address.to_hex}"
-      Origen.log.info ''
-      Origen.log.debug "  csw_reg_addr  = 0x#{csw_reg_addr.to_hex}"
-      Origen.log.debug "  tar_reg_addr  = 0x#{tar_reg_addr.to_hex}"
-      Origen.log.debug "  drw_reg_addr  = 0x#{drw_reg_addr.to_hex}"
-      Origen.log.debug "  bd0_reg_addr  = 0x#{bd0_reg_addr.to_hex}"
-      Origen.log.debug "  bd1_reg_addr  = 0x#{bd1_reg_addr.to_hex}"
-      Origen.log.debug "  bd2_reg_addr  = 0x#{bd2_reg_addr.to_hex}"
-      Origen.log.debug "  bd3_reg_addr  = 0x#{bd3_reg_addr.to_hex}"
-      Origen.log.debug "  cfg_reg_addr  = 0x#{cfg_reg_addr.to_hex}"
-      Origen.log.debug "  base_reg_addr = 0x#{base_reg_addr.to_hex}"
-      Origen.log.debug "  idr_reg_addr  = 0x#{idr_reg_addr.to_hex}"
-    end
 
     # -----------------------------------------------------------------------------
     # User API
     # -----------------------------------------------------------------------------
-    def read_register(reg_or_val, options = {})
+    def write_register(reg_or_val, options = {})
       if reg_or_val.respond_to?(:data)
         addr = reg_or_val.addr
-        rdata = reg_or_val.data
-        options = { reg: reg_or_val }.merge(options)
+        data = reg_or_val.data
       else
-        addr = reg_or_val                 # if not a register, use the 'val' as target addr
-        rdata = 0
+        addr = options[:address]
+        data = reg_or_val
       end
+      size = options[:size] || 32
 
-      options = { size: 32 }.merge(options)
-      options = { r_mask: 'mask', r_attempts: 1 }.merge(options)
-      msg = 'Arm Debug: Shift out data for reading'
+      msg = "Arm Debug: Shift in data to write: #{data.to_hex}"
       options = { arm_debug_comment: msg }.merge(options)
-      size = options[:size]
 
       set_size(size)
       set_addr(addr)
-      debug_port.read_ap(drw_reg_addr, options)
-      rdata = get_rdata(size, addr, rdata)
+      reg(:drw).data = get_wdata(size, addr, data)
+      debug_port.write_ap(reg(:drw).address, reg(:drw).data, options)
+      increment_addr
+
+      cc "MEM-AP(#{@name}): WR-#{size.to_s(10)}: "\
+        "addr=0x#{addr.to_s(16).rjust(size / 4, '0')}, "\
+        "data=0x#{reg(:drw).data.to_s(16).rjust(size / 4, '0')}"
+    end
+
+    def read_register(reg_or_val, options = {})
+      if reg_or_val.respond_to?(:data)
+        addr = reg_or_val.addr
+        data = reg_or_val.data
+        options[:mask] = reg_or_val.enable_mask(:read)
+        options[:store] = reg_or_val.enable_mask(:store)
+      else
+        addr = options[:address]
+        data = reg_or_val
+      end
+      size = options[:size] || 32
+
+      msg = 'Arm Debug: Shift out data for reading'
+      options = { arm_debug_comment: msg }.merge(options)
+      set_size(size)
+      set_addr(addr)
+      reg(:drw).data = get_rdata(size, addr, data)
+      debug_port.read_ap(reg(:drw).address, reg(:drw).data, options)
       increment_addr
 
       cc "MEM-AP(#{@name}): R-#{size.to_s(10)}: "\
         "addr=0x#{addr.to_s(16).rjust(size / 4, '0')}"
     end
 
-    def write_register(reg_or_val, options = {});
-      if reg_or_val.respond_to?(:data)
-        addr = reg_or_val.addr
-        wdata = reg_or_val.data
-        options = { reg: reg_or_val }.merge(options)
-      else
-        addr = reg_or_val                 # if not a register, use the 'val' as target addr
-        wdata = options[:wdata]
-      end
+    # -----------------------------------------------------------------------------
+    # Legacy Support (to be phased out)
+    # -----------------------------------------------------------------------------
 
-      if reg_or_val.is_a? Numeric  # if not a register or value, the calling application generates the addr and register data to use and passes it as options to the method.
-        addr = options[:reg_addr]
-        wdata = options[:reg_data]
-     end
-
-      options = { size: 32 }.merge(options)
-      options = { w_attempts: 1 }.merge(options)
-      msg = "Arm Debug: Shift in data to write: #{wdata.to_hex}"
-      options = { arm_debug_comment: msg }.merge(options)
-      size = options[:size]
-
-      set_size(size)
-      set_addr(addr)
-      wdata = get_wdata(size, addr, wdata)
-      debug_port.write_ap(drw_reg_addr, wdata, options)
-      increment_addr
-
-      cc "MEM-AP(#{@name}): WR-#{size.to_s(10)}: "\
-        "addr=0x#{addr.to_s(16).rjust(size / 4, '0')}, "\
-        "data=0x#{wdata.to_s(16).rjust(size / 4, '0')}"
-    end
-
-    # Method to read from a mem_ap register
+    # Method to read from a mem_ap register (DEPRECATED)
     #
     # @param [Integer] addr Address of register to be read from
     # @param [Hash] options Options to customize the operation
@@ -140,23 +111,23 @@ module OrigenARMDebug
     #
     # Returns nothing.
     def read(addr, options = {})
-      options = { size: 32 }.merge(options)
-      options = { r_mask: 'mask', r_attempts: 1 }.merge(options)
-      msg = 'Arm Debug: Shift out data for reading'
-      options = { arm_debug_comment: msg }.merge(options)
-      size = options[:size]
+      # Warn caller that this method is being deprecated
+      msg = 'Use mem_ap.read_register(reg_or_val, options) instead of read(addr, options)'
+      Origen.deprecate msg
 
-      set_size(size)
-      set_addr(addr)
-      debug_port.read_ap(drw_reg_addr, options)
-      rdata = get_rdata(size, addr, 0)
-      increment_addr
-
-      cc "MEM-AP(#{@name}): R-#{size.to_s(10)}: "\
-        "addr=0x#{addr.to_s(16).rjust(size / 4, '0')}"
+      # Convert old style (addr, options) to (data, options) before passing on to new method
+      data = options.delete(:edata) || 0x00000000
+      mask = options.delete(:r_mask) || 0xFFFFFFFF
+      options = { address: addr, mask: mask }.merge(options)
+      if mask == 'store'
+        options = { store: 0xFFFFFFFF }.merge(options)
+        read_register(data, options)
+      else
+        read_register(data, options)
+      end
     end
 
-    # Method to write to a mem_ap register
+    # Method to write to a mem_ap register (DEPRECATED)
     #
     # @param [Integer] addr Address of register to be read from
     # @param [Integer] wdata Data to be written
@@ -167,24 +138,17 @@ module OrigenARMDebug
     #
     # Returns nothing.
     def write(addr, wdata, options = {});
-      options = { size: 32 }.merge(options)
-      options = { w_attempts: 1 }.merge(options)
-      msg = "Arm Debug: Shift in data to write: #{wdata.to_hex}"
-      options = { arm_debug_comment: msg }.merge(options)
-      size = options[:size]
+      # Warn caller that this method is being deprecated
+      msg = 'Use mem_ap.write_register(reg_or_val, options) instead of write(addr, wdata, options)'
+      Origen.deprecate msg
 
-      set_size(size)
-      set_addr(addr)
-      wdata = get_wdata(size, addr, wdata)
-      debug_port.write_ap(drw_reg_addr, wdata, options)
-      increment_addr
-
-      cc "MEM-AP(#{@name}): WR-#{size.to_s(10)}: "\
-        "addr=0x#{addr.to_s(16).rjust(size / 4, '0')}, "\
-        "data=0x#{wdata.to_s(16).rjust(size / 4, '0')}"
+      # Convert old style (addr, wdata, options) to (data, options) before passing on to new method
+      data = wdata
+      options = { address: addr }.merge(options)
+      write_register(data, options)
     end
 
-    # Method to write and then read from a mem_ap register (legacy)
+    # Method to write and then read from a mem_ap register (DEPRECATED)
     #
     # @param [Integer] addr Address of register to be read from
     # @param [Integer] wdata Data to be written
@@ -202,77 +166,18 @@ module OrigenARMDebug
     #
     # Returns nothing.
     def write_read(addr, wdata, options = {})
-      options = { size: 32 }.merge(options)
-      options = { edata: 0x00000000, r_mask: 0xffffffff, actual: 0x00000000 }.merge(options)
-      options = { w_attempts: 1, r_attempts: 1 }.merge(options)
-      size = options[:size]
-
-      write(addr, wdata, options)
-      options[:edata] = wdata & options[:r_mask] if options[:edata] == 0x00000000
-      read(addr, options)
-      actual = wdata & options[:r_mask]
-
-      cc "MEM-AP(#{@name}): WR-#{size.to_s(10)}: "\
-        "addr=0x#{addr.to_s(16).rjust(size / 4, '0')}, "\
-        "wdata=0x#{wdata.to_s(16).rjust(size / 4, '0')}, "\
-        "read=0x#{actual.to_s(16).rjust(size / 4, '0')}, "\
-        "expect=0x#{options[:edata].to_s(16).rjust(size / 4, '0')}, "\
-        "mask=0x#{options[:r_mask].to_s(16).rjust(size / 4, '0')}"
-    end
-
-    # -----------------------------------------------------------------------------
-    # Legacy Support (to be phased out)
-    # -----------------------------------------------------------------------------
-
-    # Method to read from a mem_ap register (legacy)
-    #
-    # @param [Integer] addr Address of register to be read from
-    # @param [Integer] rdata This really does nothing since only care about value
-    #   of options[:edata]
-    # @param [Hash] options Options to customize the operation
-    # Returns nothing.
-    def r(addr, rdata, options = {})
       # Warn caller that this method is being deprecated
-      msg = 'Use mem_ap.read(addr, options) instead of R(addr, rdata, options)'
+      msg = 'Use mem_ap.write_read_register(reg_or_val, options) instead of write_read(addr, options)'
       Origen.deprecate msg
 
-      # Patch arguments and send to new method
-      options = { rdata: rdata }.merge(options)
-      read(addr, options)
+      # Convert old style (addr, wdata, options) to (data, options) before passing on to new method
+      data = wdata
+      mask = options.delete(:r_mask) || 0xFFFFFFFF
+      options = { address: addr, mask: mask }.merge(options)
+      write_register(data, options)
+      data = options[:edata] || wdata
+      read_register(data, options)
     end
-    alias_method :R, :r
-
-    # Method to write to a mem_ap register (legacy)
-    #
-    # @param [Integer] addr Address of register to be written to
-    # @param [Integer] wdata Data to be written
-    # @param [Hash] options Options to customize the operation
-    # Returns nothing.
-    def w(addr, wdata, options = {})
-      # Warn caller that this method is being deprecated
-      msg = 'Use mem_ap.write(addr, wdata, options) instead of W(addr, wdata, options)'
-      Origen.deprecate msg
-
-      # Patch arguments and send to new method
-      write(addr, wdata, options)
-    end
-    alias_method :W, :w
-
-    # Method to write and then read from a mem_ap register (legacy)
-    #
-    # @param [Integer] addr Address of register to be read from
-    # @param [Integer] wdata Data to be written
-    # @param [Hash] options Options to customize the operation
-    # Returns nothing.
-    def wr(addr, wdata, options = {})
-      # Warn caller that this method is being deprecated
-      msg = 'Use mem_ap.write_read(addr, wdata, options) instead of WR(addr, wdata, options)'
-      Origen.deprecate msg
-
-      # Patch arguments and send to new method
-      write_read(addr, wdata, options)
-    end
-    alias_method :WR, :wr
 
     # -----------------------------------------------------------------------------
     # Support Code
@@ -286,22 +191,19 @@ module OrigenARMDebug
     # @param [Integer] size Size of data, supports 8-bit, 16-bit, and 32-bit
     def set_size(size)
       case size
-        when 8 then  new_size = 0x00000000
-        when 16 then new_size = 0x00000001
-        when 32 then new_size = 0x00000002
-        else new_size = 0x00000002
+        when 8 then  new_size = 0b00
+        when 16 then new_size = 0b01
+        when 32 then new_size = 0b10
       end
 
-      if (@current_csw == 0x00000000)
-        debug_port.read_ap(csw_reg_addr)
-        @current_csw = 0x23000040
+      if (reg(:csw).data == 0x00000000)
+        debug_port.read_ap(reg(:csw).address, reg(:csw).data, mask: 0x00000000)
+        reg(:csw).data = 0x23000040
       end
 
-      csw_size = @current_csw & 0x00000003
-      if (csw_size != new_size)
-        new_csw = (@current_csw & 0xfffffffc) | new_size
-        debug_port.write_ap(csw_reg_addr, new_csw)
-        @current_csw = new_csw
+      if (reg(:csw).bits(:size).data != new_size)
+        reg(:csw).bits(:size).data = new_size
+        debug_port.write_ap(reg(:csw).address, reg(:csw).data)
       end
     end
 
@@ -312,29 +214,27 @@ module OrigenARMDebug
       arm_debug_comment = "Arm Debug: Shift in read/write address: #{addr.to_hex}"
       options = { arm_debug_comment: arm_debug_comment }
 
-      if (@current_tar != addr)
-        debug_port.write_ap(tar_reg_addr, addr, options)
+      if (reg(:tar).data != addr)
+        debug_port.write_ap(reg(:tar).address, addr, options)
       end
-      @current_tar = addr;
+      reg(:tar).data = addr;
     end
 
     # Increment the address for the next transaction.
     def increment_addr
-      current_csw_5_4 = (@current_csw & 0x00000030) >> 4
-      current_csw_2_0 = @current_csw & 0x00000007
-      if (current_csw_5_4 == 0b01)
-        case current_csw_2_0
-          when 0 then @current_tar += 1   # Increment single
-          when 1 then @current_tar += 2   # Increment single
-          when 2 then @current_tar += 4   # Increment single
+      if reg(:csw).bits(:addr_inc).data == 1
+        case reg(:csw).bits(:size)
+          when 0 then reg(:tar).data += 1   # Increment single
+          when 1 then reg(:tar).data += 2   # Increment single
+          when 2 then reg(:tar).data += 4   # Increment single
         end
-      elsif (current_csw_5_4 == 2)
-        @current_tar += 4                     # Increment packed
+      elsif reg(:csw).bits(:addr_inc).data == 2
+        reg(:tar).data += 4                 # Increment packed
       end
 
-      if current_csw_5_4 && ((@current_tar & 0xfffffc00) == 0xffffffff)
+      if reg(:csw).bits(:addr_inc) && ((reg(:tar).data & 0xfffffc00) == 0xffffffff)
         # reset tar when attempting to increment past 1kB boundary
-        @current_tar = 0xffffffff
+        reg(:tar).data = 0xffffffff
       end
     end
 
@@ -388,56 +288,6 @@ module OrigenARMDebug
           wdata = wdata
       end
       wdata
-    end
-
-    # Returns address of CSW register for this mem-ap instance
-    def csw_reg_addr
-      MEM_ADDR_CSW + @base_address
-    end
-
-    # Returns address of TAR register for this mem-ap instance
-    def tar_reg_addr
-      MEM_ADDR_TAR + @base_address
-    end
-
-    # Returns address of DRW register for this mem-ap instance
-    def drw_reg_addr
-      MEM_ADDR_DRW + @base_address
-    end
-
-    # Returns address of BD0 register for this mem-ap instance
-    def bd0_reg_addr
-      MEM_ADDR_BD0 + @base_address
-    end
-
-    # Returns address of BD1 register for this mem-ap instance
-    def bd1_reg_addr
-      MEM_ADDR_BD1 + @base_address
-    end
-
-    # Returns address of BD2 register for this mem-ap instance
-    def bd2_reg_addr
-      MEM_ADDR_BD2 + @base_address
-    end
-
-    # Returns address of BD3 register for this mem-ap instance
-    def bd3_reg_addr
-      MEM_ADDR_BD3 + @base_address
-    end
-
-    # Returns address of CFG register for this mem-ap instance
-    def cfg_reg_addr
-      MEM_ADDR_CFG + @base_address
-    end
-
-    # Returns address of BASE register for this mem-ap instance
-    def base_reg_addr
-      MEM_ADDR_BASE + @base_address
-    end
-
-    # Returns address of IDR register for this mem-ap instance
-    def idr_reg_addr
-      MEM_ADDR_IDR + @base_address
     end
   end
 end
