@@ -1,3 +1,49 @@
+<a class="anchor release_tag" name="v0_9_0"></a>
+<h1><a href="#v0_9_0">Tag: v0.9.0</a></h1>
+
+##### Branch: 'master'
+
+##### by Ronnie Lajaunie on 29-Mar-2016 12:51PM
+
+
+#1: Update write\_register/read\_register to follow standard of requiring 'data' argument
+for non-register based transactions.
+
+For example:
+
+~~~ruby
+  arm\_debug.write\_register(0x20000000, 0x55555555)             # OLD STYLE
+  arm\_debug.read\_register(0x20000000, edata: 0x55555555)       # OLD STYLE
+
+
+  arm\_debug.write\_register(0x55555555, address: 0x20000000)    # OLD STYLE
+  arm\_debug.read\_register(0x55555555, address: 0x20000000)     # OLD STYLE
+~~~
+
+
+
+#2 Switch ARMDebug module to be Origen::Model to be used as a sub\_block by the top-level.
+
+~~~ruby
+class DUT
+  include Origen::TopLevel
+  include OrigenARMDebug
+
+  # Also include the required physical driver, JTAG in this example
+  include OrigenJTAG
+
+  def initialize
+    reg :myreg, 0x0012, size: 16 do |reg|
+      reg.bits 15..8, :upper\_byte
+      reg.bits 7..0,  :lower\_byte
+    end
+
+    sub\_block :arm\_debug, class\_name: "OrigenARMDebug::Driver", aps: { mem\_ap: 0x00000000,
+mdmap: 0x01000000 }
+  end
+end
+~~~
+
 <a class="anchor release_tag" name="v0_8_4"></a>
 <h1><a href="#v0_8_4">Tag: v0.8.4</a></h1>
 
