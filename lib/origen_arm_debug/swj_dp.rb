@@ -34,6 +34,10 @@ module OrigenARMDebug
 
       add_reg :ir,        0x00,  4, data: { pos: 0, bits: 4 }    # ARM-JTAG Instruction Register
 
+     
+      add_reg :swd_dp,    0x00, 32, data: { pos: 0, bits: 32 }   # SWD Register
+
+      # jtag-dp only
       add_reg :dpacc,     0x00, 35, rnw:  { pos: 0 },            # DP-Access Register (DPACC)
                                     a:    { pos: 1, bits: 2 },
                                     data: { pos: 3, bits: 32 }
@@ -42,7 +46,6 @@ module OrigenARMDebug
                                     a:    { pos: 1, bits: 2 },
                                     data: { pos: 0, bits: 32 }
 
-      # jtag-dp only
       add_reg :idcode,    0x00, 32, data: { pos: 0, bits: 32 }   # Device ID Code Register (IDCODE)
       add_reg :abort,     0x00, 35, rnw:  { pos: 0 },            # Abort Register (ABORT)
                                     a:    { pos: 1, bits: 2 },
@@ -69,7 +72,7 @@ module OrigenARMDebug
       if protocol == :swd
         case name
           when :idcode, :ctrl_stat, :rdbuff, :wcr, :resend
-            dpacc_access(name, 1, random, options)
+            dpacc_access(name, 1, data, options)
           when :abort, :ctrl_stat
             log.error "#{name} #{protocol.to_s.upcase}-DP register is write-only!"
           else
@@ -282,9 +285,22 @@ module OrigenARMDebug
     def acc_access_swd(addr, rwb, ap_dp, data, options = {})
       _name = options.delete(:name)
       if (rwb == 1)
-        swd.read(ap_dp, addr, options)
+        reg(:swd_dp).address = addr
+        reg(:swd_dp).bits(:data).clear_flags
+        reg(:swd_dp).bits(:data).write(data)
+        _mask = options[:mask] || 0xFFFFFFFF
+        _store = options[:store] || 0x00000000
+        0.upto(31) do |i|
+          reg(:swd_dp).bits(:data)[i].read if _mask[i] == 1
+          reg(:swd_dp).bits(:data)[i].store if _store[i] == 1
+        end
+        options = options.merge(size: reg(:swd_dp).size)
+        swd.read(ap_dp, reg(:swd_dp), options)
       else
-        swd.write(ap_dp, addr, data, options)
+        reg(:swd_dp).bits(:data).write(data)
+        reg(:dpacc).address = addr
+        options = options.merge(size: reg(:swd_dp).size)
+        swd.write(ap_dp, reg(:swd_dp), reg(:swd_dp).data, options)
       end
       options = { w_delay: 10 }.merge(options)
       swd.swd_dio_to_0(options[:w_delay])

@@ -1,5 +1,9 @@
 Pattern.create do
   $dut_swd = $dut
+
+  $dut_swd.reg(:test).write!(0x0000FF01)
+  $dut.reg(:test).read(0xAAAAAAAA)
+  
   $dut_swd.arm_debug.swj_dp.read_dp(:idcode, 0xba5eba11, mask: 0x00000000)
   $dut_swd.arm_debug.swj_dp.read_dp(:idcode, 0xba5eba11)
   $dut_swd.arm_debug.swj_dp.read_dp(:wcr, 0x00000000)
