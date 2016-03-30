@@ -34,7 +34,6 @@ module OrigenARMDebug
 
       add_reg :ir,        0x00,  4, data: { pos: 0, bits: 4 }    # ARM-JTAG Instruction Register
 
-     
       add_reg :swd_dp,    0x00, 32, data: { pos: 0, bits: 32 }   # SWD Register
 
       # jtag-dp only
