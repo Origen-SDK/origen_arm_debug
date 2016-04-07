@@ -1,3 +1,13 @@
+<a class="anchor release_tag" name="v0_10_0"></a>
+<h1><a href="#v0_10_0">Tag: v0.10.0</a></h1>
+
+##### Branch: 'master'
+
+##### by Ronnie Lajaunie on 07-Apr-2016 07:59AM
+
+
+Fix register bit definition for swj\_dp.apacc and swj\_dp.abort (bug #5).
+
 <a class="anchor release_tag" name="v0_10_0_pre0"></a>
 <h2><a href="#v0_10_0_pre0">Tag: v0.10.0.pre0</a></h2>
 
