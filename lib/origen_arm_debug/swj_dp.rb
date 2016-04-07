@@ -43,12 +43,12 @@ module OrigenARMDebug
 
       add_reg :apacc,     0x00, 35, rnw:  { pos: 0 },            # AP-Access Register (APACC)
                                     a:    { pos: 1, bits: 2 },
-                                    data: { pos: 0, bits: 32 }
+                                    data: { pos: 3, bits: 32 }
 
       add_reg :idcode,    0x00, 32, data: { pos: 0, bits: 32 }   # Device ID Code Register (IDCODE)
       add_reg :abort,     0x00, 35, rnw:  { pos: 0 },            # Abort Register (ABORT)
                                     a:    { pos: 1, bits: 2 },
-                                    data: { pos: 0, bits: 32 }
+                                    data: { pos: 3, bits: 32 }
 
       # DP Registers
       add_reg :dpidr,     0x00, 32, data: { pos: 0, bits: 32 }
