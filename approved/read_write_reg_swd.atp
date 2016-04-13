@@ -1,14 +1,14 @@
 // ***************************************************************************
 // GENERATED:
-//   Time:    30-Mar-2016 09:25AM
+//   Time:    13-Apr-2016 15:29PM
 //   By:      Ronnie Lajaunie
 //   Command: origen g read_write_reg_swd -t swd.rb
 // ***************************************************************************
 // ENVIRONMENT:
 //   Application
 //     Source:    git@github.com:Origen-SDK/origen_arm_debug.git
-//     Version:   0.9.0
-//     Branch:    master(c44d6258274)
+//     Version:   0.10.0
+//     Branch:    master(090882b2fcf) (+local edits)
 //   Origen
 //     Source:    https://github.com/Origen-SDK/origen
 //     Version:   0.7.0
@@ -183,6 +183,7 @@ repeat 16                                                        > arm_debug    
 repeat 10                                                        > arm_debug                    X X X X X 1 0 ;
 // SWD-AP: W-32: addr=0x0000000c, data=0x0000ff01
 // MEM-AP(mem_ap): WR-32: addr=0x00000000, data=0x0000ff01
+repeat 2                                                         > arm_debug                    X X X X X 1 0 ;
 // Header phase
 // Send Start Bit
                                                                  > arm_debug                    X X X X X 1 1 ;

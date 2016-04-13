@@ -11,6 +11,10 @@ module OrigenARMDebug
     # either a DUT object or a protocol abstraction
     attr_reader :owner
 
+    # Customizable delay that will be applied after any read/write register transaction
+    # defaults to 0
+    attr_reader :latency
+
     # Initialize class variables
     #
     # @param [Hash] options Options to customize the operation
@@ -23,6 +27,7 @@ module OrigenARMDebug
       #   (also used to support case on non-register based calls)
       add_reg :buffer, 0x00, 32, data: { pos: 0, bits: 32 }
 
+      @latency = options[:latency] || 0
       instantiate_subblocks(options)
     end
 

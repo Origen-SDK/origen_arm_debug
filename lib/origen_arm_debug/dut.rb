@@ -19,7 +19,7 @@ module OrigenARMDebug
       add_reg :test, 0x0, 32, data: { pos: 0, bits: 32 },
                               bit:  { pos: 0 }
 
-      sub_block :arm_debug, class_name: 'OrigenARMDebug::Driver', aps: { mem_ap: 0x00000000, mdm_ap: 0x01000000 }
+      sub_block :arm_debug, class_name: 'OrigenARMDebug::Driver', aps: { mem_ap: 0x00000000, mdm_ap: 0x01000000 }, latency: 2
       arm_debug.add_mem_ap('alt_ahbapi', 0x02000000)
 
       # arm_debug.add_mem_ap('mem_ap', 0x00000000)

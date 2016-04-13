@@ -64,6 +64,8 @@ module OrigenARMDebug
       cc "MEM-AP(#{@name}): WR-#{size.to_s(10)}: "\
         "addr=0x#{addr.to_s(16).rjust(size / 4, '0')}, "\
         "data=0x#{reg(:drw).data.to_s(16).rjust(size / 4, '0')}"
+
+      apply_latency
     end
 
     def read_register(reg_or_val, options = {})
@@ -88,6 +90,8 @@ module OrigenARMDebug
 
       cc "MEM-AP(#{@name}): R-#{size.to_s(10)}: "\
         "addr=0x#{addr.to_s(16).rjust(size / 4, '0')}"
+
+      apply_latency
     end
 
     # -----------------------------------------------------------------------------
@@ -288,6 +292,13 @@ module OrigenARMDebug
           wdata = wdata
       end
       wdata
+    end
+
+    # Apply delay as specified by the top-level attribute 'latency' (defaults to 0).
+    #
+    # @param [Hash] options Options to customize the operation
+    def apply_latency(options = {})
+      Origen.tester.cycle(repeat: parent.latency)
     end
   end
 end
