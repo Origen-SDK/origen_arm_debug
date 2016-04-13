@@ -1,3 +1,22 @@
+<a class="anchor release_tag" name="v0_10_1"></a>
+<h1><a href="#v0_10_1">Tag: v0.10.1</a></h1>
+
+##### Branch: 'master'
+
+##### by Ronnie Lajaunie on 13-Apr-2016 18:41PM
+
+
+Added 'latency' parameter to the the top-level driver that can be used to apply an
+application specific delay (in cycles).
+
+~~~ruby
+  # To specify a post-read/write delay, pass it into the sub\_block call as an option
+called ":latency".
+  #
+  sub\_block :arm\_debug, class\_name: 'OrigenARMDebug::Driver', aps: { mem\_ap: 0x00000000,
+mdm\_ap: 0x01000000 }, latency: 2
+~~~
+
 <a class="anchor release_tag" name="v0_10_0"></a>
 <h1><a href="#v0_10_0">Tag: v0.10.0</a></h1>
 
