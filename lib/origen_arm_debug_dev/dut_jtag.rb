@@ -1,9 +1,9 @@
-module OrigenARMDebug
-  # Simple SWD-specific dut model that inherits from protocol-agnostic DUT model
-  class SWD_DUT < DUT
-    include OrigenSWD
+module OrigenARMDebugDev
+  # Simple JTAG-specific dut model that inherits from protocol-agnostic DUT model
+  class JTAG_DUT < DUT
+    include OrigenJTAG
 
-    # Adds swd-required pins to the simple dut model
+    # Adds jtag-required pins to the simple dut model
     # Returns nothing.
     def initialize
       super

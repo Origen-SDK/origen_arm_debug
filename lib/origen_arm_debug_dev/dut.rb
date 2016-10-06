@@ -1,4 +1,4 @@
-module OrigenARMDebug
+module OrigenARMDebugDev
   # This is a dummy DUT model which is used
   # to instantiate and test the ARMDebug locally
   # during development.

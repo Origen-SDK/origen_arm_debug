@@ -30,8 +30,11 @@ end
 describe "Origen ARM Debug MEM-AP Support" do
 
   before :all do
-    Origen.load_target("specs")
-    $dut = TopDut.new
+    Origen.target.temporary = -> do
+      TopDut.new
+      Origen.mode = :debug
+    end
+    Origen.load_target
   end
 
   it "arm_debug protocol aware methods works" do
