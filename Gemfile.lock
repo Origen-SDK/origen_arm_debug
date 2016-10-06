@@ -142,6 +142,3 @@ DEPENDENCIES
   origen_arm_debug!
   origen_doc_helpers (>= 0.2.0)
   origen_testers
-
-BUNDLED WITH
-   1.11.2

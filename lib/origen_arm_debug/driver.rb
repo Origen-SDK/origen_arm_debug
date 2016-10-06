@@ -52,8 +52,11 @@ module OrigenARMDebug
     #   arm_debug.add_mem_ap('alt_ahbapi', 0x02000000)
     #
     def add_mem_ap(name, base_address)
-      domain name.to_sym
-      sub_block name.to_sym, class_name: 'OrigenARMDebug::MemAP', base_address: base_address
+      @aps ||= {}
+      name = name.to_sym
+      domain name
+      block = sub_block name.to_sym, class_name: 'OrigenARMDebug::MemAP', base_address: base_address
+      @aps[name] = block
     end
 
     # Create and/or return the SWJ_DP object with specified protocol
@@ -69,6 +72,7 @@ module OrigenARMDebug
     end
     alias_method :apapi, :abs_if
     alias_method :dpapi, :abs_if
+    alias_method :sw_dp, :abs_if
 
     # Read from a MEM-AP register
     #
@@ -79,7 +83,7 @@ module OrigenARMDebug
     # @param [Hash] options Options to customize the operation
     def read_register(reg_or_val, options = {})
       if options[:ap].nil?
-        ap = mem_ap           # default to 'mem_ap' if no AP is specified as an option
+        ap = default_ap
       else
         ap = eval(options[:ap].to_s)
       end
@@ -95,7 +99,7 @@ module OrigenARMDebug
     # @param [Hash] options Options to customize the operation
     def write_register(reg_or_val, options = {})
       if options[:ap].nil?
-        ap = mem_ap           # default to 'mem_ap' if no AP is specified as an option
+        ap = default_ap
       else
         ap = eval(options[:ap].to_s)
       end
@@ -108,6 +112,10 @@ module OrigenARMDebug
 
     def swd
       parent.swd
+    end
+
+    def default_ap
+      @aps[:mem_ap] || @aps.first[1]
     end
   end
 end

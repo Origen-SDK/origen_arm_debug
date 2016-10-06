@@ -31,6 +31,7 @@ module OrigenARMDebug
 
       add_reg :tar, 0x04, 32, data: { pos: 0, bits: 32 }, reset: 0xffffffff
       add_reg :drw, 0x0C, 32, data: { pos: 0, bits: 32 }, reset: 0x00000000
+      add_reg :idr, 0xFC, 32, data: { pos: 0, bits: 32 }, reset: 0x00000000
     end
 
     # Shortcut name to SWJ-DP Debug Port
@@ -43,144 +44,68 @@ module OrigenARMDebug
     # User API
     # -----------------------------------------------------------------------------
     def write_register(reg_or_val, options = {})
-      if reg_or_val.respond_to?(:data)
-        addr = reg_or_val.addr
-        data = reg_or_val.data
+      if reg_or_val.try(:owner) == self
+        if protocol != :swd
+          fail 'The register-based ARM Debug API is currently only implemented for SWD'
+        end
+        bank = reg_or_val.address & 0xF0
+        debug_port.select_bank(bank)
+        swd.write_ap(reg_or_val)
       else
-        addr = options[:address]
-        data = reg_or_val
+        if reg_or_val.respond_to?(:data)
+          addr = reg_or_val.addr
+          data = reg_or_val.data
+        else
+          addr = options[:address]
+          data = reg_or_val
+        end
+        size = options[:size] || 32
+
+        set_size(size)
+        set_addr(addr, force: true)
+        drw.write!(get_wdata(size, addr, data))
+        increment_addr
+
+        cc "[ARM DEBUG] WRITE #{size.to_s(10)}: "\
+          "addr=0x#{addr.to_s(16).rjust(size / 4, '0')}, "\
+          "data=0x#{reg(:drw).data.to_s(16).rjust(size / 4, '0')}"
+
+        apply_latency
       end
-      size = options[:size] || 32
-
-      msg = "Arm Debug: Shift in data to write: #{data.to_hex}"
-      options = { arm_debug_comment: msg }.merge(options)
-
-      set_size(size)
-      set_addr(addr)
-      reg(:drw).data = get_wdata(size, addr, data)
-      debug_port.write_ap(reg(:drw).address, reg(:drw).data, options)
-      increment_addr
-
-      cc "MEM-AP(#{@name}): WR-#{size.to_s(10)}: "\
-        "addr=0x#{addr.to_s(16).rjust(size / 4, '0')}, "\
-        "data=0x#{reg(:drw).data.to_s(16).rjust(size / 4, '0')}"
-
-      apply_latency
     end
 
     def read_register(reg_or_val, options = {})
-      if reg_or_val.respond_to?(:data)
-        addr = reg_or_val.addr
-        data = reg_or_val.data
-        options[:mask] = reg_or_val.enable_mask(:read)
-        options[:store] = reg_or_val.enable_mask(:store)
+      if reg_or_val.try(:owner) == self
+        if protocol != :swd
+          fail 'The register-based ARM Debug API is currently only implemented for SWD'
+        end
+        bank = reg_or_val.address & 0xF0
+        debug_port.select_bank(bank)
+        swd.read_ap(address: reg_or_val.address)
+        swd.read_dp(reg_or_val, address: debug_port.rdbuff.address)
       else
-        addr = options[:address]
-        data = reg_or_val
+        if reg_or_val.respond_to?(:data)
+          addr = reg_or_val.addr
+          data = reg_or_val.data
+          options[:mask] = reg_or_val.enable_mask(:read)
+          options[:store] = reg_or_val.enable_mask(:store)
+        else
+          addr = options[:address]
+          data = reg_or_val
+        end
+        size = options[:size] || 32
+
+        set_size(size)
+        set_addr(addr, force: true)
+        apply_latency
+        swd.read_ap(address: drw.address)
+        apply_latency
+        swd.read_ap(reg_or_val, address: drw.address)
+        increment_addr
+
+        cc "[ARM DEBUG] READ #{size.to_s(10)}: "\
+          "addr=0x#{addr.to_s(16).rjust(size / 4, '0')}"
       end
-      size = options[:size] || 32
-
-      msg = 'Arm Debug: Shift out data for reading'
-      options = { arm_debug_comment: msg }.merge(options)
-      set_size(size)
-      set_addr(addr)
-      reg(:drw).data = get_rdata(size, addr, data)
-      debug_port.read_ap(reg(:drw).address, reg(:drw).data, options)
-      increment_addr
-
-      cc "MEM-AP(#{@name}): R-#{size.to_s(10)}: "\
-        "addr=0x#{addr.to_s(16).rjust(size / 4, '0')}"
-
-      apply_latency
-    end
-
-    # -----------------------------------------------------------------------------
-    # Legacy Support (to be phased out)
-    # -----------------------------------------------------------------------------
-
-    # Method to read from a mem_ap register (DEPRECATED)
-    #
-    # @param [Integer] addr Address of register to be read from
-    # @param [Hash] options Options to customize the operation
-    #
-    # @example
-    #   # don't care what data actually is
-    #   mem_ap.read(0x2000000, size: 32)
-    #
-    #   # expect read data to be = 0x5a5a5a5a
-    #   mem_ap.read(0x2000000, size: 32, edata: 0x5a5a5a5a)
-    #
-    #   # expect read data to be = 0xXXXXXX5a (mask out all bits except [7:0])
-    #   mem_ap.read(0x2000000, size: 32, edata: 0x5a5a5a5a, r_mask: 0x000000ff)
-    #
-    # Returns nothing.
-    def read(addr, options = {})
-      # Warn caller that this method is being deprecated
-      msg = 'Use mem_ap.read_register(reg_or_val, options) instead of read(addr, options)'
-      Origen.deprecate msg
-
-      # Convert old style (addr, options) to (data, options) before passing on to new method
-      data = options.delete(:edata) || 0x00000000
-      mask = options.delete(:r_mask) || 0xFFFFFFFF
-      options = { address: addr, mask: mask }.merge(options)
-      if mask == 'store'
-        options = { store: 0xFFFFFFFF }.merge(options)
-        read_register(data, options)
-      else
-        read_register(data, options)
-      end
-    end
-
-    # Method to write to a mem_ap register (DEPRECATED)
-    #
-    # @param [Integer] addr Address of register to be read from
-    # @param [Integer] wdata Data to be written
-    # @param [Hash] options Options to customize the operation
-    #
-    # @example
-    #   mem_ap.write(0x2000000, 0xc3c3a5a5, size: 32)
-    #
-    # Returns nothing.
-    def write(addr, wdata, options = {});
-      # Warn caller that this method is being deprecated
-      msg = 'Use mem_ap.write_register(reg_or_val, options) instead of write(addr, wdata, options)'
-      Origen.deprecate msg
-
-      # Convert old style (addr, wdata, options) to (data, options) before passing on to new method
-      data = wdata
-      options = { address: addr }.merge(options)
-      write_register(data, options)
-    end
-
-    # Method to write and then read from a mem_ap register (DEPRECATED)
-    #
-    # @param [Integer] addr Address of register to be read from
-    # @param [Integer] wdata Data to be written
-    # @param [Hash] options Options to customize the operation
-    #
-    # @example
-    #   # don't care what read-back data actually is
-    #   mem_ap.write_read(0x2000000, 0xc3c3a5a5, size: 32)
-    #
-    #   # expect read-back data to be same as write data = 0xc3c3a5a5
-    #   mem_ap.read(0x2000000, 0xc3c3a5a5, size: 32, edata: 0xc3c3a5a5)
-    #
-    #   # expect read-back data to be = 0xXXXXXXa5 (mask out all bits except [7:0])
-    #   mem_ap.read(0x2000000, 0xc3c3a5a5, size: 32, edata: 0xc3c3a5a5, r_mask: 0x000000ff)
-    #
-    # Returns nothing.
-    def write_read(addr, wdata, options = {})
-      # Warn caller that this method is being deprecated
-      msg = 'Use mem_ap.write_read_register(reg_or_val, options) instead of write_read(addr, options)'
-      Origen.deprecate msg
-
-      # Convert old style (addr, wdata, options) to (data, options) before passing on to new method
-      data = wdata
-      mask = options.delete(:r_mask) || 0xFFFFFFFF
-      options = { address: addr, mask: mask }.merge(options)
-      write_register(data, options)
-      data = options[:edata] || wdata
-      read_register(data, options)
     end
 
     # -----------------------------------------------------------------------------
@@ -188,6 +113,14 @@ module OrigenARMDebug
     # -----------------------------------------------------------------------------
 
     private
+
+    def protocol
+      debug_port.send(:protocol)
+    end
+
+    def swd
+      debug_port.send(:swd)
+    end
 
     # Sets the size of the data (by writing to the CSW size bits).  It will only
     #   write to the size if the size from the previous transaction has changed
@@ -214,14 +147,8 @@ module OrigenARMDebug
     # Sets the addr of the transaction.
     #
     # @param [Integer] addr Address of data to be read from or written to
-    def set_addr(addr)
-      arm_debug_comment = "Arm Debug: Shift in read/write address: #{addr.to_hex}"
-      options = { arm_debug_comment: arm_debug_comment }
-
-      if (reg(:tar).data != addr)
-        debug_port.write_ap(reg(:tar).address, addr, options)
-      end
-      reg(:tar).data = addr;
+    def set_addr(addr, options = {})
+      tar.write!(addr) if options[:force] || tar.data != addr
     end
 
     # Increment the address for the next transaction.
