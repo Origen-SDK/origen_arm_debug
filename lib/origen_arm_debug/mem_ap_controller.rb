@@ -9,25 +9,16 @@ module OrigenARMDebug
           parent.dp.write_register(reg_or_val)
         end
       else
-        if reg_or_val.respond_to?(:data)
-          addr = reg_or_val.addr
-          data = reg_or_val.data
-        else
-          addr = options[:address]
-          data = reg_or_val
+
+        addr = extract_address(reg_or_val, options)
+        data = extract_data(reg_or_val, options)
+
+        log "Write MEM-AP (#{model.name}) address #{addr.to_hex}: #{data.to_hex}" do
+          tar.write!(addr)
+          drw.write!(data)
+          # increment_addr
+          # apply_latency
         end
-        size = options[:size] || 32
-
-        set_size(size)
-        set_addr(addr, force: true)
-        drw.write!(get_wdata(size, addr, data))
-        increment_addr
-
-        cc "[ARM DEBUG] WRITE #{size.to_s(10)}: "\
-          "addr=0x#{addr.to_s(16).rjust(size / 4, '0')}, "\
-          "data=0x#{reg(:drw).data.to_s(16).rjust(size / 4, '0')}"
-
-        apply_latency
       end
     end
 
@@ -38,27 +29,16 @@ module OrigenARMDebug
         end
 
       else
-        if reg_or_val.respond_to?(:data)
-          addr = reg_or_val.addr
-          data = reg_or_val.data
-          options[:mask] = reg_or_val.enable_mask(:read)
-          options[:store] = reg_or_val.enable_mask(:store)
-        else
-          addr = options[:address]
-          data = reg_or_val
+
+        addr = extract_address(reg_or_val, options)
+
+        log "Read MEM-AP (#{model.name}) address #{addr.to_hex}: #{Origen::Utility.read_hex(reg_or_val)}" do
+          tar.write!(addr)
+          # apply_latency
+          drw.copy_all(reg_or_val)
+          parent.dp.read_register(drw)
+          # increment_addr
         end
-        size = options[:size] || 32
-
-        set_size(size)
-        set_addr(addr, force: true)
-        apply_latency
-        swd.read_ap(address: drw.address)
-        apply_latency
-        swd.read_ap(reg_or_val, address: drw.address)
-        increment_addr
-
-        cc "[ARM DEBUG] READ #{size.to_s(10)}: "\
-          "addr=0x#{addr.to_s(16).rjust(size / 4, '0')}"
       end
     end
   end

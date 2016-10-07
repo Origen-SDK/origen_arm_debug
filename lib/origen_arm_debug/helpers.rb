@@ -1,7 +1,7 @@
 module OrigenARMDebug
   # Generic helper methods shared by the various controllers
   module Helpers
-    def extract_data(reg_or_val)
+    def extract_data(reg_or_val, options = {})
       if reg_or_val.respond_to?(:data)
         reg_or_val.data
       else
@@ -9,7 +9,7 @@ module OrigenARMDebug
       end
     end
 
-    def extract_address(reg_or_val, options)
+    def extract_address(reg_or_val, options = {})
       addr = options[:address] || options[:addr]
       return addr if addr
       return reg_or_val.address if reg_or_val.respond_to?(:address)

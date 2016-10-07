@@ -18,4 +18,23 @@ Pattern.create name: "workout_#{dut.arm_debug.dp.name}" do
   ap.tar.write!(0x1234_0000)
 
   ap.tar.read!
+
+  ss "Tests of high-level register API"
+
+  ss "Test write register, should write value 0xFF01"
+  dut.reg(:test).write!(0x0000FF01)
+
+  ss "Test read register, should read value 0x0000FF01"
+  dut.reg(:test).read!
+
+  ss "Test read register with mask, should read value 0xXXXxxx1"
+  dut.reg(:test).read!(mask: 0x0000_000F)
+
+  ss "Test read register with store"
+  dut.reg(:test).store!
+
+  ss "Test bit level read, should read value 0xXXXxxx1"
+  dut.reg(:test).reset
+  dut.reg(:test).data = 0x0000FF01
+  dut.reg(:test)[0].read!
 end
