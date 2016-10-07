@@ -16,9 +16,9 @@ module OrigenARMDebug
         log "Write MEM-AP (#{model.name}) address #{addr.to_hex}: #{data.to_hex}" do
           tar.write!(addr)
           drw.write!(data)
-          # increment_addr
-          # apply_latency
+          parent.latency.cycles
         end
+        # increment_addr
       end
     end
 
@@ -34,11 +34,11 @@ module OrigenARMDebug
 
         log "Read MEM-AP (#{model.name}) address #{addr.to_hex}: #{Origen::Utility.read_hex(reg_or_val)}" do
           tar.write!(addr)
-          # apply_latency
+          parent.latency.cycles
           drw.copy_all(reg_or_val)
           parent.dp.read_register(drw)
-          # increment_addr
         end
+        # increment_addr
       end
     end
   end

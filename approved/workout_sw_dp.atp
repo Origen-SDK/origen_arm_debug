@@ -1,6 +1,6 @@
 // ***************************************************************************
 // GENERATED:
-//   Time:    07-Oct-2016 15:20PM
+//   Time:    07-Oct-2016 16:11PM
 //   By:      Stephen McGinty
 //   Command: origen g workout -t swd.rb -e j750.rb
 // ***************************************************************************
@@ -8,7 +8,7 @@
 //   Application
 //     Source:    git@github.com:Origen-SDK/origen_arm_debug.git
 //     Version:   1.0.0.pre0
-//     Branch:    v1(b8fac16754d) (+local edits)
+//     Branch:    v1(207bdc9f2d9) (+local edits)
 //   Origen
 //     Source:    https://github.com/Origen-SDK/origen
 //     Version:   0.7.36
@@ -285,6 +285,7 @@ repeat 16                                                        > arm_debug    
 // [SWD] Data Stop
                                                                  > arm_debug                    X X X X X 1 1 ;
 // [ARM Debug] /Write MEM-AP (mem_ap) register DRW: 0xFF01
+repeat 2                                                         > arm_debug                    X X X X X 1 0 ;
 // [ARM Debug] /Write MEM-AP (mem_ap) address 0x0: 0xFF01
 // ######################################################################
 // ## Test read register, should read value 0x0000FF01
@@ -309,6 +310,7 @@ repeat 32                                                        > arm_debug    
 // [SWD] Data Stop
                                                                  > arm_debug                    X X X X X 1 0 ;
 // [ARM Debug] /Write MEM-AP (mem_ap) register TAR: 0x0
+repeat 2                                                         > arm_debug                    X X X X X 1 0 ;
 // [SWD] -----------------------------------------------------------------
 // [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
 // [SWD] |   1   |   1   |   1   |   1   |   1   |   0   |   0   |   1   |
@@ -366,6 +368,7 @@ repeat 32                                                        > arm_debug    
 // [SWD] Data Stop
                                                                  > arm_debug                    X X X X X 1 0 ;
 // [ARM Debug] /Write MEM-AP (mem_ap) register TAR: 0x0
+repeat 2                                                         > arm_debug                    X X X X X 1 0 ;
 // [SWD] -----------------------------------------------------------------
 // [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
 // [SWD] |   1   |   1   |   1   |   1   |   1   |   0   |   0   |   1   |
@@ -422,6 +425,7 @@ repeat 32                                                        > arm_debug    
 // [SWD] Data Stop
                                                                  > arm_debug                    X X X X X 1 0 ;
 // [ARM Debug] /Write MEM-AP (mem_ap) register TAR: 0x0
+repeat 2                                                         > arm_debug                    X X X X X 1 0 ;
 // [SWD] -----------------------------------------------------------------
 // [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
 // [SWD] |   1   |   1   |   1   |   1   |   1   |   0   |   0   |   1   |
@@ -507,6 +511,7 @@ repeat 32                                                        > arm_debug    
 // [SWD] Data Stop
                                                                  > arm_debug                    X X X X X 1 0 ;
 // [ARM Debug] /Write MEM-AP (mem_ap) register TAR: 0x0
+repeat 2                                                         > arm_debug                    X X X X X 1 0 ;
 // [SWD] -----------------------------------------------------------------
 // [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
 // [SWD] |   1   |   1   |   1   |   1   |   1   |   0   |   0   |   1   |

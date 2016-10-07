@@ -4,7 +4,7 @@ module OrigenARMDebug
   class DAP
     include Origen::Model
 
-    attr_reader :dps, :mem_aps, :jtag_aps
+    attr_reader :dps, :mem_aps, :jtag_aps, :latency
 
     def initialize(options = {})
       @dps = []
