@@ -1,14 +1,14 @@
 // ***************************************************************************
 // GENERATED:
-//   Time:    07-Oct-2016 12:12PM
+//   Time:    07-Oct-2016 14:49PM
 //   By:      Stephen McGinty
-//   Command: origen g sw_dp -t swd.rb -e j750.rb
+//   Command: origen g workout -t swd.rb -e j750.rb
 // ***************************************************************************
 // ENVIRONMENT:
 //   Application
 //     Source:    git@github.com:Origen-SDK/origen_arm_debug.git
 //     Version:   1.0.0.pre0
-//     Branch:    v1(ae9cc876c18) (+local edits)
+//     Branch:    v1(d054ac2b70a) (+local edits)
 //   Origen
 //     Source:    https://github.com/Origen-SDK/origen
 //     Version:   0.7.36
@@ -34,7 +34,10 @@ start_label pattern_st:
 //                                                                                                        c d
 //                                                                                                        l i
 //                                                                                                        k o
-// [ARM Debug] Read DP register IDCODE: 0xX0012XXX
+// ######################################################################
+// ## Tests of direct DP API
+// ######################################################################
+// [ARM Debug] Read SW-DP register IDCODE: 0xX0012XXX
 // [SWD] -----------------------------------------------------------------
 // [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
 // [SWD] |   1   |   0   |   1   |   0   |   0   |   1   |   0   |   1   |
@@ -59,8 +62,8 @@ repeat 11                                                        > arm_debug    
 repeat 4                                                         > arm_debug                    X X X X X 1 X ;
 // [SWD] Data Stop
 repeat 2                                                         > arm_debug                    X X X X X 1 X ;
-// [ARM Debug] /Read DP register IDCODE: 0xX0012XXX
-// [ARM Debug] Write DP register CTRLSTAT: 0x50000000
+// [ARM Debug] /Read SW-DP register IDCODE: 0xX0012XXX
+// [ARM Debug] Write SW-DP register CTRLSTAT: 0x50000000
 // [SWD] -----------------------------------------------------------------
 // [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
 // [SWD] |   1   |   0   |   0   |   1   |   0   |   1   |   0   |   1   |
@@ -84,8 +87,8 @@ repeat 28                                                        > arm_debug    
                                                                  > arm_debug                    X X X X X 1 0 ;
 // [SWD] Data Stop
                                                                  > arm_debug                    X X X X X 1 0 ;
-// [ARM Debug] /Write DP register CTRLSTAT: 0x50000000
-// [ARM Debug] Read DP register CTRLSTAT: 0xF0000000
+// [ARM Debug] /Write SW-DP register CTRLSTAT: 0x50000000
+// [ARM Debug] Read SW-DP register CTRLSTAT: 0xF0000000
 // [SWD] -----------------------------------------------------------------
 // [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
 // [SWD] |   1   |   0   |   1   |   1   |   0   |   0   |   0   |   1   |
@@ -103,8 +106,8 @@ repeat 28                                                        > arm_debug    
 repeat 4                                                         > arm_debug                    X X X X X 1 H ;
 // [SWD] Data Stop
 repeat 2                                                         > arm_debug                    X X X X X 1 X ;
-// [ARM Debug] /Read DP register CTRLSTAT: 0xF0000000
-// [ARM Debug] Write DP register SELECT: 0xF0
+// [ARM Debug] /Read SW-DP register CTRLSTAT: 0xF0000000
+// [ARM Debug] Write SW-DP register SELECT: 0xF0
 // [SWD] -----------------------------------------------------------------
 // [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
 // [SWD] |   1   |   0   |   0   |   0   |   1   |   1   |   0   |   1   |
@@ -124,8 +127,8 @@ repeat 4                                                         > arm_debug    
 repeat 24                                                        > arm_debug                    X X X X X 1 0 ;
 // [SWD] Data Stop
                                                                  > arm_debug                    X X X X X 1 0 ;
-// [ARM Debug] /Write DP register SELECT: 0xF0
-// [ARM Debug] Write DP register ABORT: 0x1
+// [ARM Debug] /Write SW-DP register SELECT: 0xF0
+// [ARM Debug] Write SW-DP register ABORT: 0x1
 // [SWD] -----------------------------------------------------------------
 // [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
 // [SWD] |   1   |   0   |   0   |   0   |   0   |   0   |   0   |   1   |
@@ -142,7 +145,98 @@ repeat 2                                                         > arm_debug    
 repeat 31                                                        > arm_debug                    X X X X X 1 0 ;
 // [SWD] Data Stop
                                                                  > arm_debug                    X X X X X 1 1 ;
-// [ARM Debug] /Write DP register ABORT: 0x1
+// [ARM Debug] /Write SW-DP register ABORT: 0x1
+// ######################################################################
+// ## Tests of direct AP API
+// ######################################################################
+// [ARM Debug] Write MEM-AP (mem_ap) register TAR: 0x12340000
+// [ARM Debug] Write SW-DP register SELECT: 0x0
+// [SWD] -----------------------------------------------------------------
+// [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
+// [SWD] |   1   |   0   |   0   |   0   |   1   |   1   |   0   |   1   |
+// [SWD] -----------------------------------------------------------------
+                                                                 > arm_debug                    X X X X X 1 1 ;
+repeat 3                                                         > arm_debug                    X X X X X 1 0 ;
+repeat 2                                                         > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 2                                                         > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+// [SWD] Data Start: 0
+repeat 32                                                        > arm_debug                    X X X X X 1 0 ;
+// [SWD] Data Stop
+                                                                 > arm_debug                    X X X X X 1 0 ;
+// [ARM Debug] /Write SW-DP register SELECT: 0x0
+// [SWD] -----------------------------------------------------------------
+// [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
+// [SWD] |   1   |   1   |   0   |   1   |   0   |   0   |   0   |   1   |
+// [SWD] -----------------------------------------------------------------
+repeat 2                                                         > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+repeat 3                                                         > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 2                                                         > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+// [SWD] Data Start: 12340000
+repeat 18                                                        > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+repeat 2                                                         > arm_debug                    X X X X X 1 1 ;
+repeat 3                                                         > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+repeat 2                                                         > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+repeat 3                                                         > arm_debug                    X X X X X 1 0 ;
+// [SWD] Data Stop
+                                                                 > arm_debug                    X X X X X 1 1 ;
+// [ARM Debug] /Write MEM-AP (mem_ap) register TAR: 0x12340000
+// [ARM Debug] Read MEM-AP (mem_ap) register TAR: 0x12340000
+// [SWD] -----------------------------------------------------------------
+// [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
+// [SWD] |   1   |   1   |   1   |   1   |   0   |   1   |   0   |   1   |
+// [SWD] -----------------------------------------------------------------
+repeat 4                                                         > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 2                                                         > arm_debug                    X X X X X 1 L ;
+// [SWD] Data Start: XXXXXXXX
+repeat 32                                                        > arm_debug                    X X X X X 1 X ;
+// [SWD] Data Stop
+repeat 2                                                         > arm_debug                    X X X X X 1 X ;
+// [SWD] -----------------------------------------------------------------
+// [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
+// [SWD] |   1   |   0   |   1   |   1   |   1   |   1   |   0   |   1   |
+// [SWD] -----------------------------------------------------------------
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+repeat 4                                                         > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 2                                                         > arm_debug                    X X X X X 1 L ;
+// [SWD] Data Start: 12340000
+repeat 18                                                        > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+                                                                 > arm_debug                    X X X X X 1 L ;
+repeat 2                                                         > arm_debug                    X X X X X 1 H ;
+repeat 3                                                         > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 2                                                         > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 3                                                         > arm_debug                    X X X X X 1 L ;
+// [SWD] Data Stop
+repeat 2                                                         > arm_debug                    X X X X X 1 X ;
+// [ARM Debug] /Read MEM-AP (mem_ap) register TAR: 0x12340000
 // ######################################################################
 // ## Pattern complete
 // ######################################################################

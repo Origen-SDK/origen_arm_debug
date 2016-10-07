@@ -1,14 +1,14 @@
 // ***************************************************************************
 // GENERATED:
-//   Time:    07-Oct-2016 12:12PM
+//   Time:    07-Oct-2016 14:49PM
 //   By:      Stephen McGinty
-//   Command: origen g jtag_dp -t jtag.rb -e j750.rb
+//   Command: origen g workout -t jtag.rb -e j750.rb
 // ***************************************************************************
 // ENVIRONMENT:
 //   Application
 //     Source:    git@github.com:Origen-SDK/origen_arm_debug.git
 //     Version:   1.0.0.pre0
-//     Branch:    v1(ae9cc876c18) (+local edits)
+//     Branch:    v1(d054ac2b70a) (+local edits)
 //   Origen
 //     Source:    https://github.com/Origen-SDK/origen
 //     Version:   0.7.36
@@ -34,7 +34,10 @@ start_label pattern_st:
 //                                                                                                        c d
 //                                                                                                        l i
 //                                                                                                        k o
-// [ARM Debug] Read DP register IDCODE: 0xX0012XXX
+// ######################################################################
+// ## Tests of direct DP API
+// ######################################################################
+// [ARM Debug] Read JTAG-DP register IDCODE: 0xX0012XXX
 repeat 6                                                         > arm_debug                    0 X X 1 X X X ;
 repeat 2                                                         > arm_debug                    0 X X 0 X X X ;
 repeat 2                                                         > arm_debug                    0 X X 1 X X X ;
@@ -60,8 +63,8 @@ repeat 3                                                         > arm_debug    
 // [JTAG] /Read DR: 0xX0012XXX
                                                                  > arm_debug                    0 0 X 1 X X X ;
                                                                  > arm_debug                    0 0 X 0 X X X ;
-// [ARM Debug] /Read DP register IDCODE: 0xX0012XXX
-// [ARM Debug] Write DP register CTRLSTAT: 0x50000000
+// [ARM Debug] /Read JTAG-DP register IDCODE: 0xX0012XXX
+// [ARM Debug] Write JTAG-DP register CTRLSTAT: 0x50000000
 repeat 2                                                         > arm_debug                    0 0 X 1 X X X ;
 repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
 // [JTAG] Write IR: 0xA
@@ -85,8 +88,8 @@ repeat 29                                                        > arm_debug    
 // [JTAG] /Write DR: 0x280000002
                                                                  > arm_debug                    0 0 X 1 X X X ;
                                                                  > arm_debug                    0 0 X 0 X X X ;
-// [ARM Debug] /Write DP register CTRLSTAT: 0x50000000
-// [ARM Debug] Read DP register CTRLSTAT: 0xF0000000
+// [ARM Debug] /Write JTAG-DP register CTRLSTAT: 0x50000000
+// [ARM Debug] Read JTAG-DP register CTRLSTAT: 0xF0000000
                                                                  > arm_debug                    0 0 X 1 X X X ;
 repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
 // [JTAG] Read DR: 0x78000000_0xxx
@@ -97,8 +100,8 @@ repeat 3                                                         > arm_debug    
 // [JTAG] /Read DR: 0x78000000_0xxx
                                                                  > arm_debug                    0 0 X 1 X X X ;
                                                                  > arm_debug                    0 0 X 0 X X X ;
-// [ARM Debug] /Read DP register CTRLSTAT: 0xF0000000
-// [ARM Debug] Write DP register SELECT: 0xF0
+// [ARM Debug] /Read JTAG-DP register CTRLSTAT: 0xF0000000
+// [ARM Debug] Write JTAG-DP register SELECT: 0xF0
                                                                  > arm_debug                    0 0 X 1 X X X ;
 repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
 // [JTAG] Write DR: 0x784
@@ -111,8 +114,8 @@ repeat 23                                                        > arm_debug    
 // [JTAG] /Write DR: 0x784
                                                                  > arm_debug                    0 0 X 1 X X X ;
                                                                  > arm_debug                    0 0 X 0 X X X ;
-// [ARM Debug] /Write DP register SELECT: 0xF0
-// [ARM Debug] Write DP register ABORT: 0x1
+// [ARM Debug] /Write JTAG-DP register SELECT: 0xF0
+// [ARM Debug] Write JTAG-DP register ABORT: 0x1
 repeat 2                                                         > arm_debug                    0 0 X 1 X X X ;
 repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
 // [JTAG] Write IR: 0x8
@@ -131,7 +134,80 @@ repeat 30                                                        > arm_debug    
 // [JTAG] /Write DR: 0x8
                                                                  > arm_debug                    0 0 X 1 X X X ;
                                                                  > arm_debug                    0 0 X 0 X X X ;
-// [ARM Debug] /Write DP register ABORT: 0x1
+// [ARM Debug] /Write JTAG-DP register ABORT: 0x1
+// ######################################################################
+// ## Tests of direct AP API
+// ######################################################################
+// [ARM Debug] Write MEM-AP (mem_ap) register TAR: 0x12340000
+// [ARM Debug] Write JTAG-DP register SELECT: 0x0
+repeat 2                                                         > arm_debug                    0 0 X 1 X X X ;
+repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
+// [JTAG] Write IR: 0xA
+                                                                 > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 1 X 0 X X X ;
+                                                                 > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 1 X 1 X X X ;
+// [JTAG] /Write IR: 0xA
+                                                                 > arm_debug                    0 1 X 1 X X X ;
+                                                                 > arm_debug                    0 1 X 0 X X X ;
+                                                                 > arm_debug                    0 1 X 1 X X X ;
+repeat 2                                                         > arm_debug                    0 1 X 0 X X X ;
+// [JTAG] Write DR: 0x4
+repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 1 X 0 X X X ;
+repeat 31                                                        > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 0 X 1 X X X ;
+// [JTAG] /Write DR: 0x4
+                                                                 > arm_debug                    0 0 X 1 X X X ;
+                                                                 > arm_debug                    0 0 X 0 X X X ;
+// [ARM Debug] /Write JTAG-DP register SELECT: 0x0
+repeat 2                                                         > arm_debug                    0 0 X 1 X X X ;
+repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
+// [JTAG] Write IR: 0xB
+repeat 2                                                         > arm_debug                    0 1 X 0 X X X ;
+                                                                 > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 1 X 1 X X X ;
+// [JTAG] /Write IR: 0xB
+                                                                 > arm_debug                    0 1 X 1 X X X ;
+                                                                 > arm_debug                    0 1 X 0 X X X ;
+                                                                 > arm_debug                    0 1 X 1 X X X ;
+repeat 2                                                         > arm_debug                    0 1 X 0 X X X ;
+// [JTAG] Write DR: 0x91A00002
+                                                                 > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 1 X 0 X X X ;
+repeat 19                                                        > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 1 X 0 X X X ;
+                                                                 > arm_debug                    0 0 X 0 X X X ;
+repeat 2                                                         > arm_debug                    0 1 X 0 X X X ;
+repeat 3                                                         > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 1 X 0 X X X ;
+repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 1 X 0 X X X ;
+repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 0 X 1 X X X ;
+// [JTAG] /Write DR: 0x91A00002
+                                                                 > arm_debug                    0 0 X 1 X X X ;
+                                                                 > arm_debug                    0 0 X 0 X X X ;
+// [ARM Debug] /Write MEM-AP (mem_ap) register TAR: 0x12340000
+// [ARM Debug] Read MEM-AP (mem_ap) register TAR: 0x12340000
+                                                                 > arm_debug                    0 0 X 1 X X X ;
+repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
+// [JTAG] Read DR: 0x091A0000_0xxx
+repeat 3                                                         > arm_debug                    0 0 X 0 X X X ;
+repeat 18                                                        > arm_debug                    0 0 L 0 X X X ;
+                                                                 > arm_debug                    0 0 H 0 X X X ;
+                                                                 > arm_debug                    0 0 L 0 X X X ;
+repeat 2                                                         > arm_debug                    0 0 H 0 X X X ;
+repeat 3                                                         > arm_debug                    0 0 L 0 X X X ;
+                                                                 > arm_debug                    0 0 H 0 X X X ;
+repeat 2                                                         > arm_debug                    0 0 L 0 X X X ;
+                                                                 > arm_debug                    0 0 H 0 X X X ;
+repeat 2                                                         > arm_debug                    0 0 L 0 X X X ;
+                                                                 > arm_debug                    0 0 L 1 X X X ;
+// [JTAG] /Read DR: 0x091A0000_0xxx
+                                                                 > arm_debug                    0 0 X 1 X X X ;
+                                                                 > arm_debug                    0 0 X 0 X X X ;
+// [ARM Debug] /Read MEM-AP (mem_ap) register TAR: 0x12340000
 // ######################################################################
 // ## Pattern complete
 // ######################################################################
