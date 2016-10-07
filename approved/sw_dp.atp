@@ -1,0 +1,150 @@
+// ***************************************************************************
+// GENERATED:
+//   Time:    07-Oct-2016 12:12PM
+//   By:      Stephen McGinty
+//   Command: origen g sw_dp -t swd.rb -e j750.rb
+// ***************************************************************************
+// ENVIRONMENT:
+//   Application
+//     Source:    git@github.com:Origen-SDK/origen_arm_debug.git
+//     Version:   1.0.0.pre0
+//     Branch:    v1(ae9cc876c18) (+local edits)
+//   Origen
+//     Source:    https://github.com/Origen-SDK/origen
+//     Version:   0.7.36
+//   Plugins
+//     atp:                      0.4.3
+//     origen_doc_helpers:       0.4.4
+//     origen_jtag:              0.12.1
+//     origen_swd:               0.5.0
+//     origen_testers:           0.8.5
+// ***************************************************************************
+import tset arm_debug;                                                                          
+svm_only_file = no;                                                                             
+opcode_mode = extended;                                                                         
+compressed = yes;                                                                               
+                                                                                                
+vector ($tset, tclk, tdi, tdo, tms, trst, swd_clk, swd_dio)                                     
+{                                                                                               
+start_label pattern_st:                                                                         
+//                                                                                              t t t t t s s
+//                                                                                              c d d m r w w
+//                                                                                              l i o s s d d
+//                                                                                              k       t - -
+//                                                                                                        c d
+//                                                                                                        l i
+//                                                                                                        k o
+// [ARM Debug] Read DP register IDCODE: 0xX0012XXX
+// [SWD] -----------------------------------------------------------------
+// [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
+// [SWD] |   1   |   0   |   1   |   0   |   0   |   1   |   0   |   1   |
+// [SWD] -----------------------------------------------------------------
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+repeat 2                                                         > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 2                                                         > arm_debug                    X X X X X 1 L ;
+// [SWD] Data Start: X0012XXX
+repeat 12                                                        > arm_debug                    X X X X X 1 X ;
+                                                                 > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 2                                                         > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 11                                                        > arm_debug                    X X X X X 1 L ;
+repeat 4                                                         > arm_debug                    X X X X X 1 X ;
+// [SWD] Data Stop
+repeat 2                                                         > arm_debug                    X X X X X 1 X ;
+// [ARM Debug] /Read DP register IDCODE: 0xX0012XXX
+// [ARM Debug] Write DP register CTRLSTAT: 0x50000000
+// [SWD] -----------------------------------------------------------------
+// [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
+// [SWD] |   1   |   0   |   0   |   1   |   0   |   1   |   0   |   1   |
+// [SWD] -----------------------------------------------------------------
+                                                                 > arm_debug                    X X X X X 1 1 ;
+repeat 2                                                         > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 2                                                         > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+// [SWD] Data Start: 50000000
+repeat 28                                                        > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+// [SWD] Data Stop
+                                                                 > arm_debug                    X X X X X 1 0 ;
+// [ARM Debug] /Write DP register CTRLSTAT: 0x50000000
+// [ARM Debug] Read DP register CTRLSTAT: 0xF0000000
+// [SWD] -----------------------------------------------------------------
+// [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
+// [SWD] |   1   |   0   |   1   |   1   |   0   |   0   |   0   |   1   |
+// [SWD] -----------------------------------------------------------------
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+repeat 2                                                         > arm_debug                    X X X X X 1 1 ;
+repeat 3                                                         > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 2                                                         > arm_debug                    X X X X X 1 L ;
+// [SWD] Data Start: F0000000
+repeat 28                                                        > arm_debug                    X X X X X 1 L ;
+repeat 4                                                         > arm_debug                    X X X X X 1 H ;
+// [SWD] Data Stop
+repeat 2                                                         > arm_debug                    X X X X X 1 X ;
+// [ARM Debug] /Read DP register CTRLSTAT: 0xF0000000
+// [ARM Debug] Write DP register SELECT: 0xF0
+// [SWD] -----------------------------------------------------------------
+// [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
+// [SWD] |   1   |   0   |   0   |   0   |   1   |   1   |   0   |   1   |
+// [SWD] -----------------------------------------------------------------
+                                                                 > arm_debug                    X X X X X 1 1 ;
+repeat 3                                                         > arm_debug                    X X X X X 1 0 ;
+repeat 2                                                         > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 2                                                         > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+// [SWD] Data Start: F0
+repeat 4                                                         > arm_debug                    X X X X X 1 0 ;
+repeat 4                                                         > arm_debug                    X X X X X 1 1 ;
+repeat 24                                                        > arm_debug                    X X X X X 1 0 ;
+// [SWD] Data Stop
+                                                                 > arm_debug                    X X X X X 1 0 ;
+// [ARM Debug] /Write DP register SELECT: 0xF0
+// [ARM Debug] Write DP register ABORT: 0x1
+// [SWD] -----------------------------------------------------------------
+// [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
+// [SWD] |   1   |   0   |   0   |   0   |   0   |   0   |   0   |   1   |
+// [SWD] -----------------------------------------------------------------
+                                                                 > arm_debug                    X X X X X 1 1 ;
+repeat 6                                                         > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 2                                                         > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+// [SWD] Data Start: 1
+                                                                 > arm_debug                    X X X X X 1 1 ;
+repeat 31                                                        > arm_debug                    X X X X X 1 0 ;
+// [SWD] Data Stop
+                                                                 > arm_debug                    X X X X X 1 1 ;
+// [ARM Debug] /Write DP register ABORT: 0x1
+// ######################################################################
+// ## Pattern complete
+// ######################################################################
+end_module                                                       > arm_debug                    X X X X X 1 0 ;
+}                                                                                               

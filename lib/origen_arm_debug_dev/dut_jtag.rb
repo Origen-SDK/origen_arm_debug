@@ -14,6 +14,8 @@ module OrigenARMDebugDev
       add_pin :trst
       add_pin :swd_clk
       add_pin :swd_dio
+
+      sub_block :arm_debug, class_name: 'OrigenARMDebug::DAP', aps: { mem_ap: 0x00000000, mdm_ap: 0x01000000 }, latency: 2
     end
   end
 end

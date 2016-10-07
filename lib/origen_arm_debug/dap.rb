@@ -1,19 +1,7 @@
 module OrigenARMDebug
-  # To use this driver the owner model must include the SWD or JTAG protocol drivers:
-  #   include JTAG
-  #     or
-  #   include SWD
-  #
-  class Driver
+  # This is the top-level model that instantiates the DP and APs
+  class DAP
     include Origen::Model
-
-    # Returns the parent object that instantiated the driver, could be
-    # either a DUT object or a protocol abstraction
-    attr_reader :owner
-
-    # Customizable delay that will be applied after any read/write register transaction
-    # defaults to 0
-    attr_reader :latency
 
     # Initialize class variables
     #
@@ -32,7 +20,13 @@ module OrigenARMDebug
     end
 
     def instantiate_subblocks(options = {})
-      sub_block :swj_dp, class_name: 'OrigenARMDebug::SWJ_DP'
+      if options[:jtag] || parent.respond_to?(:jtag)
+        sub_block :jtag_dp, class_name: 'OrigenARMDebug::JTAG_DP'
+      end
+
+      if options[:swd] || parent.respond_to?(:swd)
+        sub_block :sw_dp, class_name: 'OrigenARMDebug::SW_DP'
+      end
 
       if options[:aps].nil?
         add_mem_ap('mem_ap', 0x00000000)
@@ -58,21 +52,6 @@ module OrigenARMDebug
       block = sub_block name.to_sym, class_name: 'OrigenARMDebug::MemAP', base_address: base_address
       @aps[name] = block
     end
-
-    # Create and/or return the SWJ_DP object with specified protocol
-    # def swj_dp
-    #  if parent.respond_to?(:swd)
-    #    @swj_dp ||= SWJ_DP.new(self, :swd)
-    #  elsif parent.respond_to?(:jtag)
-    #    @swj_dp ||= SWJ_DP.new(self, :jtag)
-    #  end
-    # end
-    def abs_if
-      swj_dp
-    end
-    alias_method :apapi, :abs_if
-    alias_method :dpapi, :abs_if
-    alias_method :sw_dp, :abs_if
 
     # Read from a MEM-AP register
     #
@@ -118,4 +97,5 @@ module OrigenARMDebug
       @aps[:mem_ap] || @aps.first[1]
     end
   end
+  Driver = DAP # For legacy API compatibility
 end

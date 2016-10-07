@@ -26,12 +26,16 @@ when "examples"
   status = 0
   
   # Pattern generator tests
-  ARGV = %w(read_write_reg -t jtag -e j750 -r approved)
+  ARGV = %w(jtag_dp -t jtag -e j750 -r approved)
   load "#{Origen.top}/lib/origen/commands/generate.rb"
-  ARGV = %w(read_write_reg_jtag -t jtag -e j750 -r approved)
+  ARGV = %w(sw_dp -t swd -e j750 -r approved)
   load "#{Origen.top}/lib/origen/commands/generate.rb"
-  ARGV = %w(read_write_reg_swd -t swd -e j750 -r approved)
-  load "#{Origen.top}/lib/origen/commands/generate.rb"
+  #ARGV = %w(read_write_reg -t jtag -e j750 -r approved)
+  #load "#{Origen.top}/lib/origen/commands/generate.rb"
+  #ARGV = %w(read_write_reg_jtag -t jtag -e j750 -r approved)
+  #load "#{Origen.top}/lib/origen/commands/generate.rb"
+  #ARGV = %w(read_write_reg_swd -t swd -e j750 -r approved)
+  #load "#{Origen.top}/lib/origen/commands/generate.rb"
     
   if Origen.app.stats.changed_files == 0 &&
      Origen.app.stats.new_files == 0 &&
