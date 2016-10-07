@@ -17,9 +17,9 @@ aliases ={
 # Now branch to the specific task code
 case @command
 
-when "specs"
-  require "rspec"
-  exit RSpec::Core::Runner.run(['spec'])
+#when "specs"
+#  require "rspec"
+#  exit RSpec::Core::Runner.run(['spec'])
 
 when "examples"  
   Origen.load_application
@@ -30,12 +30,6 @@ when "examples"
   load "#{Origen.top}/lib/origen/commands/generate.rb"
   ARGV = %w(workout -t swd -e j750 -r approved)
   load "#{Origen.top}/lib/origen/commands/generate.rb"
-  #ARGV = %w(read_write_reg -t jtag -e j750 -r approved)
-  #load "#{Origen.top}/lib/origen/commands/generate.rb"
-  #ARGV = %w(read_write_reg_jtag -t jtag -e j750 -r approved)
-  #load "#{Origen.top}/lib/origen/commands/generate.rb"
-  #ARGV = %w(read_write_reg_swd -t swd -e j750 -r approved)
-  #load "#{Origen.top}/lib/origen/commands/generate.rb"
     
   if Origen.app.stats.changed_files == 0 &&
      Origen.app.stats.new_files == 0 &&
@@ -56,8 +50,8 @@ when "examples"
 # origen -h, you can do this be assigning the required text to @application_commands
 # before handing control back to Origen. Un-comment the example below to get started.
 else
+ #specs        Run the specs (unit tests), -c will enable coverage
   @application_commands = <<-EOT
- specs        Run the specs (unit tests), -c will enable coverage
  examples     Run the examples (tests), -c will enable coverage
   EOT
 
