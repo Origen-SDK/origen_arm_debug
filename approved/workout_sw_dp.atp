@@ -1,6 +1,6 @@
 // ***************************************************************************
 // GENERATED:
-//   Time:    07-Oct-2016 16:11PM
+//   Time:    07-Oct-2016 17:21PM
 //   By:      Stephen McGinty
 //   Command: origen g workout -t swd.rb -e j750.rb
 // ***************************************************************************
@@ -8,7 +8,7 @@
 //   Application
 //     Source:    git@github.com:Origen-SDK/origen_arm_debug.git
 //     Version:   1.0.0.pre0
-//     Branch:    v1(207bdc9f2d9) (+local edits)
+//     Branch:    v1(2d8c363e18f) (+local edits)
 //   Origen
 //     Source:    https://github.com/Origen-SDK/origen
 //     Version:   0.7.36
@@ -291,25 +291,6 @@ repeat 2                                                         > arm_debug    
 // ## Test read register, should read value 0x0000FF01
 // ######################################################################
 // [ARM Debug] Read MEM-AP (mem_ap) address 0x0: 0x0000FF01
-// [ARM Debug] Write MEM-AP (mem_ap) register TAR: 0x0
-// [SWD] -----------------------------------------------------------------
-// [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
-// [SWD] |   1   |   1   |   0   |   1   |   0   |   0   |   0   |   1   |
-// [SWD] -----------------------------------------------------------------
-repeat 2                                                         > arm_debug                    X X X X X 1 1 ;
-                                                                 > arm_debug                    X X X X X 1 0 ;
-                                                                 > arm_debug                    X X X X X 1 1 ;
-repeat 3                                                         > arm_debug                    X X X X X 1 0 ;
-                                                                 > arm_debug                    X X X X X 1 1 ;
-                                                                 > arm_debug                    X X X X X 1 X ;
-                                                                 > arm_debug                    X X X X X 1 H ;
-repeat 2                                                         > arm_debug                    X X X X X 1 L ;
-                                                                 > arm_debug                    X X X X X 1 X ;
-// [SWD] Data Start: 0
-repeat 32                                                        > arm_debug                    X X X X X 1 0 ;
-// [SWD] Data Stop
-                                                                 > arm_debug                    X X X X X 1 0 ;
-// [ARM Debug] /Write MEM-AP (mem_ap) register TAR: 0x0
 repeat 2                                                         > arm_debug                    X X X X X 1 0 ;
 // [SWD] -----------------------------------------------------------------
 // [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
@@ -349,25 +330,6 @@ repeat 2                                                         > arm_debug    
 // ## Test read register with mask, should read value 0xXXXxxx1
 // ######################################################################
 // [ARM Debug] Read MEM-AP (mem_ap) address 0x0: 0xXXXXXXX1
-// [ARM Debug] Write MEM-AP (mem_ap) register TAR: 0x0
-// [SWD] -----------------------------------------------------------------
-// [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
-// [SWD] |   1   |   1   |   0   |   1   |   0   |   0   |   0   |   1   |
-// [SWD] -----------------------------------------------------------------
-repeat 2                                                         > arm_debug                    X X X X X 1 1 ;
-                                                                 > arm_debug                    X X X X X 1 0 ;
-                                                                 > arm_debug                    X X X X X 1 1 ;
-repeat 3                                                         > arm_debug                    X X X X X 1 0 ;
-                                                                 > arm_debug                    X X X X X 1 1 ;
-                                                                 > arm_debug                    X X X X X 1 X ;
-                                                                 > arm_debug                    X X X X X 1 H ;
-repeat 2                                                         > arm_debug                    X X X X X 1 L ;
-                                                                 > arm_debug                    X X X X X 1 X ;
-// [SWD] Data Start: 0
-repeat 32                                                        > arm_debug                    X X X X X 1 0 ;
-// [SWD] Data Stop
-                                                                 > arm_debug                    X X X X X 1 0 ;
-// [ARM Debug] /Write MEM-AP (mem_ap) register TAR: 0x0
 repeat 2                                                         > arm_debug                    X X X X X 1 0 ;
 // [SWD] -----------------------------------------------------------------
 // [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
@@ -406,25 +368,6 @@ repeat 2                                                         > arm_debug    
 // ## Test read register with store
 // ######################################################################
 // [ARM Debug] Read MEM-AP (mem_ap) address 0x0: 0xSSSSSSSS
-// [ARM Debug] Write MEM-AP (mem_ap) register TAR: 0x0
-// [SWD] -----------------------------------------------------------------
-// [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
-// [SWD] |   1   |   1   |   0   |   1   |   0   |   0   |   0   |   1   |
-// [SWD] -----------------------------------------------------------------
-repeat 2                                                         > arm_debug                    X X X X X 1 1 ;
-                                                                 > arm_debug                    X X X X X 1 0 ;
-                                                                 > arm_debug                    X X X X X 1 1 ;
-repeat 3                                                         > arm_debug                    X X X X X 1 0 ;
-                                                                 > arm_debug                    X X X X X 1 1 ;
-                                                                 > arm_debug                    X X X X X 1 X ;
-                                                                 > arm_debug                    X X X X X 1 H ;
-repeat 2                                                         > arm_debug                    X X X X X 1 L ;
-                                                                 > arm_debug                    X X X X X 1 X ;
-// [SWD] Data Start: 0
-repeat 32                                                        > arm_debug                    X X X X X 1 0 ;
-// [SWD] Data Stop
-                                                                 > arm_debug                    X X X X X 1 0 ;
-// [ARM Debug] /Write MEM-AP (mem_ap) register TAR: 0x0
 repeat 2                                                         > arm_debug                    X X X X X 1 0 ;
 // [SWD] -----------------------------------------------------------------
 // [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
@@ -492,25 +435,6 @@ repeat 2                                                         > arm_debug    
 // ## Test bit level read, should read value 0xXXXxxx1
 // ######################################################################
 // [ARM Debug] Read MEM-AP (mem_ap) address 0x0: 0xXXXXXXX_xxx1
-// [ARM Debug] Write MEM-AP (mem_ap) register TAR: 0x0
-// [SWD] -----------------------------------------------------------------
-// [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
-// [SWD] |   1   |   1   |   0   |   1   |   0   |   0   |   0   |   1   |
-// [SWD] -----------------------------------------------------------------
-repeat 2                                                         > arm_debug                    X X X X X 1 1 ;
-                                                                 > arm_debug                    X X X X X 1 0 ;
-                                                                 > arm_debug                    X X X X X 1 1 ;
-repeat 3                                                         > arm_debug                    X X X X X 1 0 ;
-                                                                 > arm_debug                    X X X X X 1 1 ;
-                                                                 > arm_debug                    X X X X X 1 X ;
-                                                                 > arm_debug                    X X X X X 1 H ;
-repeat 2                                                         > arm_debug                    X X X X X 1 L ;
-                                                                 > arm_debug                    X X X X X 1 X ;
-// [SWD] Data Start: 0
-repeat 32                                                        > arm_debug                    X X X X X 1 0 ;
-// [SWD] Data Stop
-                                                                 > arm_debug                    X X X X X 1 0 ;
-// [ARM Debug] /Write MEM-AP (mem_ap) register TAR: 0x0
 repeat 2                                                         > arm_debug                    X X X X X 1 0 ;
 // [SWD] -----------------------------------------------------------------
 // [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |

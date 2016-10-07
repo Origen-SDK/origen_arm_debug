@@ -1,6 +1,6 @@
 // ***************************************************************************
 // GENERATED:
-//   Time:    07-Oct-2016 16:11PM
+//   Time:    07-Oct-2016 17:21PM
 //   By:      Stephen McGinty
 //   Command: origen g workout -t jtag.rb -e j750.rb
 // ***************************************************************************
@@ -8,7 +8,7 @@
 //   Application
 //     Source:    git@github.com:Origen-SDK/origen_arm_debug.git
 //     Version:   1.0.0.pre0
-//     Branch:    v1(207bdc9f2d9) (+local edits)
+//     Branch:    v1(2d8c363e18f) (+local edits)
 //   Origen
 //     Source:    https://github.com/Origen-SDK/origen
 //     Version:   0.7.36
@@ -247,18 +247,6 @@ repeat 2                                                         > arm_debug    
 // ## Test read register, should read value 0x0000FF01
 // ######################################################################
 // [ARM Debug] Read MEM-AP (mem_ap) address 0x0: 0x0000FF01
-// [ARM Debug] Write MEM-AP (mem_ap) register TAR: 0x0
-                                                                 > arm_debug                    0 0 X 1 X X X ;
-repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
-// [JTAG] Write DR: 0x2
-                                                                 > arm_debug                    0 0 X 0 X X X ;
-                                                                 > arm_debug                    0 1 X 0 X X X ;
-repeat 32                                                        > arm_debug                    0 0 X 0 X X X ;
-                                                                 > arm_debug                    0 0 X 1 X X X ;
-// [JTAG] /Write DR: 0x2
-                                                                 > arm_debug                    0 0 X 1 X X X ;
-                                                                 > arm_debug                    0 0 X 0 X X X ;
-// [ARM Debug] /Write MEM-AP (mem_ap) register TAR: 0x0
 repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
                                                                  > arm_debug                    0 0 X 1 X X X ;
 repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
@@ -277,18 +265,6 @@ repeat 15                                                        > arm_debug    
 // ## Test read register with mask, should read value 0xXXXxxx1
 // ######################################################################
 // [ARM Debug] Read MEM-AP (mem_ap) address 0x0: 0xXXXXXXX1
-// [ARM Debug] Write MEM-AP (mem_ap) register TAR: 0x0
-                                                                 > arm_debug                    0 0 X 1 X X X ;
-repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
-// [JTAG] Write DR: 0x2
-                                                                 > arm_debug                    0 0 X 0 X X X ;
-                                                                 > arm_debug                    0 1 X 0 X X X ;
-repeat 32                                                        > arm_debug                    0 0 X 0 X X X ;
-                                                                 > arm_debug                    0 0 X 1 X X X ;
-// [JTAG] /Write DR: 0x2
-                                                                 > arm_debug                    0 0 X 1 X X X ;
-                                                                 > arm_debug                    0 0 X 0 X X X ;
-// [ARM Debug] /Write MEM-AP (mem_ap) register TAR: 0x0
 repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
                                                                  > arm_debug                    0 0 X 1 X X X ;
 repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
@@ -307,18 +283,6 @@ repeat 15                                                        > arm_debug    
 // ## Test read register with store
 // ######################################################################
 // [ARM Debug] Read MEM-AP (mem_ap) address 0x0: 0xSSSSSSSS
-// [ARM Debug] Write MEM-AP (mem_ap) register TAR: 0x0
-                                                                 > arm_debug                    0 0 X 1 X X X ;
-repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
-// [JTAG] Write DR: 0x2
-                                                                 > arm_debug                    0 0 X 0 X X X ;
-                                                                 > arm_debug                    0 1 X 0 X X X ;
-repeat 32                                                        > arm_debug                    0 0 X 0 X X X ;
-                                                                 > arm_debug                    0 0 X 1 X X X ;
-// [JTAG] /Write DR: 0x2
-                                                                 > arm_debug                    0 0 X 1 X X X ;
-                                                                 > arm_debug                    0 0 X 0 X X X ;
-// [ARM Debug] /Write MEM-AP (mem_ap) register TAR: 0x0
 repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
                                                                  > arm_debug                    0 0 X 1 X X X ;
 repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
@@ -364,18 +328,6 @@ stv                                                              > arm_debug    
 // ## Test bit level read, should read value 0xXXXxxx1
 // ######################################################################
 // [ARM Debug] Read MEM-AP (mem_ap) address 0x0: 0xXXXXXXX_xxx1
-// [ARM Debug] Write MEM-AP (mem_ap) register TAR: 0x0
-                                                                 > arm_debug                    0 0 X 1 X X X ;
-repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
-// [JTAG] Write DR: 0x2
-                                                                 > arm_debug                    0 0 X 0 X X X ;
-                                                                 > arm_debug                    0 1 X 0 X X X ;
-repeat 32                                                        > arm_debug                    0 0 X 0 X X X ;
-                                                                 > arm_debug                    0 0 X 1 X X X ;
-// [JTAG] /Write DR: 0x2
-                                                                 > arm_debug                    0 0 X 1 X X X ;
-                                                                 > arm_debug                    0 0 X 0 X X X ;
-// [ARM Debug] /Write MEM-AP (mem_ap) register TAR: 0x0
 repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
                                                                  > arm_debug                    0 0 X 1 X X X ;
 repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;

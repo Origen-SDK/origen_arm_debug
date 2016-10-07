@@ -15,7 +15,9 @@ module OrigenARMDebug
         reg.bit 2..0,   :size
       end
 
-      add_reg :tar, 0x04, reset: :undefined
+      # Doesn't really reset to all 1's, but just to make sure the address
+      # optimization logic does not kick in on the first transaction
+      add_reg :tar, 0x04, reset: 0xFFFFFFFF
       add_reg :drw, 0x0C, reset: :undefined
       add_reg :bd0, 0x10, reset: :undefined
       add_reg :bd1, 0x14, reset: :undefined

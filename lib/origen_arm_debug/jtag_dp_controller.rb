@@ -1,7 +1,9 @@
+require 'origen_arm_debug/dp_controller'
 module OrigenARMDebug
   class JTAG_DPController
     include Origen::Controller
     include Helpers
+    include DPController
 
     def write_register(reg, options = {})
       unless reg.writable?
@@ -95,15 +97,6 @@ module OrigenARMDebug
         dr[34..3].copy_all(reg)
         ir.write!(0b1011)
         dut.jtag.read_dr(dr)
-      end
-    end
-
-    private
-
-    def select_ap_reg(reg)
-      address = reg.address & 0xFFFF_FFF0
-      if select.data != address
-        select.write!(address)
       end
     end
   end
