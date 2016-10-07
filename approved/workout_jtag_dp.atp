@@ -1,6 +1,6 @@
 // ***************************************************************************
 // GENERATED:
-//   Time:    07-Oct-2016 17:21PM
+//   Time:    07-Oct-2016 17:36PM
 //   By:      Stephen McGinty
 //   Command: origen g workout -t jtag.rb -e j750.rb
 // ***************************************************************************
@@ -8,7 +8,7 @@
 //   Application
 //     Source:    git@github.com:Origen-SDK/origen_arm_debug.git
 //     Version:   1.0.0.pre0
-//     Branch:    v1(2d8c363e18f) (+local edits)
+//     Branch:    v1(0c6f17cab4a)
 //   Origen
 //     Source:    https://github.com/Origen-SDK/origen
 //     Version:   0.7.36
@@ -247,7 +247,6 @@ repeat 2                                                         > arm_debug    
 // ## Test read register, should read value 0x0000FF01
 // ######################################################################
 // [ARM Debug] Read MEM-AP (mem_ap) address 0x0: 0x0000FF01
-repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
                                                                  > arm_debug                    0 0 X 1 X X X ;
 repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
 // [JTAG] Read DR: 0x00007F80_1xxx
@@ -265,7 +264,6 @@ repeat 15                                                        > arm_debug    
 // ## Test read register with mask, should read value 0xXXXxxx1
 // ######################################################################
 // [ARM Debug] Read MEM-AP (mem_ap) address 0x0: 0xXXXXXXX1
-repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
                                                                  > arm_debug                    0 0 X 1 X X X ;
 repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
 // [JTAG] Read DR: 0x00007F80_1xxx
@@ -283,7 +281,6 @@ repeat 15                                                        > arm_debug    
 // ## Test read register with store
 // ######################################################################
 // [ARM Debug] Read MEM-AP (mem_ap) address 0x0: 0xSSSSSSSS
-repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
                                                                  > arm_debug                    0 0 X 1 X X X ;
 repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
 // [JTAG] Read DR: 0xSSSSSSSS_sxxx
@@ -328,7 +325,6 @@ stv                                                              > arm_debug    
 // ## Test bit level read, should read value 0xXXXxxx1
 // ######################################################################
 // [ARM Debug] Read MEM-AP (mem_ap) address 0x0: 0xXXXXXXX_xxx1
-repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
                                                                  > arm_debug                    0 0 X 1 X X X ;
 repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
 // [JTAG] Read DR: 0xSSSSSSSS_sxxx

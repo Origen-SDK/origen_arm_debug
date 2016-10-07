@@ -1,10 +1,10 @@
 GIT
   remote: https://github.com/Origen-SDK/origen_swd.git
-  revision: deb333860135ed050cacdc9b747c3e0275c06e13
+  revision: 76cf6825719f2bfbe73416cab742629ef90c0ceb
   branch: api_cleanup
   specs:
     origen_swd (0.5.0)
-      origen (~> 0.2)
+      origen (>= 0.7.36)
 
 PATH
   remote: .
