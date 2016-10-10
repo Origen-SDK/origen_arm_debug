@@ -23,7 +23,7 @@ module OrigenARMDebug
         dps << sub_block(:jtag_dp, class_name: 'OrigenARMDebug::JTAG_DP')
       end
 
-      Array(options[:mem_aps]).each do |name, base_address|
+      Array(options[:mem_aps] || options[:aps]).each do |name, base_address|
         add_mem_ap(name, base_address)
       end
     end
