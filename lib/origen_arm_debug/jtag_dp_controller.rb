@@ -42,7 +42,7 @@ module OrigenARMDebug
       # AP register write
       else
 
-        unless reg.owner.is_a?(JTAGAP) || reg.owner.is_a?(MemAP)
+        unless reg.owner.is_a?(JTAGAP) || reg.owner.is_a?(MemAP) || reg.owner.is_a?(MDMAP)
           fail 'The JTAG-DP can only write to DP or AP registers!'
         end
 
@@ -52,6 +52,8 @@ module OrigenARMDebug
         dr[34..3].copy_all(reg)
         ir.write!(0b1011)
         dut.jtag.write_dr(dr)
+        reg.owner.apreg_access_wait.cycles
+        reg.owner.apmem_access_wait.cycles if reg.name == :drw    # Add delay if writing to memory resource
       end
     end
 
@@ -76,9 +78,14 @@ module OrigenARMDebug
             elsif reg.name == :ctrlstat || reg.name == :select || reg.name == :rdbuff
               dr[0].write(1)
               dr[2..1].write(reg.offset >> 2)
-              dr[34..3].copy_all(reg)
+              dr[34..3].write(0)
               ir.write!(0b1010)
-              dut.jtag.read_dr(dr)
+              dut.jtag.write_dr(dr)
+
+              dr[0].write(1)
+              dr[2..1].write(rdbuff.offset >> 2)
+              dr[34..3].copy_all(reg)
+              dut.jtag.read_dr(dr, drive_tdi_hi: true)
 
             else
               fail "Can't read #{reg.name}"
@@ -86,17 +93,26 @@ module OrigenARMDebug
           end
         end
 
+      # AP register read
       else
-        unless reg.owner.is_a?(JTAGAP) || reg.owner.is_a?(MemAP)
+        unless reg.owner.is_a?(JTAGAP) || reg.owner.is_a?(MemAP) || reg.owner.is_a?(MDMAP)
           fail 'The JTAG-DP can only write to DP or AP registers!'
         end
 
         select_ap_reg(reg)
-        dr[0].write(0)
+        dr[0].write(1)
         dr[2..1].write(reg.offset >> 2)
-        dr[34..3].copy_all(reg)
+        dr[34..3].write(0)
         ir.write!(0b1011)
-        dut.jtag.read_dr(dr)
+        dut.jtag.write_dr(dr)
+        reg.owner.apreg_access_wait.cycles
+        reg.owner.apmem_access_wait.cycles if reg.name == :drw     # Add some delay if reading from memory resource
+
+        dr[0].write(1)
+        dr[2..1].write(rdbuff.offset >> 2)
+        dr[34..3].copy_all(reg)
+        ir.write!(0b1010)
+        dut.jtag.read_dr(dr, drive_tdi_hi: true)
       end
     end
   end

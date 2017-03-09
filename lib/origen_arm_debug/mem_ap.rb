@@ -1,9 +1,26 @@
 require 'origen_arm_debug/mem_ap_controller'
 module OrigenARMDebug
+  # Memory Access Port (MEM-AP)
   class MemAP
     include Origen::Model
 
+    # Number of wait states associated with reading/writing to AP-register
+    #   Initialized to 0 but can be overwritten by ARMDebug owner
+    #
+    #   Ex:  arm_debug.ap1.apreg_access_wait = 8
+    attr_accessor :apreg_access_wait
+
+    # Number of wait states associated with reading/writing to a MEM-AP
+    #   resource (memory), (i.e. a memory access delay). Initialized to
+    #   to 0 but can be overwritten by ARMDebug owner
+    #
+    #   Ex:  arm_debug.ap1.apmem_access_wait = 8
+    attr_accessor :apmem_access_wait
+
     def initialize(options = {})
+      @apreg_access_wait = 0
+      @apmem_access_wait = 0
+
       reg :csw, 0x0 do |reg|
         reg.bit 31,     :dbg_sw_enable
         reg.bit 30..24, :prot

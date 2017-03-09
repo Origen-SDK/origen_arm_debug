@@ -1,4 +1,4 @@
-source 'https://rubygems.org' 
+source 'http://rubygems.org' 
 
 gem 'coveralls', require: false 
 gem 'byebug'
@@ -9,3 +9,4 @@ gem "origen_testers"
 gemspec 
 
 gem "origen_swd", git: "https://github.com/Origen-SDK/origen_swd.git", branch: "api_cleanup"
+gem "origen_jtag", git: "https://github.com/Origen-SDK/origen_jtag.git", branch: "arm_debug"

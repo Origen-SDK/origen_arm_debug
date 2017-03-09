@@ -14,6 +14,8 @@ module OrigenARMDebugDev
       add_pin :trst
       add_pin :swd_clk
       add_pin :swd_dio
+
+      arm_debug.mem_ap.csw.bits(:size).write(0b010)
     end
   end
 end

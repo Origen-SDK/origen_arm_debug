@@ -17,7 +17,8 @@ module OrigenARMDebugDev
       add_reg :test, 0
 
       sub_block :arm_debug, class_name: 'OrigenARMDebug::DAP',
-                            mem_aps:    { mem_ap: 0x00000000, mdm_ap: 0x01000000 },
+                            mem_aps:    { mem_ap: 0x00000000 },
+                            mdm_ap:     0x01000000,
                             latency:    2
     end
 

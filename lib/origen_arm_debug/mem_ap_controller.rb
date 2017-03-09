@@ -14,9 +14,9 @@ module OrigenARMDebug
         data = extract_data(reg_or_val, options)
 
         log "Write MEM-AP (#{model.name}) address #{addr.to_hex}: #{data.to_hex}" do
+          csw.bits(:size).write!(0b010) if csw.bits(:size).data != 0b010
           tar.write!(addr) unless tar.data == addr
           drw.write!(data)
-          parent.latency.cycles
         end
         increment_addr
       end
@@ -34,8 +34,8 @@ module OrigenARMDebug
 
         log "Read MEM-AP (#{model.name}) address #{addr.to_hex}: #{Origen::Utility.read_hex(reg_or_val)}" do
           unless tar.data == addr
+            csw.bits(:size).write!(0b010) if csw.bits(:size).data != 0b010
             tar.write!(addr)
-            parent.latency.cycles
           end
           drw.copy_all(reg_or_val)
           parent.dp.read_register(drw)
