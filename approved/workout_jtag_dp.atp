@@ -1,6 +1,6 @@
 // ***************************************************************************
 // GENERATED:
-//   Time:    09-Mar-2017 08:03AM
+//   Time:    09-Mar-2017 08:26AM
 //   By:      Ronnie Lajaunie
 //   Command: origen g workout -t jtag.rb -e j750.rb
 // ***************************************************************************
@@ -8,7 +8,7 @@
 //   Application
 //     Source:    git@github.com:Origen-SDK/origen_arm_debug.git
 //     Version:   1.0.0.pre0
-//     Branch:    v1(b2cdc199629) (+local edits)
+//     Branch:    v1(16ba256f264) (+local edits)
 //   Origen
 //     Source:    https://github.com/Origen-SDK/origen
 //     Version:   0.7.36
@@ -52,21 +52,21 @@ repeat 2                                                         > arm_debug    
                                                                  > arm_debug                    0 1 X 1 X X X ;
 repeat 2                                                         > arm_debug                    0 1 X 0 X X X ;
 // [JTAG] Read DR: 0xX0012XXX
-repeat 12                                                        > arm_debug                    0 1 X 0 X X X ;
-                                                                 > arm_debug                    0 1 L 0 X X X ;
-                                                                 > arm_debug                    0 1 H 0 X X X ;
-repeat 2                                                         > arm_debug                    0 1 L 0 X X X ;
-                                                                 > arm_debug                    0 1 H 0 X X X ;
-repeat 11                                                        > arm_debug                    0 1 L 0 X X X ;
-repeat 3                                                         > arm_debug                    0 1 X 0 X X X ;
-                                                                 > arm_debug                    0 1 X 1 X X X ;
+repeat 12                                                        > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 0 L 0 X X X ;
+                                                                 > arm_debug                    0 0 H 0 X X X ;
+repeat 2                                                         > arm_debug                    0 0 L 0 X X X ;
+                                                                 > arm_debug                    0 0 H 0 X X X ;
+repeat 11                                                        > arm_debug                    0 0 L 0 X X X ;
+repeat 3                                                         > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 0 X 1 X X X ;
 // [JTAG] /Read DR: 0xX0012XXX
-                                                                 > arm_debug                    0 1 X 1 X X X ;
-                                                                 > arm_debug                    0 1 X 0 X X X ;
+                                                                 > arm_debug                    0 0 X 1 X X X ;
+                                                                 > arm_debug                    0 0 X 0 X X X ;
 // [ARM Debug] /Read JTAG-DP register IDCODE: 0xX0012XXX
 // [ARM Debug] Write JTAG-DP register CTRLSTAT: 0x50000000
-repeat 2                                                         > arm_debug                    0 1 X 1 X X X ;
-repeat 2                                                         > arm_debug                    0 1 X 0 X X X ;
+repeat 2                                                         > arm_debug                    0 0 X 1 X X X ;
+repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
 // [JTAG] Write IR: 0xA
                                                                  > arm_debug                    0 0 X 0 X X X ;
                                                                  > arm_debug                    0 1 X 0 X X X ;
@@ -102,17 +102,17 @@ repeat 32                                                        > arm_debug    
                                                                  > arm_debug                    0 0 X 1 X X X ;
 repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
 // [JTAG] Read DR: 0x78000000_0xxx
-repeat 3                                                         > arm_debug                    0 1 X 0 X X X ;
-repeat 28                                                        > arm_debug                    0 1 L 0 X X X ;
-repeat 3                                                         > arm_debug                    0 1 H 0 X X X ;
-                                                                 > arm_debug                    0 1 H 1 X X X ;
+repeat 3                                                         > arm_debug                    0 0 X 0 X X X ;
+repeat 28                                                        > arm_debug                    0 0 L 0 X X X ;
+repeat 3                                                         > arm_debug                    0 0 H 0 X X X ;
+                                                                 > arm_debug                    0 0 H 1 X X X ;
 // [JTAG] /Read DR: 0x78000000_0xxx
-                                                                 > arm_debug                    0 1 X 1 X X X ;
-                                                                 > arm_debug                    0 1 X 0 X X X ;
+                                                                 > arm_debug                    0 0 X 1 X X X ;
+                                                                 > arm_debug                    0 0 X 0 X X X ;
 // [ARM Debug] /Read JTAG-DP register CTRLSTAT: 0xF0000000
 // [ARM Debug] Write JTAG-DP register SELECT: 0xF0
-                                                                 > arm_debug                    0 1 X 1 X X X ;
-repeat 2                                                         > arm_debug                    0 1 X 0 X X X ;
+                                                                 > arm_debug                    0 0 X 1 X X X ;
+repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
 // [JTAG] Write DR: 0x784
 repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
                                                                  > arm_debug                    0 1 X 0 X X X ;
@@ -221,20 +221,20 @@ repeat 2                                                         > arm_debug    
                                                                  > arm_debug                    0 1 X 1 X X X ;
 repeat 2                                                         > arm_debug                    0 1 X 0 X X X ;
 // [JTAG] Read DR: 0x091A0000_0xxx
-repeat 3                                                         > arm_debug                    0 1 X 0 X X X ;
-repeat 18                                                        > arm_debug                    0 1 L 0 X X X ;
-                                                                 > arm_debug                    0 1 H 0 X X X ;
-                                                                 > arm_debug                    0 1 L 0 X X X ;
-repeat 2                                                         > arm_debug                    0 1 H 0 X X X ;
-repeat 3                                                         > arm_debug                    0 1 L 0 X X X ;
-                                                                 > arm_debug                    0 1 H 0 X X X ;
-repeat 2                                                         > arm_debug                    0 1 L 0 X X X ;
-                                                                 > arm_debug                    0 1 H 0 X X X ;
-repeat 2                                                         > arm_debug                    0 1 L 0 X X X ;
-                                                                 > arm_debug                    0 1 L 1 X X X ;
+repeat 3                                                         > arm_debug                    0 0 X 0 X X X ;
+repeat 18                                                        > arm_debug                    0 0 L 0 X X X ;
+                                                                 > arm_debug                    0 0 H 0 X X X ;
+                                                                 > arm_debug                    0 0 L 0 X X X ;
+repeat 2                                                         > arm_debug                    0 0 H 0 X X X ;
+repeat 3                                                         > arm_debug                    0 0 L 0 X X X ;
+                                                                 > arm_debug                    0 0 H 0 X X X ;
+repeat 2                                                         > arm_debug                    0 0 L 0 X X X ;
+                                                                 > arm_debug                    0 0 H 0 X X X ;
+repeat 2                                                         > arm_debug                    0 0 L 0 X X X ;
+                                                                 > arm_debug                    0 0 L 1 X X X ;
 // [JTAG] /Read DR: 0x091A0000_0xxx
-                                                                 > arm_debug                    0 1 X 1 X X X ;
-                                                                 > arm_debug                    0 1 X 0 X X X ;
+                                                                 > arm_debug                    0 0 X 1 X X X ;
+                                                                 > arm_debug                    0 0 X 0 X X X ;
 // [ARM Debug] /Read MEM-AP (mem_ap) register TAR: 0x12340000
 // ######################################################################
 // ## Tests of high-level register API
@@ -244,8 +244,8 @@ repeat 2                                                         > arm_debug    
 // ######################################################################
 // [ARM Debug] Write MEM-AP (mem_ap) address 0x0: 0xFF01
 // [ARM Debug] Write MEM-AP (mem_ap) register CSW: 0x23000042
-repeat 2                                                         > arm_debug                    0 1 X 1 X X X ;
-repeat 2                                                         > arm_debug                    0 1 X 0 X X X ;
+repeat 2                                                         > arm_debug                    0 0 X 1 X X X ;
+repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
 // [JTAG] Write IR: 0xB
 repeat 2                                                         > arm_debug                    0 1 X 0 X X X ;
                                                                  > arm_debug                    0 0 X 0 X X X ;
@@ -323,22 +323,22 @@ repeat 2                                                         > arm_debug    
                                                                  > arm_debug                    0 1 X 1 X X X ;
 repeat 2                                                         > arm_debug                    0 1 X 0 X X X ;
 // [JTAG] Read DR: 0x00007F80_1xxx
-repeat 3                                                         > arm_debug                    0 1 X 0 X X X ;
-                                                                 > arm_debug                    0 1 H 0 X X X ;
-repeat 7                                                         > arm_debug                    0 1 L 0 X X X ;
-repeat 8                                                         > arm_debug                    0 1 H 0 X X X ;
-repeat 15                                                        > arm_debug                    0 1 L 0 X X X ;
-                                                                 > arm_debug                    0 1 L 1 X X X ;
+repeat 3                                                         > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 0 H 0 X X X ;
+repeat 7                                                         > arm_debug                    0 0 L 0 X X X ;
+repeat 8                                                         > arm_debug                    0 0 H 0 X X X ;
+repeat 15                                                        > arm_debug                    0 0 L 0 X X X ;
+                                                                 > arm_debug                    0 0 L 1 X X X ;
 // [JTAG] /Read DR: 0x00007F80_1xxx
-                                                                 > arm_debug                    0 1 X 1 X X X ;
-                                                                 > arm_debug                    0 1 X 0 X X X ;
+                                                                 > arm_debug                    0 0 X 1 X X X ;
+                                                                 > arm_debug                    0 0 X 0 X X X ;
 // [ARM Debug] /Read MEM-AP (mem_ap) address 0x0: 0x0000FF01
 // ######################################################################
 // ## Test read register with mask, should read value 0xXXXxxx1
 // ######################################################################
 // [ARM Debug] Read MEM-AP (mem_ap) address 0x0: 0xXXXXXXX1
-repeat 2                                                         > arm_debug                    0 1 X 1 X X X ;
-repeat 2                                                         > arm_debug                    0 1 X 0 X X X ;
+repeat 2                                                         > arm_debug                    0 0 X 1 X X X ;
+repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
 // [JTAG] Write IR: 0xB
 repeat 2                                                         > arm_debug                    0 1 X 0 X X X ;
                                                                  > arm_debug                    0 0 X 0 X X X ;
@@ -368,22 +368,22 @@ repeat 2                                                         > arm_debug    
                                                                  > arm_debug                    0 1 X 1 X X X ;
 repeat 2                                                         > arm_debug                    0 1 X 0 X X X ;
 // [JTAG] Read DR: 0x00007F80_1xxx
-repeat 3                                                         > arm_debug                    0 1 X 0 X X X ;
-                                                                 > arm_debug                    0 1 H 0 X X X ;
-repeat 7                                                         > arm_debug                    0 1 L 0 X X X ;
-repeat 8                                                         > arm_debug                    0 1 H 0 X X X ;
-repeat 15                                                        > arm_debug                    0 1 L 0 X X X ;
-                                                                 > arm_debug                    0 1 L 1 X X X ;
+repeat 3                                                         > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 0 H 0 X X X ;
+repeat 7                                                         > arm_debug                    0 0 L 0 X X X ;
+repeat 8                                                         > arm_debug                    0 0 H 0 X X X ;
+repeat 15                                                        > arm_debug                    0 0 L 0 X X X ;
+                                                                 > arm_debug                    0 0 L 1 X X X ;
 // [JTAG] /Read DR: 0x00007F80_1xxx
-                                                                 > arm_debug                    0 1 X 1 X X X ;
-                                                                 > arm_debug                    0 1 X 0 X X X ;
+                                                                 > arm_debug                    0 0 X 1 X X X ;
+                                                                 > arm_debug                    0 0 X 0 X X X ;
 // [ARM Debug] /Read MEM-AP (mem_ap) address 0x0: 0xXXXXXXX1
 // ######################################################################
 // ## Test read register with store
 // ######################################################################
 // [ARM Debug] Read MEM-AP (mem_ap) address 0x0: 0xSSSSSSSS
-repeat 2                                                         > arm_debug                    0 1 X 1 X X X ;
-repeat 2                                                         > arm_debug                    0 1 X 0 X X X ;
+repeat 2                                                         > arm_debug                    0 0 X 1 X X X ;
+repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
 // [JTAG] Write IR: 0xB
 repeat 2                                                         > arm_debug                    0 1 X 0 X X X ;
                                                                  > arm_debug                    0 0 X 0 X X X ;
@@ -413,49 +413,49 @@ repeat 2                                                         > arm_debug    
                                                                  > arm_debug                    0 1 X 1 X X X ;
 repeat 2                                                         > arm_debug                    0 1 X 0 X X X ;
 // [JTAG] Read DR: 0xSSSSSSSS_sxxx
-repeat 3                                                         > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 1 X X X ;
+repeat 3                                                         > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 1 X X X ;
 // [JTAG] /Read DR: 0xSSSSSSSS_sxxx
-                                                                 > arm_debug                    0 1 X 1 X X X ;
-                                                                 > arm_debug                    0 1 X 0 X X X ;
+                                                                 > arm_debug                    0 0 X 1 X X X ;
+                                                                 > arm_debug                    0 0 X 0 X X X ;
 // [ARM Debug] /Read MEM-AP (mem_ap) address 0x0: 0xSSSSSSSS
 // ######################################################################
 // ## Test bit level read, should read value 0xXXXxxx1
 // ######################################################################
 // [ARM Debug] Read MEM-AP (mem_ap) address 0x0: 0xXXXXXXX_xxx1
-repeat 2                                                         > arm_debug                    0 1 X 1 X X X ;
-repeat 2                                                         > arm_debug                    0 1 X 0 X X X ;
+repeat 2                                                         > arm_debug                    0 0 X 1 X X X ;
+repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
 // [JTAG] Write IR: 0xB
 repeat 2                                                         > arm_debug                    0 1 X 0 X X X ;
                                                                  > arm_debug                    0 0 X 0 X X X ;
@@ -485,45 +485,45 @@ repeat 2                                                         > arm_debug    
                                                                  > arm_debug                    0 1 X 1 X X X ;
 repeat 2                                                         > arm_debug                    0 1 X 0 X X X ;
 // [JTAG] Read DR: 0xSSSSSSSS_sxxx
-repeat 3                                                         > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 0 X X X ;
-stv                                                              > arm_debug                    0 1 X 1 X X X ;
+repeat 3                                                         > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 0 X X X ;
+stv                                                              > arm_debug                    0 0 X 1 X X X ;
 // [JTAG] /Read DR: 0xSSSSSSSS_sxxx
-                                                                 > arm_debug                    0 1 X 1 X X X ;
-                                                                 > arm_debug                    0 1 X 0 X X X ;
+                                                                 > arm_debug                    0 0 X 1 X X X ;
+                                                                 > arm_debug                    0 0 X 0 X X X ;
 // [ARM Debug] /Read MEM-AP (mem_ap) address 0x0: 0xXXXXXXX_xxx1
 // ######################################################################
 // ## Pattern complete
 // ######################################################################
-end_module                                                       > arm_debug                    0 1 X 0 X X X ;
+end_module                                                       > arm_debug                    0 0 X 0 X X X ;
 }                                                                                               

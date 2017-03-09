@@ -1,12 +1,4 @@
 GIT
-  remote: https://github.com/Origen-SDK/origen_jtag.git
-  revision: 1d38fd78d0576e504cf0550d8ca44b8a26d23df2
-  branch: arm_debug
-  specs:
-    origen_jtag (0.13.0)
-      origen (>= 0.7.35)
-
-GIT
   remote: https://github.com/Origen-SDK/origen_swd.git
   revision: 76cf6825719f2bfbe73416cab742629ef90c0ceb
   branch: api_cleanup
@@ -105,6 +97,8 @@ GEM
       yard (~> 0.8)
     origen_doc_helpers (0.4.4)
       origen (>= 0.7.15)
+    origen_jtag (0.13.0)
+      origen (>= 0.7.35)
     origen_testers (0.8.5)
       atp (~> 0.4, >= 0.4.3)
       origen (>= 0.7.31)
@@ -174,7 +168,6 @@ DEPENDENCIES
   coveralls
   origen_arm_debug!
   origen_doc_helpers (>= 0.2.0)
-  origen_jtag!
   origen_swd!
   origen_testers
 

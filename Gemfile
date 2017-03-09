@@ -9,4 +9,3 @@ gem "origen_testers"
 gemspec 
 
 gem "origen_swd", git: "https://github.com/Origen-SDK/origen_swd.git", branch: "api_cleanup"
-gem "origen_jtag", git: "https://github.com/Origen-SDK/origen_jtag.git", branch: "arm_debug"
