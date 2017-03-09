@@ -85,7 +85,7 @@ module OrigenARMDebug
               dr[0].write(1)
               dr[2..1].write(rdbuff.offset >> 2)
               dr[34..3].copy_all(reg)
-              dut.jtag.read_dr(dr, drive_tdi_hi: true)
+              dut.jtag.read_dr(dr)    # , drive_tdi_hi: true)
 
             else
               fail "Can't read #{reg.name}"
@@ -112,7 +112,7 @@ module OrigenARMDebug
         dr[2..1].write(rdbuff.offset >> 2)
         dr[34..3].copy_all(reg)
         ir.write!(0b1010)
-        dut.jtag.read_dr(dr, drive_tdi_hi: true)
+        dut.jtag.read_dr(dr) # , drive_tdi_hi: true)
       end
     end
   end
