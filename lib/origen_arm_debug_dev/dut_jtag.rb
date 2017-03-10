@@ -16,13 +16,17 @@ module OrigenARMDebugDev
       add_pin :swd_dio
 
       # Specify (customize) ARM Debug implementation details
-      arm_debug.mdm_ap.add_reg(:company, 0x08)
-      arm_debug.mdm_ap.apreg_access_wait = 8
-      arm_debug.mem_aps.each do |ap|
-        ap.apreg_access_wait = 8
-        ap.apmem_access_wait = 8
-        ap.csw.write(0x23000040)
-      end
+      sub_block :arm_debug, class_name: 'OrigenARMDebug::DAP',
+                            mem_aps:    {
+                              mem_ap: {
+                                base_address:      0x00000000,
+                                latency:           16,
+                                apreg_access_wait: 8,
+                                apmem_access_wait: 8,
+                                csw_reset:         0x23000040
+                              },
+                              mdm_ap: 0x01000000
+                            }
     end
   end
 end

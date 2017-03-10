@@ -1,14 +1,14 @@
 // ***************************************************************************
 // GENERATED:
-//   Time:    09-Mar-2017 08:26AM
-//   By:      Ronnie Lajaunie
+//   Time:    09-Mar-2017 22:55PM
+//   By:      Lajaunie Ronald-B01784
 //   Command: origen g workout -t jtag.rb -e j750.rb
 // ***************************************************************************
 // ENVIRONMENT:
 //   Application
 //     Source:    git@github.com:Origen-SDK/origen_arm_debug.git
 //     Version:   1.0.0.pre0
-//     Branch:    v1(16ba256f264) (+local edits)
+//     Branch:    v1(248cf59d494) (+local edits)
 //   Origen
 //     Source:    https://github.com/Origen-SDK/origen
 //     Version:   0.7.36
@@ -294,8 +294,9 @@ repeat 15                                                        > arm_debug    
                                                                  > arm_debug                    0 0 X 1 X X X ;
 // [JTAG] /Write DR: 0x7F80E
                                                                  > arm_debug                    0 0 X 1 X X X ;
-repeat 17                                                        > arm_debug                    0 0 X 0 X X X ;
+repeat 9                                                         > arm_debug                    0 0 X 0 X X X ;
 // [ARM Debug] /Write MEM-AP (mem_ap) register DRW: 0xFF01
+repeat 16                                                        > arm_debug                    0 0 X 0 X X X ;
 // [ARM Debug] /Write MEM-AP (mem_ap) address 0x0: 0xFF01
 // ######################################################################
 // ## Test read register, should read value 0x0000FF01
@@ -309,7 +310,7 @@ repeat 31                                                        > arm_debug    
                                                                  > arm_debug                    0 0 X 1 X X X ;
 // [JTAG] /Write DR: 0x7
                                                                  > arm_debug                    0 0 X 1 X X X ;
-repeat 17                                                        > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 0 X 0 X X X ;
 repeat 2                                                         > arm_debug                    0 0 X 1 X X X ;
 repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
 // [JTAG] Write IR: 0xA
@@ -354,7 +355,7 @@ repeat 31                                                        > arm_debug    
                                                                  > arm_debug                    0 0 X 1 X X X ;
 // [JTAG] /Write DR: 0x7
                                                                  > arm_debug                    0 0 X 1 X X X ;
-repeat 17                                                        > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 0 X 0 X X X ;
 repeat 2                                                         > arm_debug                    0 0 X 1 X X X ;
 repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
 // [JTAG] Write IR: 0xA
@@ -399,7 +400,7 @@ repeat 31                                                        > arm_debug    
                                                                  > arm_debug                    0 0 X 1 X X X ;
 // [JTAG] /Write DR: 0x7
                                                                  > arm_debug                    0 0 X 1 X X X ;
-repeat 17                                                        > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 0 X 0 X X X ;
 repeat 2                                                         > arm_debug                    0 0 X 1 X X X ;
 repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
 // [JTAG] Write IR: 0xA
@@ -471,7 +472,7 @@ repeat 31                                                        > arm_debug    
                                                                  > arm_debug                    0 0 X 1 X X X ;
 // [JTAG] /Write DR: 0x7
                                                                  > arm_debug                    0 0 X 1 X X X ;
-repeat 17                                                        > arm_debug                    0 0 X 0 X X X ;
+                                                                 > arm_debug                    0 0 X 0 X X X ;
 repeat 2                                                         > arm_debug                    0 0 X 1 X X X ;
 repeat 2                                                         > arm_debug                    0 0 X 0 X X X ;
 // [JTAG] Write IR: 0xA

@@ -1,25 +1,21 @@
 require 'origen_arm_debug/mem_ap_controller'
 module OrigenARMDebug
   # Memory Access Port (MEM-AP)
-  class MemAP
+  class MemAP < AP
     include Origen::Model
 
-    # Number of wait states associated with reading/writing to AP-register
-    #   Initialized to 0 but can be overwritten by ARMDebug owner
-    #
-    #   Ex:  arm_debug.ap1.apreg_access_wait = 8
-    attr_accessor :apreg_access_wait
+    # Latency to write a memory resource
+    attr_reader :latency
 
-    # Number of wait states associated with reading/writing to a MEM-AP
-    #   resource (memory), (i.e. a memory access delay). Initialized to
-    #   to 0 but can be overwritten by ARMDebug owner
-    #
-    #   Ex:  arm_debug.ap1.apmem_access_wait = 8
-    attr_accessor :apmem_access_wait
+    # Wait states for data to be transferred from Memory Resource to DRW on
+    #   read request.  Should be added to apreg_access_wait for complete transaction
+    #   time of memory read (read data path: memory->drw->rdbuff)
+    attr_reader :apmem_access_wait
 
     def initialize(options = {})
-      @apreg_access_wait = 0
-      @apmem_access_wait = 0
+      super
+      @latency = options[:latency] || 0
+      @apmem_access_wait = options[:apmem_access_wait] || 0
 
       reg :csw, 0x0 do |reg|
         reg.bit 31,     :dbg_sw_enable
@@ -31,6 +27,7 @@ module OrigenARMDebug
         reg.bit 5..4,   :addr_inc
         reg.bit 2..0,   :size
       end
+      reg(:csw).write(options[:csw_reset]) if options[:csw_reset]
 
       # Doesn't really reset to all 1's, but just to make sure the address
       # optimization logic does not kick in on the first transaction

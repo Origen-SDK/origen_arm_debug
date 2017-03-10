@@ -15,7 +15,11 @@ module OrigenARMDebugDev
       add_pin :swd_clk
       add_pin :swd_dio
 
-      arm_debug.mem_ap.csw.bits(:size).write(0b010)
+      sub_block :arm_debug, class_name: 'OrigenARMDebug::DAP',
+                            mem_aps:    {
+                              mem_ap: { base_address: 0x00000000, csw_reset: 0x23000042 },
+                              mdm_ap: 0x01000000
+                            }
     end
   end
 end

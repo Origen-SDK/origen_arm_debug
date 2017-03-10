@@ -15,7 +15,7 @@ module OrigenARMDebug
           dut.swd.write_dp(reg)
         end
       else
-        unless reg.owner.is_a?(JTAGAP) || reg.owner.is_a?(MemAP) || reg.owner.is_a?(MDMAP)
+        unless reg.owner.is_a?(AP)
           fail 'The SW-DP can only write to DP or AP registers!'
         end
 
@@ -34,7 +34,7 @@ module OrigenARMDebug
           dut.swd.read_dp(reg)
         end
       else
-        unless reg.owner.is_a?(JTAGAP) || reg.owner.is_a?(MemAP) || reg.owner.is_a?(MDMAP)
+        unless reg.owner.is_a?(AP)
           fail 'The SW-DP can only write to DP or AP registers!'
         end
 

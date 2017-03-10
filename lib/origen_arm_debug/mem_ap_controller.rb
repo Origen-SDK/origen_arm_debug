@@ -1,12 +1,10 @@
 module OrigenARMDebug
-  class MemAPController
-    include Origen::Controller
-    include Helpers
-
+  class MemAPController < APController
     def write_register(reg_or_val, options = {})
       if reg_or_val.try(:owner) == model
         log "Write MEM-AP (#{model.name}) register #{reg_or_val.name.to_s.upcase}: #{reg_or_val.data.to_hex}" do
           parent.dp.write_register(reg_or_val)
+          apreg_access_wait.cycles
         end
       else
 
@@ -17,6 +15,7 @@ module OrigenARMDebug
           csw.bits(:size).write!(0b010) if csw.bits(:size).data != 0b010
           tar.write!(addr) unless tar.data == addr
           drw.write!(data)
+          latency.cycles
         end
         increment_addr
       end
@@ -24,8 +23,9 @@ module OrigenARMDebug
 
     def read_register(reg_or_val, options = {})
       if reg_or_val.try(:owner) == model
+        apacc_wait_states = reg_or_val.name == :drw ? (apmem_access_wait + apreg_access_wait) : apreg_access_wait
         log "Read MEM-AP (#{model.name}) register #{reg_or_val.name.to_s.upcase}: #{Origen::Utility.read_hex(reg_or_val)}" do
-          parent.dp.read_register(reg_or_val)
+          parent.dp.read_register(reg_or_val, apacc_wait_states: apacc_wait_states)
         end
 
       else
@@ -33,8 +33,8 @@ module OrigenARMDebug
         addr = extract_address(reg_or_val, options)
 
         log "Read MEM-AP (#{model.name}) address #{addr.to_hex}: #{Origen::Utility.read_hex(reg_or_val)}" do
+          csw.bits(:size).write!(0b010) if csw.bits(:size).data != 0b010
           unless tar.data == addr
-            csw.bits(:size).write!(0b010) if csw.bits(:size).data != 0b010
             tar.write!(addr)
           end
           drw.copy_all(reg_or_val)
