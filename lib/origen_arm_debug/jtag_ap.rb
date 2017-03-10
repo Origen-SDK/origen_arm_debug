@@ -6,6 +6,5 @@ module OrigenARMDebug
     def initialize(options = {})
       super
     end
-
-   end
+  end
 end
