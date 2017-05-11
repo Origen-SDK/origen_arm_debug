@@ -3,18 +3,25 @@ module OrigenARMDebug
     def write_register(reg_or_val, options = {})
       if reg_or_val.try(:owner) == model
         log "Write MEM-AP (#{model.name}) register #{reg_or_val.name.to_s.upcase}: #{reg_or_val.data.to_hex}" do
-          parent.dp.write_register(reg_or_val)
+          parent.dp.write_register(reg_or_val, options)
           apreg_access_wait.cycles
         end
       else
 
         addr = extract_address(reg_or_val, options)
         data = extract_data(reg_or_val, options)
+        ovl = options.delete(:overlay)
+        unless ovl.nil?
+          Origen.log.warn '[ARM Debug] Overlays only supported through register model'
+        end
 
         log "Write MEM-AP (#{model.name}) address #{addr.to_hex}: #{data.to_hex}" do
           csw.bits(:size).write!(0b010) if csw.bits(:size).data != 0b010
           tar.write!(addr) unless tar.data == addr
-          drw.write!(data)
+          drw.reset
+          drw.overlay(nil)
+          drw.copy_all(reg_or_val)
+          drw.write!(options)
           latency.cycles
         end
         increment_addr
@@ -25,7 +32,7 @@ module OrigenARMDebug
       if reg_or_val.try(:owner) == model
         apacc_wait_states = reg_or_val.name == :drw ? (apmem_access_wait + apreg_access_wait) : apreg_access_wait
         log "Read MEM-AP (#{model.name}) register #{reg_or_val.name.to_s.upcase}: #{Origen::Utility.read_hex(reg_or_val)}" do
-          parent.dp.read_register(reg_or_val, apacc_wait_states: apacc_wait_states)
+          parent.dp.read_register(reg_or_val, options.merge(apacc_wait_states: apacc_wait_states))
         end
 
       else
@@ -37,8 +44,10 @@ module OrigenARMDebug
           unless tar.data == addr
             tar.write!(addr)
           end
+          drw.reset
+          drw.overlay(nil)
           drw.copy_all(reg_or_val)
-          parent.dp.read_register(drw)
+          parent.dp.read_register(drw, options.merge(apacc_wait_states: (apmem_access_wait + apreg_access_wait)))
         end
         increment_addr
       end

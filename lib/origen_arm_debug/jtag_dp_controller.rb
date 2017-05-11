@@ -21,12 +21,16 @@ module OrigenARMDebug
           log "Write JTAG-DP register #{reg.name.to_s.upcase}: #{reg.data.to_hex}" do
             if reg.name == :abort
               ir.write!(reg.offset)
+              dr.reset
+              dr.overlay(nil)
               dr[2..0].write(0)
               dr[34..3].copy_all(reg)
               dut.jtag.write_dr(dr)
 
             # DPACC
             elsif reg.name == :ctrlstat || reg.name == :select
+              dr.reset
+              dr.overlay(nil)
               dr[0].write(0)
               dr[2..1].write(reg.offset >> 2)
               dr[34..3].copy_all(reg)
@@ -47,11 +51,13 @@ module OrigenARMDebug
         end
 
         select_ap_reg(reg)
+        dr.reset
+        dr.overlay(nil)
         dr[0].write(0)
         dr[2..1].write(reg.offset >> 2)
         dr[34..3].copy_all(reg)
         ir.write!(0b1011)
-        dut.jtag.write_dr(dr)
+        dut.jtag.write_dr(dr, options)
       end
     end
 
@@ -76,6 +82,8 @@ module OrigenARMDebug
             elsif reg.name == :ctrlstat || reg.name == :select || reg.name == :rdbuff
 
               # Part 1 - Request read from DP-Register by writing to DPACC with RnW=1
+              dr.reset
+              dr.overlay(nil)
               dr[0].write(1)
               dr[2..1].write(reg.offset >> 2)
               dr[34..3].write(0)
@@ -83,10 +91,12 @@ module OrigenARMDebug
               dut.jtag.write_dr(dr)
 
               # Part 2 - Now read real data from RDBUFF (DP-Reg)
+              dr.reset
+              dr.overlay(nil)
               dr[0].write(1)
               dr[2..1].write(rdbuff.offset >> 2)
               dr[34..3].copy_all(reg)
-              dut.jtag.read_dr(dr)
+              dut.jtag.read_dr(dr, options)
 
             else
               fail "Can't read #{reg.name}"
@@ -102,6 +112,8 @@ module OrigenARMDebug
 
         # Part 1 - Request read from AP-Register by writing to APACC with RnW=1
         select_ap_reg(reg)
+        dr.reset
+        dr.overlay(nil)
         dr[0].write(1)
         dr[2..1].write(reg.offset >> 2)
         dr[34..3].write(0)
@@ -115,11 +127,13 @@ module OrigenARMDebug
         end
 
         # Part 2 - Now read real data from RDBUFF (DP-Reg)
+        dr.reset
+        dr.overlay(nil)
         dr[0].write(1)
         dr[2..1].write(rdbuff.offset >> 2)
         dr[34..3].copy_all(reg)
         ir.write!(0b1010)
-        dut.jtag.read_dr(dr)
+        dut.jtag.read_dr(dr, options)
       end
     end
   end

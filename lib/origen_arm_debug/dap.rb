@@ -73,7 +73,7 @@ module OrigenARMDebug
 
       if options[:class_name] == 'OrigenARMDebug::MemAP'
         mem_aps << ap
-      elsif options[:class_name] == 'OrigenARMDebug::MDMAP'
+      elsif options[:class_name] == 'OrigenARMDebug::JTAGAP'
         jtag_aps << ap
       else
         ext_aps << ap

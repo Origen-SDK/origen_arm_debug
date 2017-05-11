@@ -1,2 +1,2 @@
 OrigenARMDebugDev::JTAG_DUT.new
-Origen.mode = :debug 
+Origen.mode = :debug

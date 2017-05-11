@@ -20,7 +20,7 @@ module OrigenARMDebug
         end
 
         select_ap_reg(reg)
-        dut.swd.write_ap(reg)
+        dut.swd.write_ap(reg, options)
       end
     end
 
@@ -40,7 +40,7 @@ module OrigenARMDebug
 
         select_ap_reg(reg)
         dut.swd.read_ap(address: reg.address)
-        dut.swd.read_dp(reg, address: rdbuff.address)
+        dut.swd.read_dp(reg, options.merge(address: rdbuff.address))
       end
     end
   end

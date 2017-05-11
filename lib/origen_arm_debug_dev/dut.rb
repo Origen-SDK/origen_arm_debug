@@ -15,6 +15,12 @@ module OrigenARMDebugDev
     #
     def initialize
       add_reg :test, 0
+
+      reg :test2, 0 do |reg|
+        reg.bit 31, :msb
+        reg.bit 30..1, :data
+        reg.bit 0, :lsb
+      end
     end
 
     # Add any custom startup business here.

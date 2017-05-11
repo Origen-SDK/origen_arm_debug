@@ -24,9 +24,29 @@ Pattern.create name: "workout_#{dut.arm_debug.dp.name}" do
   ss "Test write register, should write value 0xFF01"
   dut.reg(:test).write!(0x0000FF01)
 
+  ss "Test write register with overlay, no subroutine"
+  dut.reg(:test).overlay('write_overlay')
+  dut.reg(:test).write!(0x0000FF01, no_subr: true)
+  dut.reg(:test).overlay(nil)
+
+  ss "Test write register with overlay, use subroutine if available"
+  dut.reg(:test).overlay('write_overlay_subr')
+  dut.reg(:test).write!(0x0000FF01)
+  dut.reg(:test).overlay(nil)
+
   ss "Test read register, should read value 0x0000FF01"
   dut.reg(:test).read!
+ 
+  ss "Test read register, with overlay, no subroutine, should read value 0x0000FF01"
+  dut.reg(:test).overlay('read_overlay')
+  dut.reg(:test).read!(no_subr: true)
+  dut.reg(:test).overlay(nil)
 
+  ss "Test read register, with overlay, use subroutine if available"
+  dut.reg(:test).overlay('read_overlay_subr')
+  dut.reg(:test).read!
+  dut.reg(:test).overlay(nil)
+  
   ss "Test read register with mask, should read value 0xXXXxxx1"
   dut.reg(:test).read!(mask: 0x0000_000F)
 
@@ -37,4 +57,5 @@ Pattern.create name: "workout_#{dut.arm_debug.dp.name}" do
   dut.reg(:test).reset
   dut.reg(:test).data = 0x0000FF01
   dut.reg(:test)[0].read!
+
 end

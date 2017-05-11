@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.version       = OrigenARMDebug::VERSION
   spec.authors       = ["Ronnie Lajaunie"]
   spec.email         = ["ronnie.lajaunie@nxp.com"]
-  spec.summary       = "Provides a Origen API to perform register read and write operations via the ARM_DEBUG protocol."
+  spec.summary       = "Provides an Origen API to perform register read and write operations via the ARM_DEBUG protocol."
   spec.homepage      = "http://origen-sdk.org/origen_arm_debug"
   spec.license       = 'LGPL-3'
 
@@ -25,7 +25,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   # Add any gems that your plugin needs to run within a host application
-  spec.add_runtime_dependency "origen", ">= 0.7.36"
-  spec.add_runtime_dependency "origen_jtag", ">= 0.12.1"
-  spec.add_runtime_dependency "origen_swd", ">= 0.5.0"
+  spec.add_runtime_dependency 'origen', '~>0.7', '>= 0.7.36'
+  spec.add_runtime_dependency 'origen_jtag', '>= 0.15.0'
+  spec.add_runtime_dependency 'origen_swd', '~>1', '>= 1.1.0'
 end
