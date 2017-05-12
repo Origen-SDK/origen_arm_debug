@@ -1,12 +1,9 @@
-source 'https://rubygems.org' 
- 
-# Specify your gem's dependencies in origen_arm_debug.gemspec 
-gemspec 
+source 'http://rubygems.org' 
 
 gem 'coveralls', require: false 
+gem 'byebug'
+gem "origen_doc_helpers", ">= 0.2.0"
+gem "origen_testers"
 
-if RUBY_VERSION >= '2.0.0' 
-  gem 'byebug', '~>3.5' 
-else 
-  gem 'debugger', '~>1.6' 
-end 
+# Specify your gem's runtime dependencies in origen_arm_debug.gemspec 
+gemspec 

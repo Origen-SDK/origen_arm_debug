@@ -23,7 +23,7 @@ class OrigenARMDebugApplication < Origen::Application
     # Auto correct violations where possible whenever 'origen lint' is run 
     auto_correct: true,  
     # Limit the testing for large legacy applications 
-    level: :easy, 
+    #level: :easy, 
     # Run on these directories/files by default 
     #files: ["lib", "config/application.rb"], 
   } 
