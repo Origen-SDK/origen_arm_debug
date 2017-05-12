@@ -6,7 +6,7 @@
 
 ### Purpose
 
-This library provides register and memory read/write and debug control capability via the ARM debug protocol. 
+This library provides register and memory read/write and debug control capability via the ARM Debug Interface v5 Spec. 
 
 ### How To Import
 
@@ -57,24 +57,36 @@ class DUT
       reg.bits 7..0,  :lower_byte
     end
     
-    sub_block :arm_debug, class_name: "OrigenARMDebug::Driver", aps: { mem_ap: 0x00000000, mdmap: 0x01000000 }                           
+    sub_block :arm_debug, class_name: "OrigenARMDebug::DAP", mem_aps: { mem_ap: 0x00000000, mem2_ap: 0x01000000 }                           
   end
 
   # Hook the ARMDebug module into the register API, any register read
   # requests will use the ARM Debug protocol by default
   def read_register(reg, options={})
-    arm_debug.read_register(reg, options)
+    arm_debug.mem_ap.read_register(reg, options)
   end
 
   # As above for write requests
   def write_register(reg, options={})
-    arm_debug.write_register(reg, options)
+    arm_debug.mem_apwrite_register(reg, options)
   end
 end
 
 DUT.new.myreg.write!(0x55AA)  # => Will generate the required vectors using the ARM debug protocol
 ~~~
 
+You can also access the lower-level API using conventional Origen register transactions:
+
+~~~ruby
+arm_debug.sw_dp.idcode.read!(0x2BA01477)
+arm_debug.sw_dp.ctrlstat.write!(0x5000_0000)  # Power-up
+arm_debug.sw_dp.ctrlstat.read!(0xF0000000)    # Verify
+arm_debug.ahb_ap.idr.read!(0x24770011)
+arm_debug.sw_dp.select.write!(0)              # Select AHB-AP, bank 0       
+
+# Set the SIZE field of CSW to 0x2 (32-bit transfers) + AddrInc=1
+arm_debug.ahb_ap.csw.write!(0x23000052)
+~~~
 
 ### How To Setup a Development Environment
 
