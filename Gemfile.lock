@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    origen_arm_debug (1.0.0.pre0)
+    origen_arm_debug (1.0.0.pre1)
       origen (~> 0.7, >= 0.7.36)
       origen_jtag (>= 0.15.0)
       origen_swd (~> 1, >= 1.1.0)
