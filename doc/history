@@ -1,3 +1,27 @@
+<a class="anchor release_tag" name="v1_0_0"></a>
+<h1><a href="#v1_0_0">Tag: v1.0.0</a></h1>
+
+##### Branch: 'master'
+
+##### by Lajaunie Ronald-B01784 on 12-May-2017 10:47AM
+
+
+* Overhauled API to match ARM Debug Interface v5 Spec
+
+* Internal registers switched to use Origen register models
+
+~~~ruby
+arm\_debug.sw\_dp.idcode.read!(0x2BA01477)
+arm\_debug.sw\_dp.ctrlstat.write!(0x5000\_0000) # Power-up
+arm\_debug.sw\_dp.ctrlstat.read!(0xF0000000)   # Verify
+arm\_debug.ahb\_ap.idr.read!(0x24770011)
+arm\_debug.sw\_dp.select.write!(0) # Select AHB-AP, bank 0
+
+# Set the SIZE field of CSW to 0x2 (32-bit transfers) + AddrInc=1
+arm\_debug.ahb\_ap.csw.write!(0x23000052)
+~~~
+
+
 <a class="anchor release_tag" name="v1_0_0_pre1"></a>
 <h2><a href="#v1_0_0_pre1">Tag: v1.0.0.pre1</a></h2>
 
