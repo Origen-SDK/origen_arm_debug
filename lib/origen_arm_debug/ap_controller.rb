@@ -23,5 +23,9 @@ module OrigenARMDebug
         fail 'No Resource-specific transport defined for MDM-AP (#model.name})'
       end
     end
+
+    def base_address
+      model.base_address
+    end
   end
 end

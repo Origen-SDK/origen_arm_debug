@@ -1,4 +1,3 @@
-require 'origen_arm_debug/dap_controller'
 module OrigenARMDebug
   # This is the top-level model that instantiates the DP and APs
   class DAP
@@ -11,23 +10,24 @@ module OrigenARMDebug
       @mem_aps = []         # Array of MEM-APs
       @jtag_aps = []        # Array of JTAG-APs
       @ext_aps = []         # Array of 'extension' APs
+
       instantiate_subblocks(options)
     end
 
     def instantiate_subblocks(options = {})
       if options[:swd] || parent.respond_to?(:swd)
-        dps << sub_block(:sw_dp, class_name: 'OrigenARMDebug::SW_DP')
+        dps << sub_block(:sw_dp, class_name: 'SW_DP')
       end
 
       if options[:jtag] || parent.respond_to?(:jtag)
-        dps << sub_block(:jtag_dp, class_name: 'OrigenARMDebug::JTAG_DP')
+        dps << sub_block(:jtag_dp, class_name: 'JTAG_DP')
       end
 
       Array(options[:mem_aps]).each do |name, base_address|
         if base_address.is_a?(Hash)
-          ap_opts = { class_name: 'OrigenARMDebug::MemAP' }.merge(base_address)
+          ap_opts = { class_name: 'MemAP' }.merge(base_address)
         else
-          ap_opts = { class_name: 'OrigenARMDebug::MemAP', base_address: base_address }
+          ap_opts = { class_name: 'MemAP', base_address: base_address }
         end
 
         add_ap(name, ap_opts)
@@ -35,9 +35,9 @@ module OrigenARMDebug
 
       Array(options[:jtag_aps]).each do |name, base_address|
         if base_address.is_a?(Hash)
-          ap_opts = { class_name: 'OrigenARMDebug::JTAGAP' }.merge(base_address)
+          ap_opts = { class_name: 'JTAGAP' }.merge(base_address)
         else
-          ap_opts = { class_name: 'OrigenARMDebug::JTAGAP', base_address: base_address }
+          ap_opts = { class_name: 'JTAGAP', base_address: base_address }
         end
 
         add_ap(name, ap_opts)
@@ -71,9 +71,9 @@ module OrigenARMDebug
       domain name.to_sym
       ap = sub_block(name.to_sym, options)
 
-      if options[:class_name] == 'OrigenARMDebug::MemAP'
+      if options[:class_name] == 'MemAP'
         mem_aps << ap
-      elsif options[:class_name] == 'OrigenARMDebug::JTAGAP'
+      elsif options[:class_name] == 'JTAGAP'
         jtag_aps << ap
       else
         ext_aps << ap

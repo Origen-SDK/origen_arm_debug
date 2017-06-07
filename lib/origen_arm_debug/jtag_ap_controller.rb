@@ -1,6 +1,5 @@
 module OrigenARMDebug
-  class JTAGAPController
-    include Origen::Controller
-    include Helpers
+  class JTAGAPController < APController
+    # Placeholder
   end
 end

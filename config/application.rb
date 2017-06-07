@@ -57,4 +57,11 @@ class OrigenARMDebugApplication < Origen::Application
     end 
   end 
 
+  # def after_web_site_compile(options)
+  #   # Build the model documentation
+  #   OrigenDocHelpers.generate_model_docs layout: "#{Origen.root}/templates/web/layouts/_basic.html.erb", tab: :model do |d|
+  #     d.page model: $dut.arm_debug
+  #   end
+  # end
+
 end

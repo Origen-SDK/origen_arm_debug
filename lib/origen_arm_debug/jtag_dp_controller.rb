@@ -1,4 +1,3 @@
-require 'origen_arm_debug/dp_controller'
 module OrigenARMDebug
   class JTAG_DPController
     include Origen::Controller
@@ -135,6 +134,10 @@ module OrigenARMDebug
         ir.write!(0b1010)
         dut.jtag.read_dr(dr, options)
       end
+    end
+
+    def base_address
+      model.base_address
     end
   end
 end

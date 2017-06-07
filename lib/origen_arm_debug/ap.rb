@@ -1,4 +1,3 @@
-require 'origen_arm_debug/ap_controller'
 module OrigenARMDebug
   # Generic Access Port (AP)
   class AP
