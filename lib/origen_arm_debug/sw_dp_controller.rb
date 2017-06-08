@@ -1,4 +1,3 @@
-require 'origen_arm_debug/dp_controller'
 module OrigenARMDebug
   class SW_DPController
     include Origen::Controller

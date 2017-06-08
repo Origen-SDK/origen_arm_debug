@@ -1,4 +1,3 @@
-require 'origen_arm_debug/jtag_dp_controller'
 module OrigenARMDebug
   class JTAG_DP
     include Origen::Model

@@ -1,4 +1,3 @@
-require 'origen_arm_debug/sw_dp_controller'
 module OrigenARMDebug
   class SW_DP
     include Origen::Model

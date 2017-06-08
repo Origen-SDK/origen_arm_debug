@@ -1,9 +1,6 @@
-require 'origen_arm_debug/mem_ap_controller'
 module OrigenARMDebug
   # Memory Access Port (MEM-AP)
   class MemAP < AP
-    include Origen::Model
-
     # Latency to write a memory resource
     attr_reader :latency
 
@@ -14,6 +11,7 @@ module OrigenARMDebug
 
     def initialize(options = {})
       super
+
       @latency = options[:latency] || 0
       @apmem_access_wait = options[:apmem_access_wait] || 0
 
