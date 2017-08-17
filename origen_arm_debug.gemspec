@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["ronnie.lajaunie@nxp.com"]
   spec.summary       = "Provides an Origen API to perform register read and write operations via the ARM_DEBUG protocol."
   spec.homepage      = "http://origen-sdk.org/origen_arm_debug"
-  spec.license       = 'LGPL-3'
+  spec.license       = 'MIT'
 
   spec.required_ruby_version     = '>= 1.9.3'
   spec.required_rubygems_version = '>= 1.8.11'
