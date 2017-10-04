@@ -2,12 +2,12 @@ module OrigenARMDebug
   # Memory Access Port (MEM-AP)
   class MemAP < AP
     # Latency to write a memory resource
-    attr_reader :latency
+    attr_accessor :latency
 
     # Wait states for data to be transferred from Memory Resource to DRW on
     #   read request.  Should be added to apreg_access_wait for complete transaction
     #   time of memory read (read data path: memory->drw->rdbuff)
-    attr_reader :apmem_access_wait
+    attr_accessor :apmem_access_wait
 
     def initialize(options = {})
       super
