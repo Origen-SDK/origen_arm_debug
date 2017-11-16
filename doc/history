@@ -1,3 +1,17 @@
+<a class="anchor release_tag" name="v1_0_2"></a>
+<h1><a href="#v1_0_2">Tag: v1.0.2</a></h1>
+
+##### Branch: 'master'
+
+##### by Lajaunie Ronald-B01784 on 16-Nov-2017 13:56PM
+
+
+* Allow read mask to fall through to origen\_jtag driver (shifted 3 bits to match JTAG-DP
+DR setup)
+* Switch wait-state and latency attr to be accessors, so they can be updated on the fly at
+the top-level if necessary
+* Additional documentation about how to customized for company-specific implementations
+
 <a class="anchor release_tag" name="v1_0_1"></a>
 <h1><a href="#v1_0_1">Tag: v1.0.1</a></h1>
 
