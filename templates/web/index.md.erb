@@ -32,11 +32,6 @@ Include the <code>OrigenARMDebug</code> module in your DUT class, then hook it u
 to the Origen register API via
 <code>read_register</code> and <code>write_register</code> methods.
 
-The <code>OrigenARMDebug</code> module also provides additional methods to use the ARM Debug protocol including:
-accessing device memory, accessing core and floating point registers (cortex M cores only),
-entering/exiting debug mode (cortex M cores only), setting the PC (cortex M cores only)
-and stepping through code (cortex M cores only).
-
 You must also include a compatible physical driver depending on what debug
 interface your device has, one of the following can be used:
 
@@ -57,7 +52,10 @@ class DUT
       reg.bits 7..0,  :lower_byte
     end
     
-    sub_block :arm_debug, class_name: "OrigenARMDebug::DAP", mem_aps: { mem_ap: 0x00000000, mem2_ap: 0x01000000 }                           
+    # Simple example using default wait-states and latency:
+    #   mem_ap:  APSEL = 0x00 (base_address[31:24])
+    #   mem2_ap: APSEL = 0x01 (base_address[31:24])
+    sub_block :arm_debug, class_name: 'OrigenARMDebug::DAP', mem_aps: { mem_ap: 0x00000000, mem2_ap: 0x01000000 }                           
   end
 
   # Hook the ARMDebug module into the register API, any register read
@@ -75,7 +73,7 @@ end
 DUT.new.myreg.write!(0x55AA)  # => Will generate the required vectors using the ARM debug protocol
 ~~~
 
-You can also access the lower-level API using conventional Origen register transactions:
+You can access the lower-level API using conventional Origen register transactions:
 
 ~~~ruby
 arm_debug.sw_dp.idcode.read!(0x2BA01477)
@@ -86,6 +84,91 @@ arm_debug.sw_dp.select.write!(0)              # Select AHB-AP, bank 0
 
 # Set the SIZE field of CSW to 0x2 (32-bit transfers) + AddrInc=1
 arm_debug.ahb_ap.csw.write!(0x23000052)
+~~~
+
+You can also adjust the intermediate wait-states and latency parameters:
+
+* [AP.apreg_access_wait](http://origen-sdk.org/arm_debug/api/OrigenARMDebug/AP.html#apreg_access_wait-instance_method)
+* [MemAP.apmem_access_wait](http://origen-sdk.org/arm_debug/api/OrigenARMDebug/MemAP.html#apmem_access_wait-instance_method)
+* [MemAP.latency](http://origen-sdk.org/arm_debug/api/OrigenARMDebug/MemAP.html#latency-instance_method)
+
+~~~ruby
+# Assuming ahb_ap has been previously defined
+dut.arm_debug.ahb_ap.apmem_access_wait = 16
+dut.arm_debug.ahb_ap.apreg_access_wait = 12
+dut.arm_debug.ahb_ap.latency = 8
+~~~
+
+### Company Customization
+
+It may be the case that your application needs additional, customized Access Ports (AP) which are allowed but
+not defined by the standard ARM Debug Interface.  The following example shows how you can use the generic AP
+class as a starting point and add extra registers as defined by your specific implementation.
+
+~~~ruby
+require 'origen_arm_debug'
+module ARMDebugCOMPANY
+  # New AP class inherited from generic AP class provided by origen_arm_debug
+  class CustomAP < OrigenARMDebug::AP
+    # Initialize AP parameters and registers
+    def initialize(options = {})
+      super
+
+      instantiate_registers(options)
+
+      # Standard AP-register latency for most devices.  Can be overriden by
+      #   top-level if necessary
+      @apreg_access_wait = 8
+    end
+
+    # Add example registers associated with CustomAP.
+    # 
+    # Custom registers can also be added by ARMDebug owner with add_reg or
+    #   overloading entire instantiate_registers methd
+    #
+    #   Ex:  arm_debug.company_ap.add_reg(:custom_reg_3, 0x08)
+    def instantiate_registers(options = {})
+      add_reg :custom_reg_1, 0x00
+      add_reg :custom_reg_2, 0x04
+    end
+  end
+end
+
+
+class DUT
+  include Origen::TopLevel
+  include ARMDebugCOMPANY
+
+  # Also include the required physical driver, JTAG in this example
+  include OrigenJTAG
+
+  def initialize
+    reg :myreg, 0x0012, size: 16 do |reg|
+      reg.bits 15..8, :upper_byte
+      reg.bits 7..0,  :lower_byte
+    end
+    
+    # Some standard AP parameters values
+    std_memap_config = { latency: 16, apreg_access_wait: 8, apmem_access_wait: 8, csw_reset: 0x23000040 }  
+
+    # 2 MemAPs using standard parameters (above)
+    mem_aps = {
+      mem_ap_0: { base_address: 0x00000000 }.merge(std_memap_config),    # AP Select = 0x00
+      mem_ap_1: { base_address: 0x01000000 }.merge(std_memap_config),    # AP Select = 0x01
+    }
+
+    # Add Company-Customized AP class @ APSEL = 0x04
+    custom_ap = {
+      company_ap:  { class_name: 'ARMDebugCOMPANY::CustomAP', base_address: 0x04000000, apreg_access_wait: 8 }
+    }
+
+    sub_block :arm_debug, class_name: 'OrigenARMDebug::DAP',
+                          base_address: 0,
+                          mem_aps: mem_aps,
+                          aps: custom_ap
+  end
+end
+DUT.new.arm_debug.company_ap.custom_reg_1.write!(0x55AA)
 ~~~
 
 ### How To Setup a Development Environment

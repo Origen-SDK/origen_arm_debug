@@ -95,6 +95,7 @@ module OrigenARMDebug
               dr[0].write(1)
               dr[2..1].write(rdbuff.offset >> 2)
               dr[34..3].copy_all(reg)
+              options[:mask] = options[:mask] << 3 unless options[:mask].nil?
               dut.jtag.read_dr(dr, options)
 
             else
@@ -131,6 +132,7 @@ module OrigenARMDebug
         dr[0].write(1)
         dr[2..1].write(rdbuff.offset >> 2)
         dr[34..3].copy_all(reg)
+        options[:mask] = options[:mask] << 3 unless options[:mask].nil?
         ir.write!(0b1010)
         dut.jtag.read_dr(dr, options)
       end
