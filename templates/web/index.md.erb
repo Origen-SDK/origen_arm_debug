@@ -28,11 +28,10 @@ if your app is a plugin.
 
 ### How To Use
 
-Include the <code>OrigenARMDebug</code> module in your DUT class, then hook it up
-to the Origen register API via
+The most common way to use the Arm Debugger plugin is through the Origen register API via
 <code>read_register</code> and <code>write_register</code> methods.
 
-You must also include a compatible physical driver depending on what debug
+You must include a compatible physical driver depending on what debug
 interface your device has, one of the following can be used:
 
 * [JTAG](http://origen-sdk.org/jtag)
@@ -41,9 +40,8 @@ interface your device has, one of the following can be used:
 ~~~ruby
 class DUT
   include Origen::TopLevel
-  include OrigenARMDebug
 
-  # Also include the required physical driver, JTAG in this example
+  # Include the required physical driver, JTAG in this example
   include OrigenJTAG
 
   def initialize
@@ -55,7 +53,11 @@ class DUT
     # Simple example using default wait-states and latency:
     #   mem_ap:  APSEL = 0x00 (base_address[31:24])
     #   mem2_ap: APSEL = 0x01 (base_address[31:24])
-    sub_block :arm_debug, class_name: 'OrigenARMDebug::DAP', mem_aps: { mem_ap: 0x00000000, mem2_ap: 0x01000000 }                           
+    mem_aps = {
+      mem_ap: { base_address: 0x00000000 }
+      mem2_ap: { base_address: 0x10000000 }
+    }
+    sub_block :arm_debug, class_name: 'OrigenARMDebug::DAP', mem_aps: mem_aps                           
   end
 
   # Hook the ARMDebug module into the register API, any register read
@@ -97,6 +99,41 @@ You can also adjust the intermediate wait-states and latency parameters:
 dut.arm_debug.ahb_ap.apmem_access_wait = 16
 dut.arm_debug.ahb_ap.apreg_access_wait = 12
 dut.arm_debug.ahb_ap.latency = 8
+
+# You can define these at instantiation as well
+mem_aps = {
+  mem_ap: { base_address: 0x00000000, latency: 8, apreg_access_wait: 12, apmem_access_wait: 16 }
+  mem2_ap: { base_address: 0x10000000, latency: 8, apreg_access_wait: 12, apmem_access_wait: 16 }
+}
+sub_block :arm_debug, class_name: 'OrigenARMDebug::DAP', mem_aps: mem_aps
+~~~
+
+When used with the JTAG physical driver the default IR size is 4 and the default register select values are:
+
+~~~
+idcode_select = 0b1110
+abort_select  = 0b1000
+dpacc_select  = 0b1010
+apacc_select  = 0b1011
+~~~
+
+You can set non-default values at instantiation like this:
+
+~~~ruby
+mem_aps = {
+  mem_ap: { base_address: 0x00000000 }
+  mem2_ap: { base_address: 0x10000000 }
+}
+instantiation_options[:class_name] = 'OrigenARMDebug::DAP'
+instantiation_options[:mem_aps] = mem_aps
+
+instantiation_options[:ir_size] = 8
+instantiation_options[:idcode_select] = 0xFE
+instantiation_options[:abort_select] = 0xF8
+instantiation_options[:dpacc_select] = 0xFA
+instantiation_options[:apacc_select] = 0xFB
+
+sub_block :arm_debug, instantiation_options
 ~~~
 
 ### Company Customization

@@ -2,8 +2,19 @@ module OrigenARMDebug
   class JTAG_DP
     include Origen::Model
 
+    attr_reader :dpacc_select, :apacc_select
+
     def initialize(options = {})
-      add_reg :ir, 0, size: 4
+      options = {
+        ir_size:       4,
+        idcode_select: 0b1110,
+        abort_select:  0b1000,
+        dpacc_select:  0b1010,
+        apacc_select:  0b1011
+      }.merge(options)
+      @dpacc_select = options[:dpacc_select]
+      @apacc_select = options[:apacc_select]
+      add_reg :ir, 0, size: options[:ir_size]
 
       # Virtual reg used to represent all of the various 35-bit scan chains
       reg :dr, 0, size: 35 do |reg|
@@ -12,7 +23,7 @@ module OrigenARMDebug
         reg.bit 0, :rnw
       end
 
-      reg :idcode, 0b1110, access: :ro do |reg|
+      reg :idcode, options[:idcode_select], access: :ro do |reg|
         reg.bit 31..28, :version
         reg.bit 27..12, :partno
         reg.bit 11..1, :designer
@@ -42,7 +53,7 @@ module OrigenARMDebug
 
       add_reg :rdbuff, 0xC, access: :ro, reset: 0
 
-      reg :abort, 0b1000, access: :wo do |reg|
+      reg :abort, options[:abort_select], access: :wo do |reg|
         reg.bit 0, :dapabort
       end
     end

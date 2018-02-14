@@ -20,7 +20,8 @@ module OrigenARMDebug
       end
 
       if options[:jtag] || parent.respond_to?(:jtag)
-        dps << sub_block(:jtag_dp, class_name: 'JTAG_DP')
+        options[:class_name] = 'JTAG_DP'
+        dps << sub_block(:jtag_dp, options)
       end
 
       Array(options[:mem_aps]).each do |name, base_address|

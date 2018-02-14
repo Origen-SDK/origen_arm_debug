@@ -13,7 +13,7 @@ module OrigenARMDebugDev
     # @example
     #   $dut = OrigenARMDebugDev::DUT.new
     #
-    def initialize
+    def initialize(options = {})
       add_reg :test, 0
 
       reg :test2, 0 do |reg|

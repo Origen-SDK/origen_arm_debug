@@ -33,7 +33,7 @@ module OrigenARMDebug
               dr[0].write(0)
               dr[2..1].write(reg.offset >> 2)
               dr[34..3].copy_all(reg)
-              ir.write!(0b1010)
+              ir.write!(dpacc_select)
               dut.jtag.write_dr(dr)
 
             else
@@ -55,7 +55,7 @@ module OrigenARMDebug
         dr[0].write(0)
         dr[2..1].write(reg.offset >> 2)
         dr[34..3].copy_all(reg)
-        ir.write!(0b1011)
+        ir.write!(apacc_select)
         dut.jtag.write_dr(dr, options)
       end
     end
@@ -86,7 +86,7 @@ module OrigenARMDebug
               dr[0].write(1)
               dr[2..1].write(reg.offset >> 2)
               dr[34..3].write(0)
-              ir.write!(0b1010)
+              ir.write!(dpacc_select)
               dut.jtag.write_dr(dr)
 
               # Part 2 - Now read real data from RDBUFF (DP-Reg)
@@ -117,7 +117,7 @@ module OrigenARMDebug
         dr[0].write(1)
         dr[2..1].write(reg.offset >> 2)
         dr[34..3].write(0)
-        ir.write!(0b1011)
+        ir.write!(apacc_select)
         dut.jtag.write_dr(dr)
 
         # Calling AP should provide any delay parameter for wait states between AP read request
@@ -133,7 +133,7 @@ module OrigenARMDebug
         dr[2..1].write(rdbuff.offset >> 2)
         dr[34..3].copy_all(reg)
         options[:mask] = options[:mask] << 3 unless options[:mask].nil?
-        ir.write!(0b1010)
+        ir.write!(dpacc_select)
         dut.jtag.read_dr(dr, options)
       end
     end
