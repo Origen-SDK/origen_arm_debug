@@ -1,3 +1,14 @@
+<a class="anchor release_tag" name="v1_1_0"></a>
+<h1><a href="#v1_1_0">Tag: v1.1.0</a></h1>
+
+##### Branch: 'master'
+
+##### by nxa18793 on 14-Feb-2018 07:48AM
+
+
+IR shift size and register select values are now configurable through instantiation
+options
+
 <a class="anchor release_tag" name="v1_0_2"></a>
 <h1><a href="#v1_0_2">Tag: v1.0.2</a></h1>
 
