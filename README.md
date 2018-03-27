@@ -6,6 +6,6 @@
 
 # OrigenARMDebug
 
-A ARM Debug driver for the Origen SDK.
+An ARM Debug driver for the Origen SDK.
 
 [See the website](http://origen-sdk.org/arm_debug) for more info.
