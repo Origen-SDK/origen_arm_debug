@@ -39,6 +39,13 @@ module OrigenARMDebug
 
         select_ap_reg(reg)
         dut.swd.read_ap(address: reg.address)
+        
+        # Add any extra delay needed in between selecting the AP state, initiating and completing a dummy read, and
+        # starting the actual read.
+        if options[:apacc_wait_states]
+          options[:apacc_wait_states].cycles
+        end
+        
         dut.swd.read_dp(reg, options.merge(address: rdbuff.address))
       end
     end
