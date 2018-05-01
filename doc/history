@@ -1,3 +1,13 @@
+<a class="anchor release_tag" name="v1_1_1"></a>
+<h1><a href="#v1_1_1">Tag: v1.1.1</a></h1>
+
+##### Branch: 'master'
+
+##### by Corey Engelken on 01-May-2018 07:44AM
+
+
+Add support for apacc\_wait\_states to SWD.
+
 <a class="anchor release_tag" name="v1_1_0"></a>
 <h1><a href="#v1_1_0">Tag: v1.1.0</a></h1>
 
