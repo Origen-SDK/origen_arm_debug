@@ -9,6 +9,11 @@ module OrigenARMDebug
     #   time of memory read (read data path: memory->drw->rdbuff)
     attr_accessor :apmem_access_wait
 
+    # Wait states to occur in between configuring the DAP for a read, and for the the read transaction to begin.
+    #   For JTAG, this is the wait states in between setting the AP and for the read transaction to occur.
+    #   For SWD, this is the wait states in between setting the AP, initiating and completing a dummy read, and beginning the actual read transaction.
+    attr_accessor :apacc_wait_states
+
     def initialize(options = {})
       super
 

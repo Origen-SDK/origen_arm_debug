@@ -90,9 +90,10 @@ arm_debug.ahb_ap.csw.write!(0x23000052)
 
 You can also adjust the intermediate wait-states and latency parameters:
 
-* [AP.apreg_access_wait](http://origen-sdk.org/arm_debug/api/OrigenARMDebug/AP.html#apreg_access_wait-instance_method)
-* [MemAP.apmem_access_wait](http://origen-sdk.org/arm_debug/api/OrigenARMDebug/MemAP.html#apmem_access_wait-instance_method)
-* [MemAP.latency](http://origen-sdk.org/arm_debug/api/OrigenARMDebug/MemAP.html#latency-instance_method)
+* [AP.apreg_access_wait](<%= path '/api/OrigenARMDebug/AP.html#apreg_access_wait-instance_method' %>)
+* [MemAP.apmem_access_wait](<%= path '/api/OrigenARMDebug/MemAP.html#apmem_access_wait-instance_method' %>)
+* [MemAP.latency](<%= path '/api/OrigenARMDebug/MemAP.html#latency-instance_method' %>)
+* [MemAP.apacc_wait_states](<%= path '/api/OrigenARMDebug/MemAP.html#apacc_wait_states-instance_method' %>)
 
 ~~~ruby
 # Assuming ahb_ap has been previously defined
