@@ -74,7 +74,7 @@ module OrigenARMDebug
 
       # Reset tar if just crossed a 1kB boundary
       if address_increment_enabled? && (tar[9..0].data == 0)
-        tar.reset
+        tar.write(0)
       end
     end
   end
