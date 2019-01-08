@@ -54,7 +54,7 @@ class DUT
     #   mem_ap:  APSEL = 0x00 (base_address[31:24])
     #   mem2_ap: APSEL = 0x01 (base_address[31:24])
     mem_aps = {
-      mem_ap: { base_address: 0x00000000 }
+      mem_ap: { base_address: 0x00000000 },
       mem2_ap: { base_address: 0x10000000 }
     }
     sub_block :arm_debug, class_name: 'OrigenARMDebug::DAP', mem_aps: mem_aps                           
