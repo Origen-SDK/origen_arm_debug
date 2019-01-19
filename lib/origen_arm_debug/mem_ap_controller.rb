@@ -51,6 +51,8 @@ module OrigenARMDebug
         end
         increment_addr
       end
+
+      reg_or_val.clear_flags
     end
 
     def address_increment_enabled?
