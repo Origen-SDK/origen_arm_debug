@@ -52,7 +52,7 @@ module OrigenARMDebug
         increment_addr
       end
 
-      reg_or_val.clear_flags
+      reg_or_val.clear_flags if reg_or_val.respond_to?(:clear_flags)
     end
 
     def address_increment_enabled?
