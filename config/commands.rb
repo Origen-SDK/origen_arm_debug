@@ -30,6 +30,8 @@ when "examples"    # , "test"
   load "#{Origen.top}/lib/origen/commands/generate.rb"
   ARGV = %w(workout -t swd -e j750 -r approved)
   load "#{Origen.top}/lib/origen/commands/generate.rb"
+  ARGV = %w(workout -t dual_dp -e j750 -r approved)
+  load "#{Origen.top}/lib/origen/commands/generate.rb"
   ARGV = %w(workout -t config_test -e j750 -r approved/config_test)
   load "#{Origen.top}/lib/origen/commands/generate.rb"
     
