@@ -17,11 +17,11 @@ aliases ={
 # Now branch to the specific task code
 case @command
 
-# when "specs"
-#   require "rspec"
-#   exit RSpec::Core::Runner.run(['spec'])
+when "specs"
+  require "rspec"
+  exit RSpec::Core::Runner.run(['spec'])
 
-when "examples"    # , "test"  
+when "examples", "test"  
   Origen.load_application
   status = 0
   
@@ -46,12 +46,12 @@ when "examples"    # , "test"
      status = 1
   end
   puts
-#  if @command == "test"
-#    Origen.app.unload_target!
-#    require "rspec"
-#    result = RSpec::Core::Runner.run(['spec'])
-#    status = status == 1 ? 1 : result
-#  end
+  if @command == "test"
+    Origen.app.unload_target!
+    require "rspec"
+    result = RSpec::Core::Runner.run(['spec'])
+    status = status == 1 ? 1 : result
+  end
   exit status
 
 # Always leave an else clause to allow control to fall back through to the
