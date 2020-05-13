@@ -30,5 +30,14 @@ module OrigenARMDebug
     def reset_dp
       @dp = nil
     end
+
+    def is_jtag?
+      dp.is_jtag?
+    end
+
+    def is_swd?
+      dp.is_swd?
+    end
+    alias_method :is_sw?, :is_swd?
   end
 end

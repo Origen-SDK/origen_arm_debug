@@ -22,6 +22,10 @@ module DapSpec
       dut.arm_debug.set_dp(:jtag)
       dut.arm_debug.dp.name.should == :sw_dp
       dut.arm_debug.dps.size.should == 1
+      test = dut.arm_debug.is_swd?
+      test.should == true
+      test = dut.arm_debug.is_jtag?
+      test.should == false
     end
 
     it 'can have a JTAG_DP' do
@@ -32,6 +36,10 @@ module DapSpec
       dut.arm_debug.set_dp(:swd)
       dut.arm_debug.dp.name.should == :jtag_dp
       dut.arm_debug.dps.size.should == 1
+      test = dut.arm_debug.dp.is_swd?
+      test.should == false
+      test = dut.arm_debug.dp.is_jtag?
+      test.should == true
     end
 
     it 'can have both an SWD_DP and JTAG_DP' do
@@ -61,6 +69,10 @@ module DapSpec
       dut.arm_debug.set_dp(:jtag_driver)
       dut.arm_debug.dp.name.should == :sw_dp
       dut.arm_debug.dps.size.should == 2
+      test = dut.arm_debug.dp.is_swd?
+      test.should == true
+      test = dut.arm_debug.dp.is_jtag?
+      test.should == false
     end
 
 
