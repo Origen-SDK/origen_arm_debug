@@ -17,11 +17,11 @@ aliases ={
 # Now branch to the specific task code
 case @command
 
-# when "specs"
-#   require "rspec"
-#   exit RSpec::Core::Runner.run(['spec'])
+when "specs"
+  require "rspec"
+  exit RSpec::Core::Runner.run(['spec'])
 
-when "examples"    # , "test"  
+when "examples", "test"  
   Origen.load_application
   status = 0
   
@@ -29,6 +29,8 @@ when "examples"    # , "test"
   ARGV = %w(workout -t jtag -e j750 -r approved)
   load "#{Origen.top}/lib/origen/commands/generate.rb"
   ARGV = %w(workout -t swd -e j750 -r approved)
+  load "#{Origen.top}/lib/origen/commands/generate.rb"
+  ARGV = %w(workout -t dual_dp -e j750 -r approved)
   load "#{Origen.top}/lib/origen/commands/generate.rb"
   ARGV = %w(workout -t config_test -e j750 -r approved/config_test)
   load "#{Origen.top}/lib/origen/commands/generate.rb"
@@ -44,12 +46,12 @@ when "examples"    # , "test"
      status = 1
   end
   puts
-#  if @command == "test"
-#    Origen.app.unload_target!
-#    require "rspec"
-#    result = RSpec::Core::Runner.run(['spec'])
-#    status = status == 1 ? 1 : result
-#  end
+  if @command == "test"
+    Origen.app.unload_target!
+    require "rspec"
+    result = RSpec::Core::Runner.run(['spec'])
+    status = status == 1 ? 1 : result
+  end
   exit status
 
 # Always leave an else clause to allow control to fall back through to the

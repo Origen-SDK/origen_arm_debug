@@ -60,5 +60,14 @@ module OrigenARMDebug
     def abort
       reg(:abort)
     end
+
+    def is_jtag?
+      false
+    end
+
+    def is_swd?
+      true
+    end
+    alias_method :is_sw?, :is_swd?
   end
 end

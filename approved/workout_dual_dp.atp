@@ -1,0 +1,1145 @@
+// ***************************************************************************
+// GENERATED:
+//   Time:    12-May-2020 12:27PM
+//   By:      Ronnie Lajaunie
+//   Mode:    debug
+//   Command: origen g workout -t dual_dp.rb -e j750.rb
+// ***************************************************************************
+// ENVIRONMENT:
+//   Application
+//     Source:    git@github.com:Origen-SDK/origen_arm_debug.git
+//     Version:   1.1.3
+//     Branch:    dp-selection(2e1053be067) (+local edits)
+//   Origen
+//     Source:    https://github.com/Origen-SDK/origen
+//     Version:   0.41.2
+//   Plugins
+//     atp:                      1.1.3
+//     origen_doc_helpers:       0.8.0
+//     origen_jtag:              0.19.1
+//     origen_swd:               1.1.0
+//     origen_testers:           0.19.3
+// ***************************************************************************
+import tset arm_debug;                                                                          
+import svm_subr write_overlay_subr;                                                             
+import svm_subr read_overlay_subr;                                                              
+svm_only_file = no;                                                                             
+opcode_mode = extended;                                                                         
+compressed = yes;                                                                               
+                                                                                                
+vector ($tset, tclk, tdi, tdo, tms, trst, swd_clk, swd_dio)                                     
+{                                                                                               
+start_label pattern_st:                                                                         
+//                                                                                              t t t t t s s
+//                                                                                              c d d m r w w
+//                                                                                              l i o s s d d
+//                                                                                              k       t - -
+//                                                                                                        c d
+//                                                                                                        l i
+//                                                                                                        k o
+// ######################################################################
+// ## Tests of direct DP API
+// ######################################################################
+// [ARM Debug] Read SW-DP register IDCODE: 0xX0012XXX
+// [SWD] -----------------------------------------------------------------
+// [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
+// [SWD] |   1   |   0   |   1   |   0   |   0   |   1   |   0   |   1   |
+// [SWD] -----------------------------------------------------------------
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+repeat 2                                                         > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 2                                                         > arm_debug                    X X X X X 1 L ;
+// [SWD] Read: 0xX0012XXX
+repeat 12                                                        > arm_debug                    X X X X X 1 X ;
+                                                                 > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 2                                                         > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 11                                                        > arm_debug                    X X X X X 1 L ;
+repeat 4                                                         > arm_debug                    X X X X X 1 X ;
+// [SWD] /Read: 0xX0012XXX
+repeat 2                                                         > arm_debug                    X X X X X 1 X ;
+// [ARM Debug] /Read SW-DP register IDCODE: 0xX0012XXX
+// [ARM Debug] Write SW-DP register CTRLSTAT: 0x50000000
+// [SWD] -----------------------------------------------------------------
+// [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
+// [SWD] |   1   |   0   |   0   |   1   |   0   |   1   |   0   |   1   |
+// [SWD] -----------------------------------------------------------------
+                                                                 > arm_debug                    X X X X X 1 1 ;
+repeat 2                                                         > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 2                                                         > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+// [SWD] Write: 0x50000000
+repeat 28                                                        > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+// [SWD] /Write: 0x50000000
+                                                                 > arm_debug                    X X X X X 1 0 ;
+// [ARM Debug] /Write SW-DP register CTRLSTAT: 0x50000000
+// [ARM Debug] Read SW-DP register CTRLSTAT: 0xF0000000
+// [SWD] -----------------------------------------------------------------
+// [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
+// [SWD] |   1   |   0   |   1   |   1   |   0   |   0   |   0   |   1   |
+// [SWD] -----------------------------------------------------------------
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+repeat 2                                                         > arm_debug                    X X X X X 1 1 ;
+repeat 3                                                         > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 2                                                         > arm_debug                    X X X X X 1 L ;
+// [SWD] Read: 0xF0000000
+repeat 28                                                        > arm_debug                    X X X X X 1 L ;
+repeat 4                                                         > arm_debug                    X X X X X 1 H ;
+// [SWD] /Read: 0xF0000000
+repeat 2                                                         > arm_debug                    X X X X X 1 X ;
+// [ARM Debug] /Read SW-DP register CTRLSTAT: 0xF0000000
+// [ARM Debug] Write SW-DP register SELECT: 0xF0
+// [SWD] -----------------------------------------------------------------
+// [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
+// [SWD] |   1   |   0   |   0   |   0   |   1   |   1   |   0   |   1   |
+// [SWD] -----------------------------------------------------------------
+                                                                 > arm_debug                    X X X X X 1 1 ;
+repeat 3                                                         > arm_debug                    X X X X X 1 0 ;
+repeat 2                                                         > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 2                                                         > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+// [SWD] Write: 0xF0
+repeat 4                                                         > arm_debug                    X X X X X 1 0 ;
+repeat 4                                                         > arm_debug                    X X X X X 1 1 ;
+repeat 24                                                        > arm_debug                    X X X X X 1 0 ;
+// [SWD] /Write: 0xF0
+                                                                 > arm_debug                    X X X X X 1 0 ;
+// [ARM Debug] /Write SW-DP register SELECT: 0xF0
+// [ARM Debug] Write SW-DP register ABORT: 0x1
+// [SWD] -----------------------------------------------------------------
+// [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
+// [SWD] |   1   |   0   |   0   |   0   |   0   |   0   |   0   |   1   |
+// [SWD] -----------------------------------------------------------------
+                                                                 > arm_debug                    X X X X X 1 1 ;
+repeat 6                                                         > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 2                                                         > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+// [SWD] Write: 0x1
+                                                                 > arm_debug                    X X X X X 1 1 ;
+repeat 31                                                        > arm_debug                    X X X X X 1 0 ;
+// [SWD] /Write: 0x1
+                                                                 > arm_debug                    X X X X X 1 1 ;
+// [ARM Debug] /Write SW-DP register ABORT: 0x1
+// ######################################################################
+// ## Tests of direct AP API
+// ######################################################################
+// [ARM Debug] Write MEM-AP (mem_ap) register TAR: 0x12340000
+// [ARM Debug] Write SW-DP register SELECT: 0x0
+// [SWD] -----------------------------------------------------------------
+// [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
+// [SWD] |   1   |   0   |   0   |   0   |   1   |   1   |   0   |   1   |
+// [SWD] -----------------------------------------------------------------
+                                                                 > arm_debug                    X X X X X 1 1 ;
+repeat 3                                                         > arm_debug                    X X X X X 1 0 ;
+repeat 2                                                         > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 2                                                         > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+// [SWD] Write: 0x0
+repeat 32                                                        > arm_debug                    X X X X X 1 0 ;
+// [SWD] /Write: 0x0
+                                                                 > arm_debug                    X X X X X 1 0 ;
+// [ARM Debug] /Write SW-DP register SELECT: 0x0
+// [SWD] -----------------------------------------------------------------
+// [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
+// [SWD] |   1   |   1   |   0   |   1   |   0   |   0   |   0   |   1   |
+// [SWD] -----------------------------------------------------------------
+repeat 2                                                         > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+repeat 3                                                         > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 2                                                         > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+// [SWD] Write: 0x12340000
+repeat 18                                                        > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+repeat 2                                                         > arm_debug                    X X X X X 1 1 ;
+repeat 3                                                         > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+repeat 2                                                         > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+repeat 3                                                         > arm_debug                    X X X X X 1 0 ;
+// [SWD] /Write: 0x12340000
+                                                                 > arm_debug                    X X X X X 1 1 ;
+repeat 8                                                         > arm_debug                    X X X X X 1 0 ;
+// [ARM Debug] /Write MEM-AP (mem_ap) register TAR: 0x12340000
+// [ARM Debug] Read MEM-AP (mem_ap) register TAR: 0x12340000
+// [SWD] -----------------------------------------------------------------
+// [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
+// [SWD] |   1   |   1   |   1   |   1   |   0   |   1   |   0   |   1   |
+// [SWD] -----------------------------------------------------------------
+repeat 4                                                         > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 2                                                         > arm_debug                    X X X X X 1 L ;
+// [SWD] Read: 0xX
+repeat 32                                                        > arm_debug                    X X X X X 1 X ;
+// [SWD] /Read: 0xX
+repeat 2                                                         > arm_debug                    X X X X X 1 X ;
+repeat 8                                                         > arm_debug                    X X X X X 1 0 ;
+// [SWD] -----------------------------------------------------------------
+// [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
+// [SWD] |   1   |   0   |   1   |   1   |   1   |   1   |   0   |   1   |
+// [SWD] -----------------------------------------------------------------
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+repeat 4                                                         > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 2                                                         > arm_debug                    X X X X X 1 L ;
+// [SWD] Read: 0x12340000
+repeat 18                                                        > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+                                                                 > arm_debug                    X X X X X 1 L ;
+repeat 2                                                         > arm_debug                    X X X X X 1 H ;
+repeat 3                                                         > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 2                                                         > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 3                                                         > arm_debug                    X X X X X 1 L ;
+// [SWD] /Read: 0x12340000
+repeat 2                                                         > arm_debug                    X X X X X 1 X ;
+// [ARM Debug] /Read MEM-AP (mem_ap) register TAR: 0x12340000
+// ######################################################################
+// ## Tests of high-level register API
+// ######################################################################
+// ######################################################################
+// ## Test write register, should write value 0xFF01
+// ######################################################################
+// [ARM Debug] Write MEM-AP (mem_ap) address 0x0: 0xFF01
+// [ARM Debug] Write MEM-AP (mem_ap) register CSW: 0x23000042
+// [SWD] -----------------------------------------------------------------
+// [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
+// [SWD] |   1   |   1   |   0   |   0   |   0   |   1   |   0   |   1   |
+// [SWD] -----------------------------------------------------------------
+repeat 2                                                         > arm_debug                    X X X X X 1 1 ;
+repeat 3                                                         > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 2                                                         > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+// [SWD] Write: 0x23000042
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+repeat 4                                                         > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+repeat 17                                                        > arm_debug                    X X X X X 1 0 ;
+repeat 2                                                         > arm_debug                    X X X X X 1 1 ;
+repeat 3                                                         > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+repeat 2                                                         > arm_debug                    X X X X X 1 0 ;
+// [SWD] /Write: 0x23000042
+                                                                 > arm_debug                    X X X X X 1 1 ;
+repeat 8                                                         > arm_debug                    X X X X X 1 0 ;
+// [ARM Debug] /Write MEM-AP (mem_ap) register CSW: 0x23000042
+// [ARM Debug] Write MEM-AP (mem_ap) register TAR: 0x0
+// [SWD] -----------------------------------------------------------------
+// [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
+// [SWD] |   1   |   1   |   0   |   1   |   0   |   0   |   0   |   1   |
+// [SWD] -----------------------------------------------------------------
+repeat 2                                                         > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+repeat 3                                                         > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 2                                                         > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+// [SWD] Write: 0x0
+repeat 32                                                        > arm_debug                    X X X X X 1 0 ;
+// [SWD] /Write: 0x0
+repeat 9                                                         > arm_debug                    X X X X X 1 0 ;
+// [ARM Debug] /Write MEM-AP (mem_ap) register TAR: 0x0
+// [ARM Debug] Write MEM-AP (mem_ap) register DRW: 0xFF01
+// [SWD] -----------------------------------------------------------------
+// [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
+// [SWD] |   1   |   1   |   0   |   1   |   1   |   1   |   0   |   1   |
+// [SWD] -----------------------------------------------------------------
+repeat 2                                                         > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+repeat 3                                                         > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 2                                                         > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+// [SWD] Write: 0xFF01
+                                                                 > arm_debug                    X X X X X 1 1 ;
+repeat 7                                                         > arm_debug                    X X X X X 1 0 ;
+repeat 8                                                         > arm_debug                    X X X X X 1 1 ;
+repeat 16                                                        > arm_debug                    X X X X X 1 0 ;
+// [SWD] /Write: 0xFF01
+                                                                 > arm_debug                    X X X X X 1 1 ;
+repeat 8                                                         > arm_debug                    X X X X X 1 0 ;
+// [ARM Debug] /Write MEM-AP (mem_ap) register DRW: 0xFF01
+repeat 16                                                        > arm_debug                    X X X X X 1 0 ;
+// [ARM Debug] /Write MEM-AP (mem_ap) address 0x0: 0xFF01
+// ######################################################################
+// ## Test write register with overlay, no subroutine
+// ######################################################################
+// [ARM Debug] Write MEM-AP (mem_ap) address 0x0: 0xFF01
+// [ARM Debug] Write MEM-AP (mem_ap) register DRW: 0xFF01
+// [SWD] -----------------------------------------------------------------
+// [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
+// [SWD] |   1   |   1   |   0   |   1   |   1   |   1   |   0   |   1   |
+// [SWD] -----------------------------------------------------------------
+repeat 2                                                         > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+repeat 3                                                         > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 2                                                         > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+// [SWD] Write: 0xFF01
+write_overlay:                                                                                  
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+// [SWD] /Write: 0xFF01
+                                                                 > arm_debug                    X X X X X 1 1 ;
+repeat 8                                                         > arm_debug                    X X X X X 1 0 ;
+// [ARM Debug] /Write MEM-AP (mem_ap) register DRW: 0xFF01
+repeat 16                                                        > arm_debug                    X X X X X 1 0 ;
+// [ARM Debug] /Write MEM-AP (mem_ap) address 0x0: 0xFF01
+// ######################################################################
+// ## Test write register with overlay, use subroutine if available
+// ######################################################################
+// [ARM Debug] Write MEM-AP (mem_ap) address 0x0: 0xFF01
+// [ARM Debug] Write MEM-AP (mem_ap) register DRW: 0xFF01
+// [SWD] -----------------------------------------------------------------
+// [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
+// [SWD] |   1   |   1   |   0   |   1   |   1   |   1   |   0   |   1   |
+// [SWD] -----------------------------------------------------------------
+repeat 2                                                         > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+repeat 3                                                         > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 2                                                         > arm_debug                    X X X X X 1 L ;
+call write_overlay_subr                                          > arm_debug                    X X X X X 1 X ;
+// [SWD] Write: 0xFF01
+// [SWD] /Write: 0xFF01
+                                                                 > arm_debug                    X X X X X 1 1 ;
+repeat 8                                                         > arm_debug                    X X X X X 1 0 ;
+// [ARM Debug] /Write MEM-AP (mem_ap) register DRW: 0xFF01
+repeat 16                                                        > arm_debug                    X X X X X 1 0 ;
+// [ARM Debug] /Write MEM-AP (mem_ap) address 0x0: 0xFF01
+// ######################################################################
+// ## Test read register, should read value 0x0000FF01
+// ######################################################################
+// [ARM Debug] Read MEM-AP (mem_ap) address 0x0: 0x0000FF01
+// [SWD] -----------------------------------------------------------------
+// [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
+// [SWD] |   1   |   1   |   1   |   1   |   1   |   0   |   0   |   1   |
+// [SWD] -----------------------------------------------------------------
+repeat 5                                                         > arm_debug                    X X X X X 1 1 ;
+repeat 2                                                         > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 2                                                         > arm_debug                    X X X X X 1 L ;
+// [SWD] Read: 0xX
+repeat 32                                                        > arm_debug                    X X X X X 1 X ;
+// [SWD] /Read: 0xX
+repeat 2                                                         > arm_debug                    X X X X X 1 X ;
+repeat 16                                                        > arm_debug                    X X X X X 1 0 ;
+// [SWD] -----------------------------------------------------------------
+// [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
+// [SWD] |   1   |   0   |   1   |   1   |   1   |   1   |   0   |   1   |
+// [SWD] -----------------------------------------------------------------
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+repeat 4                                                         > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 2                                                         > arm_debug                    X X X X X 1 L ;
+// [SWD] Read: 0x0000FF01
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 7                                                         > arm_debug                    X X X X X 1 L ;
+repeat 8                                                         > arm_debug                    X X X X X 1 H ;
+repeat 16                                                        > arm_debug                    X X X X X 1 L ;
+// [SWD] /Read: 0x0000FF01
+repeat 2                                                         > arm_debug                    X X X X X 1 X ;
+// [ARM Debug] /Read MEM-AP (mem_ap) address 0x0: 0x0000FF01
+// ######################################################################
+// ## Test read register, with overlay, no subroutine, should read value 0x0000FF01
+// ######################################################################
+// [ARM Debug] Read MEM-AP (mem_ap) address 0x0: 0xVVVVVVVV
+// [SWD] -----------------------------------------------------------------
+// [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
+// [SWD] |   1   |   1   |   1   |   1   |   1   |   0   |   0   |   1   |
+// [SWD] -----------------------------------------------------------------
+repeat 5                                                         > arm_debug                    X X X X X 1 1 ;
+repeat 2                                                         > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 2                                                         > arm_debug                    X X X X X 1 L ;
+// [SWD] Read: 0xX
+repeat 32                                                        > arm_debug                    X X X X X 1 X ;
+// [SWD] /Read: 0xX
+repeat 2                                                         > arm_debug                    X X X X X 1 X ;
+repeat 16                                                        > arm_debug                    X X X X X 1 0 ;
+// [SWD] -----------------------------------------------------------------
+// [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
+// [SWD] |   1   |   0   |   1   |   1   |   1   |   1   |   0   |   1   |
+// [SWD] -----------------------------------------------------------------
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+repeat 4                                                         > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 2                                                         > arm_debug                    X X X X X 1 L ;
+// [SWD] Read: 0xVVVVVVVV
+read_overlay:                                                                                   
+                                                                 > arm_debug                    X X X X X 1 H ;
+                                                                 > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+                                                                 > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 L ;
+                                                                 > arm_debug                    X X X X X 1 L ;
+// [SWD] /Read: 0xVVVVVVVV
+repeat 2                                                         > arm_debug                    X X X X X 1 X ;
+// [ARM Debug] /Read MEM-AP (mem_ap) address 0x0: 0xVVVVVVVV
+// ######################################################################
+// ## Test read register, with overlay, use subroutine if available
+// ######################################################################
+// [ARM Debug] Read MEM-AP (mem_ap) address 0x0: 0xVVVVVVVV
+// [SWD] -----------------------------------------------------------------
+// [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
+// [SWD] |   1   |   1   |   1   |   1   |   1   |   0   |   0   |   1   |
+// [SWD] -----------------------------------------------------------------
+repeat 5                                                         > arm_debug                    X X X X X 1 1 ;
+repeat 2                                                         > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 2                                                         > arm_debug                    X X X X X 1 L ;
+// [SWD] Read: 0xX
+repeat 32                                                        > arm_debug                    X X X X X 1 X ;
+// [SWD] /Read: 0xX
+repeat 2                                                         > arm_debug                    X X X X X 1 X ;
+repeat 16                                                        > arm_debug                    X X X X X 1 0 ;
+// [SWD] -----------------------------------------------------------------
+// [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
+// [SWD] |   1   |   0   |   1   |   1   |   1   |   1   |   0   |   1   |
+// [SWD] -----------------------------------------------------------------
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+repeat 4                                                         > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+                                                                 > arm_debug                    X X X X X 1 L ;
+call read_overlay_subr                                           > arm_debug                    X X X X X 1 L ;
+// [SWD] Read: 0xVVVVVVVV
+// [SWD] /Read: 0xVVVVVVVV
+repeat 2                                                         > arm_debug                    X X X X X 1 X ;
+// [ARM Debug] /Read MEM-AP (mem_ap) address 0x0: 0xVVVVVVVV
+// ######################################################################
+// ## Test read register with mask, should read value 0xXXXxxx1
+// ######################################################################
+// [ARM Debug] Read MEM-AP (mem_ap) address 0x0: 0xXXXXXXX1
+// [SWD] -----------------------------------------------------------------
+// [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
+// [SWD] |   1   |   1   |   1   |   1   |   1   |   0   |   0   |   1   |
+// [SWD] -----------------------------------------------------------------
+repeat 5                                                         > arm_debug                    X X X X X 1 1 ;
+repeat 2                                                         > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 2                                                         > arm_debug                    X X X X X 1 L ;
+// [SWD] Read: 0xX
+repeat 32                                                        > arm_debug                    X X X X X 1 X ;
+// [SWD] /Read: 0xX
+repeat 2                                                         > arm_debug                    X X X X X 1 X ;
+repeat 16                                                        > arm_debug                    X X X X X 1 0 ;
+// [SWD] -----------------------------------------------------------------
+// [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
+// [SWD] |   1   |   0   |   1   |   1   |   1   |   1   |   0   |   1   |
+// [SWD] -----------------------------------------------------------------
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+repeat 4                                                         > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 2                                                         > arm_debug                    X X X X X 1 L ;
+// [SWD] Read: 0xXXXXXXX1
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 3                                                         > arm_debug                    X X X X X 1 L ;
+repeat 28                                                        > arm_debug                    X X X X X 1 X ;
+// [SWD] /Read: 0xXXXXXXX1
+repeat 2                                                         > arm_debug                    X X X X X 1 X ;
+// [ARM Debug] /Read MEM-AP (mem_ap) address 0x0: 0xXXXXXXX1
+// ######################################################################
+// ## Test read register with store
+// ######################################################################
+// [ARM Debug] Read MEM-AP (mem_ap) address 0x0: 0xSSSSSSSS
+// [SWD] -----------------------------------------------------------------
+// [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
+// [SWD] |   1   |   1   |   1   |   1   |   1   |   0   |   0   |   1   |
+// [SWD] -----------------------------------------------------------------
+repeat 5                                                         > arm_debug                    X X X X X 1 1 ;
+repeat 2                                                         > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 2                                                         > arm_debug                    X X X X X 1 L ;
+// [SWD] Read: 0xX
+repeat 32                                                        > arm_debug                    X X X X X 1 X ;
+// [SWD] /Read: 0xX
+repeat 2                                                         > arm_debug                    X X X X X 1 X ;
+repeat 16                                                        > arm_debug                    X X X X X 1 0 ;
+// [SWD] -----------------------------------------------------------------
+// [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
+// [SWD] |   1   |   0   |   1   |   1   |   1   |   1   |   0   |   1   |
+// [SWD] -----------------------------------------------------------------
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+repeat 4                                                         > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 2                                                         > arm_debug                    X X X X X 1 L ;
+// [SWD] Read: 0xSSSSSSSS
+stv                                                              > arm_debug                    X X X X X 1 X ;
+stv                                                              > arm_debug                    X X X X X 1 X ;
+stv                                                              > arm_debug                    X X X X X 1 X ;
+stv                                                              > arm_debug                    X X X X X 1 X ;
+stv                                                              > arm_debug                    X X X X X 1 X ;
+stv                                                              > arm_debug                    X X X X X 1 X ;
+stv                                                              > arm_debug                    X X X X X 1 X ;
+stv                                                              > arm_debug                    X X X X X 1 X ;
+stv                                                              > arm_debug                    X X X X X 1 X ;
+stv                                                              > arm_debug                    X X X X X 1 X ;
+stv                                                              > arm_debug                    X X X X X 1 X ;
+stv                                                              > arm_debug                    X X X X X 1 X ;
+stv                                                              > arm_debug                    X X X X X 1 X ;
+stv                                                              > arm_debug                    X X X X X 1 X ;
+stv                                                              > arm_debug                    X X X X X 1 X ;
+stv                                                              > arm_debug                    X X X X X 1 X ;
+stv                                                              > arm_debug                    X X X X X 1 X ;
+stv                                                              > arm_debug                    X X X X X 1 X ;
+stv                                                              > arm_debug                    X X X X X 1 X ;
+stv                                                              > arm_debug                    X X X X X 1 X ;
+stv                                                              > arm_debug                    X X X X X 1 X ;
+stv                                                              > arm_debug                    X X X X X 1 X ;
+stv                                                              > arm_debug                    X X X X X 1 X ;
+stv                                                              > arm_debug                    X X X X X 1 X ;
+stv                                                              > arm_debug                    X X X X X 1 X ;
+stv                                                              > arm_debug                    X X X X X 1 X ;
+stv                                                              > arm_debug                    X X X X X 1 X ;
+stv                                                              > arm_debug                    X X X X X 1 X ;
+stv                                                              > arm_debug                    X X X X X 1 X ;
+stv                                                              > arm_debug                    X X X X X 1 X ;
+stv                                                              > arm_debug                    X X X X X 1 X ;
+stv                                                              > arm_debug                    X X X X X 1 X ;
+// [SWD] /Read: 0xSSSSSSSS
+repeat 2                                                         > arm_debug                    X X X X X 1 X ;
+// [ARM Debug] /Read MEM-AP (mem_ap) address 0x0: 0xSSSSSSSS
+// ######################################################################
+// ## Test bit level read, should read value 0xXXXxxx1
+// ######################################################################
+// [ARM Debug] Read MEM-AP (mem_ap) address 0x0: 0xXXXXXXX_xxx1
+// [SWD] -----------------------------------------------------------------
+// [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
+// [SWD] |   1   |   1   |   1   |   1   |   1   |   0   |   0   |   1   |
+// [SWD] -----------------------------------------------------------------
+repeat 5                                                         > arm_debug                    X X X X X 1 1 ;
+repeat 2                                                         > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 2                                                         > arm_debug                    X X X X X 1 L ;
+// [SWD] Read: 0xX
+repeat 32                                                        > arm_debug                    X X X X X 1 X ;
+// [SWD] /Read: 0xX
+repeat 2                                                         > arm_debug                    X X X X X 1 X ;
+repeat 16                                                        > arm_debug                    X X X X X 1 0 ;
+// [SWD] -----------------------------------------------------------------
+// [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
+// [SWD] |   1   |   0   |   1   |   1   |   1   |   1   |   0   |   1   |
+// [SWD] -----------------------------------------------------------------
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+repeat 4                                                         > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 0 ;
+                                                                 > arm_debug                    X X X X X 1 1 ;
+                                                                 > arm_debug                    X X X X X 1 X ;
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 2                                                         > arm_debug                    X X X X X 1 L ;
+// [SWD] Read: 0xXXXXXXX_xxx1
+                                                                 > arm_debug                    X X X X X 1 H ;
+repeat 31                                                        > arm_debug                    X X X X X 1 X ;
+// [SWD] /Read: 0xXXXXXXX_xxx1
+repeat 2                                                         > arm_debug                    X X X X X 1 X ;
+// [ARM Debug] /Read MEM-AP (mem_ap) address 0x0: 0xXXXXXXX_xxx1
+// ######################################################################
+// ## SWITCHING DP
+// ######################################################################
+// ######################################################################
+// ## Test write register, should write value 0xFF01
+// ######################################################################
+// [ARM Debug] Write MEM-AP (mem_ap) address 0x0: 0xFF01
+// [ARM Debug] Write MEM-AP (mem_ap) register DRW: 0xFF01
+repeat 6                                                         > arm_debug                    0 X X 1 X 1 0 ;
+repeat 2                                                         > arm_debug                    0 X X 0 X 1 0 ;
+repeat 2                                                         > arm_debug                    0 X X 1 X 1 0 ;
+repeat 2                                                         > arm_debug                    0 X X 0 X 1 0 ;
+// [JTAG] Write IR: 0xB
+repeat 2                                                         > arm_debug                    0 1 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 1 X 1 0 ;
+// [JTAG] /Write IR: 0xB
+                                                                 > arm_debug                    0 1 X 1 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 1 X 1 0 ;
+repeat 2                                                         > arm_debug                    0 1 X 0 X 1 0 ;
+// [JTAG] Write DR: 0x7F80E
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+repeat 3                                                         > arm_debug                    0 1 X 0 X 1 0 ;
+repeat 7                                                         > arm_debug                    0 0 X 0 X 1 0 ;
+repeat 8                                                         > arm_debug                    0 1 X 0 X 1 0 ;
+repeat 15                                                        > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 1 X 1 0 ;
+// [JTAG] /Write DR: 0x7F80E
+                                                                 > arm_debug                    0 0 X 1 X 1 0 ;
+repeat 9                                                         > arm_debug                    0 0 X 0 X 1 0 ;
+// [ARM Debug] /Write MEM-AP (mem_ap) register DRW: 0xFF01
+repeat 16                                                        > arm_debug                    0 0 X 0 X 1 0 ;
+// [ARM Debug] /Write MEM-AP (mem_ap) address 0x0: 0xFF01
+// ######################################################################
+// ## Test write register with overlay, no subroutine
+// ######################################################################
+// [ARM Debug] Write MEM-AP (mem_ap) address 0x0: 0xFF01
+// [ARM Debug] Write MEM-AP (mem_ap) register DRW: 0xFF01
+                                                                 > arm_debug                    0 0 X 1 X 1 0 ;
+repeat 2                                                         > arm_debug                    0 0 X 0 X 1 0 ;
+// [JTAG] Write DR: 0x7F80E
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+repeat 2                                                         > arm_debug                    0 1 X 0 X 1 0 ;
+write_overlay:                                                                                  
+                                                                 > arm_debug                    0 1 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 1 X 1 0 ;
+// [JTAG] /Write DR: 0x7F80E
+                                                                 > arm_debug                    0 0 X 1 X 1 0 ;
+repeat 9                                                         > arm_debug                    0 0 X 0 X 1 0 ;
+// [ARM Debug] /Write MEM-AP (mem_ap) register DRW: 0xFF01
+repeat 16                                                        > arm_debug                    0 0 X 0 X 1 0 ;
+// [ARM Debug] /Write MEM-AP (mem_ap) address 0x0: 0xFF01
+// ######################################################################
+// ## Test write register with overlay, use subroutine if available
+// ######################################################################
+// [ARM Debug] Write MEM-AP (mem_ap) address 0x0: 0xFF01
+// [ARM Debug] Write MEM-AP (mem_ap) register DRW: 0xFF01
+                                                                 > arm_debug                    0 0 X 1 X 1 0 ;
+repeat 2                                                         > arm_debug                    0 0 X 0 X 1 0 ;
+// [JTAG] Write DR: 0x7F80E
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 0 X 1 0 ;
+call write_overlay_subr                                          > arm_debug                    0 1 X 0 X 1 0 ;
+// [JTAG] /Write DR: 0x7F80E
+                                                                 > arm_debug                    0 0 X 1 X 1 0 ;
+repeat 9                                                         > arm_debug                    0 0 X 0 X 1 0 ;
+// [ARM Debug] /Write MEM-AP (mem_ap) register DRW: 0xFF01
+repeat 16                                                        > arm_debug                    0 0 X 0 X 1 0 ;
+// [ARM Debug] /Write MEM-AP (mem_ap) address 0x0: 0xFF01
+// ######################################################################
+// ## Test read register, should read value 0x0000FF01
+// ######################################################################
+// [ARM Debug] Read MEM-AP (mem_ap) address 0x0: 0x0000FF01
+                                                                 > arm_debug                    0 0 X 1 X 1 0 ;
+repeat 2                                                         > arm_debug                    0 0 X 0 X 1 0 ;
+// [JTAG] Write DR: 0x7
+repeat 3                                                         > arm_debug                    0 1 X 0 X 1 0 ;
+repeat 31                                                        > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 1 X 1 0 ;
+// [JTAG] /Write DR: 0x7
+                                                                 > arm_debug                    0 0 X 1 X 1 0 ;
+repeat 17                                                        > arm_debug                    0 0 X 0 X 1 0 ;
+repeat 2                                                         > arm_debug                    0 0 X 1 X 1 0 ;
+repeat 2                                                         > arm_debug                    0 0 X 0 X 1 0 ;
+// [JTAG] Write IR: 0xA
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 1 X 1 0 ;
+// [JTAG] /Write IR: 0xA
+                                                                 > arm_debug                    0 1 X 1 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 1 X 1 0 ;
+repeat 2                                                         > arm_debug                    0 1 X 0 X 1 0 ;
+// [JTAG] Read DR: 0x00007F80_1xxx
+repeat 3                                                         > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 H 0 X 1 0 ;
+repeat 7                                                         > arm_debug                    0 0 L 0 X 1 0 ;
+repeat 8                                                         > arm_debug                    0 0 H 0 X 1 0 ;
+repeat 15                                                        > arm_debug                    0 0 L 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 L 1 X 1 0 ;
+// [JTAG] /Read DR: 0x00007F80_1xxx
+                                                                 > arm_debug                    0 0 X 1 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+// [ARM Debug] /Read MEM-AP (mem_ap) address 0x0: 0x0000FF01
+// ######################################################################
+// ## Test read register, with overlay, no subroutine, should read value 0x0000FF01
+// ######################################################################
+// [ARM Debug] Read MEM-AP (mem_ap) address 0x0: 0xVVVVVVVV
+repeat 2                                                         > arm_debug                    0 0 X 1 X 1 0 ;
+repeat 2                                                         > arm_debug                    0 0 X 0 X 1 0 ;
+// [JTAG] Write IR: 0xB
+repeat 2                                                         > arm_debug                    0 1 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 1 X 1 0 ;
+// [JTAG] /Write IR: 0xB
+                                                                 > arm_debug                    0 1 X 1 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 1 X 1 0 ;
+repeat 2                                                         > arm_debug                    0 1 X 0 X 1 0 ;
+// [JTAG] Write DR: 0x7
+repeat 3                                                         > arm_debug                    0 1 X 0 X 1 0 ;
+repeat 31                                                        > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 1 X 1 0 ;
+// [JTAG] /Write DR: 0x7
+                                                                 > arm_debug                    0 0 X 1 X 1 0 ;
+repeat 17                                                        > arm_debug                    0 0 X 0 X 1 0 ;
+repeat 2                                                         > arm_debug                    0 0 X 1 X 1 0 ;
+repeat 2                                                         > arm_debug                    0 0 X 0 X 1 0 ;
+// [JTAG] Write IR: 0xA
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 1 X 1 0 ;
+// [JTAG] /Write IR: 0xA
+                                                                 > arm_debug                    0 1 X 1 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 1 X 1 0 ;
+repeat 2                                                         > arm_debug                    0 1 X 0 X 1 0 ;
+// [JTAG] Read DR: 0xVVVVVVVV_vxxx
+repeat 3                                                         > arm_debug                    0 0 X 0 X 1 0 ;
+read_overlay:                                                                                   
+                                                                 > arm_debug                    0 0 H 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 L 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 L 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 L 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 L 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 L 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 L 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 L 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 H 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 H 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 H 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 H 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 H 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 H 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 H 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 H 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 L 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 L 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 L 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 L 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 L 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 L 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 L 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 L 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 L 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 L 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 L 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 L 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 L 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 L 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 L 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 L 1 X 1 0 ;
+// [JTAG] /Read DR: 0xVVVVVVVV_vxxx
+                                                                 > arm_debug                    0 0 X 1 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+// [ARM Debug] /Read MEM-AP (mem_ap) address 0x0: 0xVVVVVVVV
+// ######################################################################
+// ## Test read register, with overlay, use subroutine if available
+// ######################################################################
+// [ARM Debug] Read MEM-AP (mem_ap) address 0x0: 0xVVVVVVVV
+repeat 2                                                         > arm_debug                    0 0 X 1 X 1 0 ;
+repeat 2                                                         > arm_debug                    0 0 X 0 X 1 0 ;
+// [JTAG] Write IR: 0xB
+repeat 2                                                         > arm_debug                    0 1 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 1 X 1 0 ;
+// [JTAG] /Write IR: 0xB
+                                                                 > arm_debug                    0 1 X 1 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 1 X 1 0 ;
+repeat 2                                                         > arm_debug                    0 1 X 0 X 1 0 ;
+// [JTAG] Write DR: 0x7
+repeat 3                                                         > arm_debug                    0 1 X 0 X 1 0 ;
+repeat 31                                                        > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 1 X 1 0 ;
+// [JTAG] /Write DR: 0x7
+                                                                 > arm_debug                    0 0 X 1 X 1 0 ;
+repeat 17                                                        > arm_debug                    0 0 X 0 X 1 0 ;
+repeat 2                                                         > arm_debug                    0 0 X 1 X 1 0 ;
+repeat 2                                                         > arm_debug                    0 0 X 0 X 1 0 ;
+// [JTAG] Write IR: 0xA
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 1 X 1 0 ;
+// [JTAG] /Write IR: 0xA
+                                                                 > arm_debug                    0 1 X 1 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 1 X 1 0 ;
+repeat 2                                                         > arm_debug                    0 1 X 0 X 1 0 ;
+// [JTAG] Read DR: 0xVVVVVVVV_vxxx
+repeat 2                                                         > arm_debug                    0 0 X 0 X 1 0 ;
+call read_overlay_subr                                           > arm_debug                    0 0 X 0 X 1 0 ;
+// [JTAG] /Read DR: 0xVVVVVVVV_vxxx
+                                                                 > arm_debug                    0 0 X 1 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+// [ARM Debug] /Read MEM-AP (mem_ap) address 0x0: 0xVVVVVVVV
+// ######################################################################
+// ## Test read register with mask, should read value 0xXXXxxx1
+// ######################################################################
+// [ARM Debug] Read MEM-AP (mem_ap) address 0x0: 0xXXXXXXX1
+repeat 2                                                         > arm_debug                    0 0 X 1 X 1 0 ;
+repeat 2                                                         > arm_debug                    0 0 X 0 X 1 0 ;
+// [JTAG] Write IR: 0xB
+repeat 2                                                         > arm_debug                    0 1 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 1 X 1 0 ;
+// [JTAG] /Write IR: 0xB
+                                                                 > arm_debug                    0 1 X 1 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 1 X 1 0 ;
+repeat 2                                                         > arm_debug                    0 1 X 0 X 1 0 ;
+// [JTAG] Write DR: 0x7
+repeat 3                                                         > arm_debug                    0 1 X 0 X 1 0 ;
+repeat 31                                                        > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 1 X 1 0 ;
+// [JTAG] /Write DR: 0x7
+                                                                 > arm_debug                    0 0 X 1 X 1 0 ;
+repeat 17                                                        > arm_debug                    0 0 X 0 X 1 0 ;
+repeat 2                                                         > arm_debug                    0 0 X 1 X 1 0 ;
+repeat 2                                                         > arm_debug                    0 0 X 0 X 1 0 ;
+// [JTAG] Write IR: 0xA
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 1 X 1 0 ;
+// [JTAG] /Write IR: 0xA
+                                                                 > arm_debug                    0 1 X 1 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 1 X 1 0 ;
+repeat 2                                                         > arm_debug                    0 1 X 0 X 1 0 ;
+// [JTAG] Read DR: 0xXXXXXXX_x000_1xxx
+repeat 3                                                         > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 H 0 X 1 0 ;
+repeat 3                                                         > arm_debug                    0 0 L 0 X 1 0 ;
+repeat 27                                                        > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 1 X 1 0 ;
+// [JTAG] /Read DR: 0xXXXXXXX_x000_1xxx
+                                                                 > arm_debug                    0 0 X 1 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+// [ARM Debug] /Read MEM-AP (mem_ap) address 0x0: 0xXXXXXXX1
+// ######################################################################
+// ## Test read register with store
+// ######################################################################
+// [ARM Debug] Read MEM-AP (mem_ap) address 0x0: 0xSSSSSSSS
+repeat 2                                                         > arm_debug                    0 0 X 1 X 1 0 ;
+repeat 2                                                         > arm_debug                    0 0 X 0 X 1 0 ;
+// [JTAG] Write IR: 0xB
+repeat 2                                                         > arm_debug                    0 1 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 1 X 1 0 ;
+// [JTAG] /Write IR: 0xB
+                                                                 > arm_debug                    0 1 X 1 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 1 X 1 0 ;
+repeat 2                                                         > arm_debug                    0 1 X 0 X 1 0 ;
+// [JTAG] Write DR: 0x7
+repeat 3                                                         > arm_debug                    0 1 X 0 X 1 0 ;
+repeat 31                                                        > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 1 X 1 0 ;
+// [JTAG] /Write DR: 0x7
+                                                                 > arm_debug                    0 0 X 1 X 1 0 ;
+repeat 17                                                        > arm_debug                    0 0 X 0 X 1 0 ;
+repeat 2                                                         > arm_debug                    0 0 X 1 X 1 0 ;
+repeat 2                                                         > arm_debug                    0 0 X 0 X 1 0 ;
+// [JTAG] Write IR: 0xA
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 1 X 1 0 ;
+// [JTAG] /Write IR: 0xA
+                                                                 > arm_debug                    0 1 X 1 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 1 X 1 0 ;
+repeat 2                                                         > arm_debug                    0 1 X 0 X 1 0 ;
+// [JTAG] Read DR: 0xSSSSSSSS_sxxx
+repeat 3                                                         > arm_debug                    0 0 X 0 X 1 0 ;
+stv                                                              > arm_debug                    0 0 X 0 X 1 0 ;
+stv                                                              > arm_debug                    0 0 X 0 X 1 0 ;
+stv                                                              > arm_debug                    0 0 X 0 X 1 0 ;
+stv                                                              > arm_debug                    0 0 X 0 X 1 0 ;
+stv                                                              > arm_debug                    0 0 X 0 X 1 0 ;
+stv                                                              > arm_debug                    0 0 X 0 X 1 0 ;
+stv                                                              > arm_debug                    0 0 X 0 X 1 0 ;
+stv                                                              > arm_debug                    0 0 X 0 X 1 0 ;
+stv                                                              > arm_debug                    0 0 X 0 X 1 0 ;
+stv                                                              > arm_debug                    0 0 X 0 X 1 0 ;
+stv                                                              > arm_debug                    0 0 X 0 X 1 0 ;
+stv                                                              > arm_debug                    0 0 X 0 X 1 0 ;
+stv                                                              > arm_debug                    0 0 X 0 X 1 0 ;
+stv                                                              > arm_debug                    0 0 X 0 X 1 0 ;
+stv                                                              > arm_debug                    0 0 X 0 X 1 0 ;
+stv                                                              > arm_debug                    0 0 X 0 X 1 0 ;
+stv                                                              > arm_debug                    0 0 X 0 X 1 0 ;
+stv                                                              > arm_debug                    0 0 X 0 X 1 0 ;
+stv                                                              > arm_debug                    0 0 X 0 X 1 0 ;
+stv                                                              > arm_debug                    0 0 X 0 X 1 0 ;
+stv                                                              > arm_debug                    0 0 X 0 X 1 0 ;
+stv                                                              > arm_debug                    0 0 X 0 X 1 0 ;
+stv                                                              > arm_debug                    0 0 X 0 X 1 0 ;
+stv                                                              > arm_debug                    0 0 X 0 X 1 0 ;
+stv                                                              > arm_debug                    0 0 X 0 X 1 0 ;
+stv                                                              > arm_debug                    0 0 X 0 X 1 0 ;
+stv                                                              > arm_debug                    0 0 X 0 X 1 0 ;
+stv                                                              > arm_debug                    0 0 X 0 X 1 0 ;
+stv                                                              > arm_debug                    0 0 X 0 X 1 0 ;
+stv                                                              > arm_debug                    0 0 X 0 X 1 0 ;
+stv                                                              > arm_debug                    0 0 X 0 X 1 0 ;
+stv                                                              > arm_debug                    0 0 X 1 X 1 0 ;
+// [JTAG] /Read DR: 0xSSSSSSSS_sxxx
+                                                                 > arm_debug                    0 0 X 1 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+// [ARM Debug] /Read MEM-AP (mem_ap) address 0x0: 0xSSSSSSSS
+// ######################################################################
+// ## Test bit level read, should read value 0xXXXxxx1
+// ######################################################################
+// [ARM Debug] Read MEM-AP (mem_ap) address 0x0: 0xXXXXXXX_xxx1
+repeat 2                                                         > arm_debug                    0 0 X 1 X 1 0 ;
+repeat 2                                                         > arm_debug                    0 0 X 0 X 1 0 ;
+// [JTAG] Write IR: 0xB
+repeat 2                                                         > arm_debug                    0 1 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 1 X 1 0 ;
+// [JTAG] /Write IR: 0xB
+                                                                 > arm_debug                    0 1 X 1 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 1 X 1 0 ;
+repeat 2                                                         > arm_debug                    0 1 X 0 X 1 0 ;
+// [JTAG] Write DR: 0x7
+repeat 3                                                         > arm_debug                    0 1 X 0 X 1 0 ;
+repeat 31                                                        > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 1 X 1 0 ;
+// [JTAG] /Write DR: 0x7
+                                                                 > arm_debug                    0 0 X 1 X 1 0 ;
+repeat 17                                                        > arm_debug                    0 0 X 0 X 1 0 ;
+repeat 2                                                         > arm_debug                    0 0 X 1 X 1 0 ;
+repeat 2                                                         > arm_debug                    0 0 X 0 X 1 0 ;
+// [JTAG] Write IR: 0xA
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 1 X 1 0 ;
+// [JTAG] /Write IR: 0xA
+                                                                 > arm_debug                    0 1 X 1 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 1 X 1 X 1 0 ;
+repeat 2                                                         > arm_debug                    0 1 X 0 X 1 0 ;
+// [JTAG] Read DR: 0xXXXXXXXX_1xxx
+repeat 3                                                         > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 H 0 X 1 0 ;
+repeat 30                                                        > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 1 X 1 0 ;
+// [JTAG] /Read DR: 0xXXXXXXXX_1xxx
+                                                                 > arm_debug                    0 0 X 1 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+// [ARM Debug] /Read MEM-AP (mem_ap) address 0x0: 0xXXXXXXX_xxx1
+// ######################################################################
+// ## RESETTING DP (to default)
+// ######################################################################
+// ######################################################################
+// ## Test bit level read, should read value 0xXXXxxx1
+// ######################################################################
+// [ARM Debug] Read MEM-AP (mem_ap) address 0x0: 0xXXXXXXX_xxx1
+// [SWD] -----------------------------------------------------------------
+// [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
+// [SWD] |   1   |   1   |   1   |   1   |   1   |   0   |   0   |   1   |
+// [SWD] -----------------------------------------------------------------
+repeat 5                                                         > arm_debug                    0 0 X 0 X 1 1 ;
+repeat 2                                                         > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 1 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 X ;
+                                                                 > arm_debug                    0 0 X 0 X 1 H ;
+repeat 2                                                         > arm_debug                    0 0 X 0 X 1 L ;
+// [SWD] Read: 0xX
+repeat 32                                                        > arm_debug                    0 0 X 0 X 1 X ;
+// [SWD] /Read: 0xX
+repeat 2                                                         > arm_debug                    0 0 X 0 X 1 X ;
+repeat 16                                                        > arm_debug                    0 0 X 0 X 1 0 ;
+// [SWD] -----------------------------------------------------------------
+// [SWD] | Start |  AP   | Read  | AD[2] | AD[3] |  Par  | Stop  | Park  |
+// [SWD] |   1   |   0   |   1   |   1   |   1   |   1   |   0   |   1   |
+// [SWD] -----------------------------------------------------------------
+                                                                 > arm_debug                    0 0 X 0 X 1 1 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+repeat 4                                                         > arm_debug                    0 0 X 0 X 1 1 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 0 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 1 ;
+                                                                 > arm_debug                    0 0 X 0 X 1 X ;
+                                                                 > arm_debug                    0 0 X 0 X 1 H ;
+repeat 2                                                         > arm_debug                    0 0 X 0 X 1 L ;
+// [SWD] Read: 0xXXXXXXX_xxx1
+                                                                 > arm_debug                    0 0 X 0 X 1 H ;
+repeat 31                                                        > arm_debug                    0 0 X 0 X 1 X ;
+// [SWD] /Read: 0xXXXXXXX_xxx1
+repeat 2                                                         > arm_debug                    0 0 X 0 X 1 X ;
+// [ARM Debug] /Read MEM-AP (mem_ap) address 0x0: 0xXXXXXXX_xxx1
+// ######################################################################
+// ## Pattern complete
+// ######################################################################
+end_module                                                       > arm_debug                    0 0 X 0 X 1 0 ;
+}                                                                                               
