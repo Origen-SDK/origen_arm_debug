@@ -16,21 +16,20 @@ module OrigenARMDebug
 
     # Boolean value indicating whether this is an AXI-AP
     attr_accessor :is_axi
-    
+
     # Value to be read from DP CSW for interleaved status checks (debug feature)
     attr_accessor :csw_status_check
-    
+
     # Boolean value indicating whether to interleave status checks during transactions (debug feature)
     attr_accessor :interleave_status_check
-    
+
     def initialize(options = {})
       super
 
       @is_axi = options[:is_axi]
       @csw_status_check = options[:csw_status_check]
       @interleave_status_check = options[:interleave_status_check]
-      
-      
+
       @latency = options[:latency] || 0
       @apmem_access_wait = options[:apmem_access_wait] || 0
 
