@@ -11,7 +11,8 @@ module OrigenARMDebug
       address = reg.address & 0xFFFF_FFF0
       apsel = (reg.address & 0xFF00_0000) >> 24
       apbanksel = (reg.address & 0xF0) >> 4
-      if model.select.data != address
+      # if model.select.data != address
+      if model.select.apsel.data != apsel || model.select.apbanksel.data != apbanksel
         model.select.write! do |r|
           r.apsel.write apsel
           r.apbanksel.write apbanksel
