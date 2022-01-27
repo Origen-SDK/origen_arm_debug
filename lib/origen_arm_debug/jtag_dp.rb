@@ -48,8 +48,11 @@ module OrigenARMDebug
 
       reg :select, 0x8 do |reg|
         reg.bit 31..24, :apsel
+        reg.bit 23..8,  :reserved
         reg.bit 7..4, :apbanksel
       end
+
+      select.write options[:dp_select_reset] if options[:dp_select_reset]
 
       add_reg :rdbuff, 0xC, access: :ro, reset: 0
 

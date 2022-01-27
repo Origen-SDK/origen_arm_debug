@@ -10,7 +10,7 @@ module OrigenARMDebug
     def select_ap_reg(reg)
       address = reg.address & 0xFFFF_FFF0
       if model.select.data != address
-        model.select.write!(address)
+        model.select.bits[31..24].write!(address >> 24)
       end
     end
   end
