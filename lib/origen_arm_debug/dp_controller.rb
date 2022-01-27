@@ -8,9 +8,10 @@ module OrigenARMDebug
 
     # @api private
     def select_ap_reg(reg)
-      apsel = (reg.address & 0xFF000_0000) >> 24
+      address = reg.address & 0xFFFF_FFF0
+      apsel = (reg.address & 0xFF00_0000) >> 24
       apbanksel = (reg.address & 0xF0) >> 4
-      if model.select.apsel.data != apsel || model.select.apbanksel.data != apbanksel
+      if model.select.data != address
         model.select.write! do |r|
           r.apsel.write apsel
           r.apbanksel.write apbanksel
