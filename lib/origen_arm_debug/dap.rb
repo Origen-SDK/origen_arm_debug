@@ -70,11 +70,13 @@ module OrigenARMDebug
     #
     def add_ap(name, options)
       domain name.to_sym
+      # class name is deleted from options in sub_block call
+      class_name = options[:class_name]
       ap = sub_block(name.to_sym, options)
 
-      if options[:class_name] == 'MemAP'
+      if class_name == 'MemAP'
         mem_aps << ap
-      elsif options[:class_name] == 'JTAGAP'
+      elsif class_name == 'JTAGAP'
         jtag_aps << ap
       else
         ext_aps << ap

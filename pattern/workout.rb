@@ -1,5 +1,7 @@
 if Origen.app.target.name == 'dual_dp'
   pattern_name = 'workout_dual_dp'
+elsif Origen.app.target.name == 'jtag_axi'
+  pattern_name = 'workout_jtag_axi'
 else
   pattern_name = "workout_#{dut.arm_debug.dp.name}"
 end

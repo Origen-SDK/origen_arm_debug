@@ -18,11 +18,13 @@ module OrigenARMDebug
         log "Write MEM-AP (#{model.name}) address #{addr.to_hex}: #{data.to_hex}" do
           csw.bits(:size).write!(0b010) if csw.bits(:size).data != 0b010
           tar.write!(addr) unless tar.data == addr
+          parent.dp.ctrlstat.read! model.csw_status_check if model.interleave_status_check
           drw.reset
           drw.overlay(nil)
           drw.copy_all(reg_or_val)
           drw.write!(options)
           latency.cycles
+          parent.dp.ctrlstat.read! model.csw_status_check if model.interleave_status_check
         end
         increment_addr
       end
@@ -43,11 +45,13 @@ module OrigenARMDebug
           csw.bits(:size).write!(0b010) if csw.bits(:size).data != 0b010
           unless tar.data == addr
             tar.write!(addr)
+            parent.dp.ctrlstat.read! model.csw_status_check if model.interleave_status_check
           end
           drw.reset
           drw.overlay(nil)
           drw.copy_all(reg_or_val)
           parent.dp.read_register(drw, options.merge(apacc_wait_states: (apmem_access_wait + apreg_access_wait)))
+          parent.dp.ctrlstat.read! model.csw_status_check if model.interleave_status_check
         end
         increment_addr
       end

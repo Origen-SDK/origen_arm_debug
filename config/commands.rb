@@ -26,7 +26,9 @@ when "examples", "test"
   status = 0
   
   # Pattern generator tests
-  ARGV = %w(workout -t jtag -e j750 -r approved)
+  ARGV = %w(workout -t jtag.rb -e j750 -r approved)
+  load "#{Origen.top}/lib/origen/commands/generate.rb"
+  ARGV = %w(workout -t jtag_axi.rb -e j750 -r approved)
   load "#{Origen.top}/lib/origen/commands/generate.rb"
   ARGV = %w(workout -t swd -e j750 -r approved)
   load "#{Origen.top}/lib/origen/commands/generate.rb"
