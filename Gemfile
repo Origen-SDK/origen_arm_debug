@@ -5,8 +5,7 @@ gem 'byebug'
 gem 'origen_doc_helpers'
 gem 'origen_testers'
 
-# Fix for Travis to run on Ruby 2.2
-gem 'nokogiri', '<= 1.8.3'
+gem 'nokogiri', '<= 1.12.0'
 
 # Specify your gem's runtime dependencies in origen_arm_debug.gemspec 
 gemspec 
