@@ -3,6 +3,7 @@ require 'spec_helper'
 require 'origen_arm_debug_dev/dut.rb'
 require 'origen_arm_debug_dev/dut_dual_dp.rb'
 require 'origen_arm_debug_dev/dut_jtag.rb'
+require 'origen_arm_debug_dev/dut_jtag_axi.rb'
 require 'origen_arm_debug_dev/dut_swd.rb'
 
 module DapSpec
@@ -75,6 +76,11 @@ module DapSpec
       test.should == false
     end
 
-
+    it 'can alter dp.select reset and mem_ap csw definition' do
+      load_target('jtag_axi.rb')
+      dut.arm_debug.dp.select.data.should == 0xC2_0D00
+      dut.arm_debug.mem_ap.csw.has_bits?(:ace_enable).should == true
+    end
+    
   end
 end
