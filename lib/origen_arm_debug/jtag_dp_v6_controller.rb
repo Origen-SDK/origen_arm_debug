@@ -1,5 +1,5 @@
 module OrigenARMDebug
-  class JTAG_DPControllerV6
+  class JTAG_DPV6Controller
     include Origen::Controller
     include Helpers
     include DPControllerV6
