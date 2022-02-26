@@ -32,8 +32,8 @@ module OrigenARMDebug
 
             # Some other debug register
             elsif reg.meta.include?(:dpbanksel)
-              if model.reg(:select).bits(:dpbanksel) != reg.meta(:dpbanksel)
-                model.reg(:select).bits(:dpbanksel).write! reg.meta(:dpbanksel)
+              if model.reg(:select).bits(:dpbanksel).data != reg.meta[:dpbanksel]
+                model.reg(:select).bits(:dpbanksel).write! reg.meta[:dpbanksel]
               end
               dp_write(reg)
 
@@ -85,8 +85,8 @@ module OrigenARMDebug
             # Some other register
             elsif reg.meta.include?(:dpbanksel)
               # Part 1 - Set dpbanksel if required
-              if model.reg(:select).bits(:dpbanksel).data != reg.meta(:dpbanksel)
-                model.reg(:select).bits(:dpbanksel).write! reg.meta(:dpbanksel)
+              if model.reg(:select).bits(:dpbanksel).data != reg.meta[:dpbanksel]
+                model.reg(:select).bits(:dpbanksel).write! reg.meta[:dpbanksel]
               end
 
               dp_read(reg, options)

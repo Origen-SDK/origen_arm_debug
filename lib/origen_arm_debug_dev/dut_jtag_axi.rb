@@ -30,6 +30,21 @@ module OrigenARMDebugDev
       options[:dp_select_reset] = 0xC2_0D00
       # Specify (customize) ARM Debug implementation details
       sub_block :arm_debug, options
+
+      options[:dapv6] = true
+      options[:class_name] = 'OrigenARMDebug::DAP'
+      options[:mem_aps] = {
+        mem_ap: {
+          base_address:      0x00C2_0000,
+          latency:           16,
+          apreg_access_wait: 8,
+          apmem_access_wait: 8,
+          is_axi:            true,
+          csw_reset:         0x1080_6002
+        },
+        mdm_ap: 0x00C3_0000
+      }
+      sub_block :arm_debugv6, options
     end
   end
 end
