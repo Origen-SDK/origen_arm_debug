@@ -20,7 +20,11 @@ module OrigenARMDebug
       end
 
       if options[:jtag] || parent.respond_to?(:jtag)
-        options[:class_name] = 'JTAG_DP'
+        if options[:dapv6]
+          options[:class_name] = 'JTAG_DPV6'
+        else
+          options[:class_name] = 'JTAG_DP'
+        end
         dps << sub_block(:jtag_dp, options)
       end
 

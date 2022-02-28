@@ -1,31 +1,24 @@
-if Origen.app.target.name == 'dual_dp'
-  pattern_name = 'workout_dual_dp'
-elsif Origen.app.target.name == 'jtag_axi'
-  pattern_name = 'workout_jtag_axi'
-else
-  pattern_name = "workout_#{dut.arm_debug.dp.name}"
-end
+pattern_name = "v6_workout_#{dut.arm_debugv6.dp.name}"
 
 Pattern.create name: pattern_name do
 
   ss "Tests of direct DP API"
-  dp = dut.arm_debug.dp
+  dp = dut.arm_debugv6.dp
 
   dp.idcode.partno.read!(0x12)
 
   dp.ctrlstat.write!(0x50000000)
   dp.ctrlstat.read!(0xF0000000)
 
-  if dp.select.has_bits?(:apbanksel)
-    dp.select.apbanksel.write!(0xF)
-  else
-    dp.select.bits(31..24).write!(0xF)
-  end
+  dp.select.bits(:addr).write!(0xF)
+  dp.select.read!
+  dp.select1.write! 4
+  dp.select1.read! 4
 
   dp.abort.dapabort.write!(1)
 
   ss "Tests of direct AP API"
-  ap = dut.arm_debug.mem_ap
+  ap = dut.arm_debugv6.mem_ap
 
   ap.tar.write!(0x1234_0000)
 
@@ -72,7 +65,7 @@ Pattern.create name: pattern_name do
 
   if Origen.app.target.name == 'dual_dp'
     ss "SWITCHING DP"
-    dut.arm_debug.set_dp(:jtag)
+    dut.arm_debugv6.set_dp(:jtag)
 
     ss "Test write register, should write value 0xFF01"
     dut.reg(:test).write!(0x0000FF01)
@@ -112,7 +105,7 @@ Pattern.create name: pattern_name do
     dut.reg(:test)[0].read!
 
     ss "RESETTING DP (to default)"
-    dut.arm_debug.reset_dp
+    dut.arm_debugv6.reset_dp
     ss "Test bit level read, should read value 0xXXXxxx1"
     dut.reg(:test).reset
     dut.reg(:test).data = 0x0000FF01
