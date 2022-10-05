@@ -2,7 +2,7 @@ module OrigenARMDebug
   class JTAG_DP
     include Origen::Model
 
-    attr_reader :dpacc_select, :apacc_select
+    attr_reader :dpacc_select, :apacc_select, :read_ack
 
     def initialize(options = {})
       options = {
@@ -14,6 +14,7 @@ module OrigenARMDebug
       }.merge(options)
       @dpacc_select = options[:dpacc_select]
       @apacc_select = options[:apacc_select]
+      @read_ack = options[:read_ack]
       add_reg :ir, 0, size: options[:ir_size]
 
       # Virtual reg used to represent all of the various 35-bit scan chains

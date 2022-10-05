@@ -107,6 +107,16 @@ module OrigenARMDebug
         select_ap_reg(reg)
         dr.reset
         dr.overlay(nil)
+
+        read_ack = options[:read_ack] || @read_ack
+        if read_ack
+          # Add in check of acknowledge bits (confirms the operation completed)
+          dr[2..0].read read_ack
+        else
+          # Default previous behavior is to mask, no way to know if the operation successfully completed
+          dr[0].write(1)
+          dr[2..1].write(rdbuff.offset >> 2)
+        end
         dr[0].write(1)
         dr[2..1].write(reg.offset >> 2)
         dr[34..3].write(0)
