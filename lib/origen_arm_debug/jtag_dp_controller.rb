@@ -130,7 +130,7 @@ module OrigenARMDebug
         dr.reset
         dr.overlay(nil)
 
-        read_ack = options[:read_ack] || @read_ack
+        read_ack = options[:read_ack] || model.read_ack
         if read_ack
           # Add in check of acknowledge bits (confirms the operation completed)
           dr[2..0].read read_ack
