@@ -1,4 +1,8 @@
-pattern_name = "v6_workout_#{dut.arm_debugv6.dp.name}"
+if Origen.app.target.name == 'jtag_axi'
+  pattern_name = "v6_workout_#{dut.arm_debugv6.dp.name}"
+elsif Origen.app.target.name == 'jtag_ack'
+  pattern_name = "v6_workout_#{dut.arm_debugv6.dp.name}_w_ack"
+end
 
 Pattern.create name: pattern_name do
 

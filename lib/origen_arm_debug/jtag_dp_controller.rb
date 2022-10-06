@@ -92,6 +92,7 @@ module OrigenARMDebug
               # Part 2 - Now read real data from RDBUFF (DP-Reg)
               dr.reset
               dr.overlay(nil)
+              # Should compare of ack be added here as well?
               dr[0].write(1)
               dr[2..1].write(rdbuff.offset >> 2)
               dr[34..3].copy_all(reg)
@@ -140,7 +141,10 @@ module OrigenARMDebug
           dr[2..1].write(rdbuff.offset >> 2)
         end
         dr[34..3].copy_all(reg)
-        options[:mask] = options[:mask] << 3 unless options[:mask].nil?
+        unless options[:mask].nil?
+          options[:mask] = options[:mask] << 3
+          options[:mask] += 7 if read_ack
+        end
         ir.write!(dpacc_select)
         dut.jtag.read_dr(dr, options)
       end
