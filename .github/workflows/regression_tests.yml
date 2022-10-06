@@ -4,8 +4,7 @@ jobs:
   build:
     strategy:
       matrix:
-#        os: [ubuntu-latest, windows-latest]
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, windows-latest]
         ruby-version: [2.5, 2.6, 2.7]
 
     runs-on: ${{ matrix.os }}
@@ -19,7 +18,7 @@ jobs:
     - name: Update Env
       run: echo "ACTIONS_ALLOW_UNSECURE_COMMANDS=true" >> $GITHUB_ENV
     - name: Install Bundler
-      run: gem install bundler -v '2.1.4'
+      run: gem install bundler -v '2.3.22'
 #    - name: Remove Gemfile.lock
 #      run: rm Gemfile.lock
     - name: Install dependencies
