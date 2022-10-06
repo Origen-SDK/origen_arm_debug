@@ -28,7 +28,7 @@ module OrigenARMDebugDev
         mdm_ap: 0x01000000
       }
       options[:dp_select_reset] = 0xC2_0D00
-      options[:read_ack] = 2
+      options[:read_ack] = true
       # Specify (customize) ARM Debug implementation details
       sub_block :arm_debug, options
 
