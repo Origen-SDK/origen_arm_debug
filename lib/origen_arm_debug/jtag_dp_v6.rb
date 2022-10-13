@@ -14,10 +14,10 @@ module OrigenARMDebug
       }.merge(options)
       @dpacc_select = options[:dpacc_select]
       @apacc_select = options[:apacc_select]
-      # the acknowledge signature is LHL (2), but allow an override
+      # the acknowledge signature is HLL (4), but allow an override
       if options[:read_ack]
         if options[:read_ack] == true
-          @read_ack = 2
+          @read_ack = 4
         else
           @read_ack = options[:read_ack]
         end
