@@ -11,8 +11,8 @@ Gem::Specification.new do |spec|
   spec.homepage      = "http://origen-sdk.org/origen_arm_debug"
   spec.license       = 'MIT'
 
-  spec.required_ruby_version     = '>= 1.9.3'
-  spec.required_rubygems_version = '>= 1.8.11'
+#  spec.required_ruby_version     = '>= 1.9.3'
+#  spec.required_rubygems_version = '>= 1.8.11'
 
   # Only the files that are hit by these wildcards will be included in the
   # packaged gem, the default should hit everything in most cases but this will

@@ -138,6 +138,21 @@ instantiation_options[:dp_select_reset] = 0xC2_0D00
 sub_block :arm_debug, instantiation_options
 ~~~
 
+By default the acknowledge signature is masked (not compared). To enable comparison of the acknowledge signature during a read operation add this instantiation option:
+
+~~~ruby
+mem_aps = {
+  mem_ap: { base_address: 0x00000000 }
+  mem2_ap: { base_address: 0x10000000 }
+}
+instantiation_options[:class_name] = 'OrigenARMDebug::DAP'
+instantiation_options[:mem_aps] = mem_aps
+
+instantiation_options[:read_ack] = true  # Check for the acknowledge signature when reading an AP
+
+sub_block :arm_debug, instantiation_options
+~~~
+
 DAP Version 6 instantiation example:
 
 ~~~ruby

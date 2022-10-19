@@ -122,10 +122,21 @@ module OrigenARMDebug
         # Part 2 - Now read real data from RDBUFF (DP-Reg)
         dr.reset
         dr.overlay(nil)
-        dr[0].write(1)
-        dr[2..1].write(rdbuff.offset >> 2)
+
+        read_ack = options[:read_ack] || model.read_ack
+        if read_ack
+          # Add in check of acknowledge bits (confirms the operation completed)
+          dr[2..0].read read_ack
+        else
+          # Default previous behavior is to mask, no way to know if the operation successfully completed
+          dr[0].write(1)
+          dr[2..1].write(rdbuff.offset >> 2)
+        end
         dr[34..3].copy_all(reg)
-        options[:mask] = options[:mask] << 3 unless options[:mask].nil?
+        unless options[:mask].nil?
+          options[:mask] = options[:mask] << 3
+          options[:mask] += 7 if read_ack
+        end
         ir.write!(dpacc_select)
         dut.jtag.read_dr(dr, options)
       end
