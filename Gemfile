@@ -5,7 +5,7 @@ gem 'byebug'
 gem 'origen_doc_helpers'
 gem 'origen_testers'
 
-gem 'nokogiri', '<= 1.12.0'
+gem 'nokogiri', '<= 1.13.0'
 
 # Specify your gem's runtime dependencies in origen_arm_debug.gemspec 
 gemspec 
