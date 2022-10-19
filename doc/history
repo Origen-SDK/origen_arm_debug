@@ -1,3 +1,13 @@
+<a class="anchor release_tag" name="v1_3_1"></a>
+<h1><a href="#v1_3_1">Tag: v1.3.1</a></h1>
+
+##### Branch: 'master'
+
+##### by Paul DeRouen on 19-Oct-2022 11:15AM
+
+
+add optional check of acknowledge bits during AP read
+
 <a class="anchor release_tag" name="v1_3_0"></a>
 <h1><a href="#v1_3_0">Tag: v1.3.0</a></h1>
 
