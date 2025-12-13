@@ -27,7 +27,8 @@
 /.session 
 /.pdm/pi_attributes.txt 
 /.irb_history 
-/.byebug_history 
+/.byebug_history
+/lbin
 
 # Cruft from other revision control systems 
 .SYNC 
