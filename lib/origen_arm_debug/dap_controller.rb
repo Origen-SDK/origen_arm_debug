@@ -3,6 +3,7 @@ module OrigenARMDebug
     include Origen::Controller
     include Helpers
 
+    # rubocop:disable Lint/DuplicateMethods
     attr_accessor :dp
 
     # Returns the currently enabled DP (or the only DP if only one
@@ -12,6 +13,7 @@ module OrigenARMDebug
     def dp
       @dp ||= dps.first
     end
+    # rubocop:enable Lint/DuplicateMethods
 
     def set_dp(dp)
       if dps.size > 1

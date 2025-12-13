@@ -55,6 +55,7 @@ module OrigenARMDebug
           if klass.nil? || addr.nil?
             fail "[ARM DEBUG] Error: Must specify class_name and base_address if using 'aps' hash to define APs"
           end
+
           ap_opts = { class_name: klass, base_address: addr }.merge(opts)
         else
           fail "[ARM DEBUG] Error: Must specify class_name and base_address if using 'aps' hash to define APs"

@@ -14,6 +14,7 @@ module OrigenARMDebug
       return addr if addr
       return reg_or_val.address if reg_or_val.respond_to?('address')
       return reg_or_val.addr if reg_or_val.respond_to?('addr')
+
       fail 'No address given, if supplying a data value instead of a register object, you must supply an :address option'
     end
 

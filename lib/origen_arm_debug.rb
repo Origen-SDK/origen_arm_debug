@@ -1,5 +1,5 @@
 require 'origen'
-require_relative '../config/application.rb'
+require_relative '../config/application'
 require 'origen_jtag'
 require 'origen_swd'
 
