@@ -1,3 +1,14 @@
+<a class="anchor release_tag" name="v1_4_0"></a>
+<h1><a href="#v1_4_0">Tag: v1.4.0</a></h1>
+
+##### Branch: 'master'
+
+##### by Corey Engelken on 13-Dec-2025 23:32PM
+
+
+Open up dependency restrictions. Let upstream apps/toplevels dictate the max
+swd/origen/jtag versions.
+
 <a class="anchor release_tag" name="v1_3_1"></a>
 <h1><a href="#v1_3_1">Tag: v1.3.1</a></h1>
 
